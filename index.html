@@ -29,75 +29,72 @@
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     -webkit-user-select:none;user-select:none;overscroll-behavior-y:contain;}
-  body{padding-bottom:40px;min-height:100vh;}
 
-  header{padding:22px 20px 10px;display:flex;align-items:center;gap:12px;}
-  header h1{font-size:20px;margin:0;font-weight:700;flex:1;}
-  header .date{font-size:13px;color:var(--muted);margin-top:2px;}
+  header{padding:14px 20px 6px;display:flex;align-items:center;gap:12px;}
+  header h1{font-size:19px;margin:0;font-weight:700;flex:1;}
+  header .date{font-size:12px;color:var(--muted);margin-top:2px;}
   .back-btn{background:var(--card);border:none;color:var(--text);font-size:20px;
     width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
   .back-btn:active{background:var(--card2);}
 
-  main{padding:0 16px;display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto;}
+  main{padding:0 16px 40px;display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto;}
   .screen{display:none;}
   .screen.active{display:block;}
 
-  /* ===== Home tiles ===== */
-  .tiles{display:flex;flex-direction:column;gap:16px;padding:8px 16px;max-width:480px;margin:0 auto;}
-  .tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-
-  .tile{border:none;width:100%;border-radius:26px;cursor:pointer;text-align:center;
+  /* ===== Home: full viewport, no scroll ===== */
+  #screen-home.active{
+    display:flex;flex-direction:column;
+    height:100vh;height:100dvh;
+    max-width:480px;margin:0 auto;
+    overflow:hidden;
+  }
+  .tiles{
+    flex:1;min-height:0;
+    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+    gap:12px;padding:4px 16px 12px;
+  }
+  .tile{border:none;border-radius:24px;cursor:pointer;text-align:center;
     transition:transform .1s ease;padding:0;color:inherit;font-family:inherit;}
   .tile:active{transform:scale(.97);}
 
-  .tile-exercise{
+  .tile-ex{
     background:linear-gradient(150deg,var(--accent) 0%,var(--accent2) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-    box-shadow:0 10px 30px rgba(34,211,238,.28);
-    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    box-shadow:0 8px 22px rgba(34,211,238,.25);
+    overflow:hidden;padding:6px;min-height:0;
   }
-  .tile-exercise .tile-name{font-weight:900;color:#0b1220;letter-spacing:.5px;}
-  .tile-exercise .tile-sub{font-size:13px;font-weight:600;color:rgba(11,18,32,.65);}
-
-  .tile-hero{aspect-ratio:1.35;}
-  .tile-hero svg{width:36%;height:auto;}
-  .tile-hero .tile-name{font-size:40px;}
-
-  .tile-small{aspect-ratio:.95;padding:8px;}
-  .tile-small svg{width:52%;height:auto;}
-  .tile-small .tile-name{font-size:22px;}
-  .tile-small .tile-sub{font-size:11px;}
-
-  .tile-wide{aspect-ratio:2.6;flex-direction:row;gap:18px;padding:0 10px;}
-  .tile-wide svg{width:17%;height:auto;}
-  .tile-wide .tile-name{font-size:26px;}
-  .tile-wide .tile-text{display:flex;flex-direction:column;align-items:flex-start;gap:3px;}
+  .tile-ex svg{height:44%;width:auto;min-height:0;}
+  .tile-ex .tile-name{font-size:clamp(15px,5.2vw,22px);font-weight:900;color:#0b1220;letter-spacing:.3px;}
+  .tile-ex .tile-sub{font-size:11px;font-weight:600;color:rgba(11,18,32,.65);}
 
   .tile-stats{
-    aspect-ratio:2.3;
+    flex:0 0 auto;
+    height:clamp(84px,13vh,120px);
+    margin:0 16px;
+    margin-bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
     background:rgba(167,139,250,.08);
     border:3px solid transparent;
     background-clip:padding-box;
     position:relative;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    display:flex;flex-direction:row;align-items:center;justify-content:center;gap:16px;
   }
   .tile-stats::before{
-    content:"";position:absolute;inset:-3px;border-radius:26px;z-index:-1;
+    content:"";position:absolute;inset:-3px;border-radius:24px;z-index:-1;
     background:linear-gradient(135deg,var(--pink),var(--purple),var(--pink));
   }
   .tile-stats .tile-name{
-    font-size:32px;font-weight:900;
+    font-size:28px;font-weight:900;
     background:linear-gradient(135deg,var(--pink),var(--purple));
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
-  .tile-stats .tile-sub{font-size:13px;color:var(--muted);}
-  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:5px;height:30px;}
-  .tile-stats .mini-bars span{width:9px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
+  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:4px;height:32px;}
+  .tile-stats .mini-bars span{width:8px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
 
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
   .card-title{font-size:15px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
   .card-title .emoji{font-size:20px;}
+  .card-title .note{font-size:11px;color:var(--muted);font-weight:400;margin-right:auto;}
 
   .counter-row{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:16px;}
   .counter-btn{width:56px;height:56px;border-radius:50%;border:none;
@@ -127,7 +124,6 @@
   .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
   .stat{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
   .stat .num{font-size:21px;font-weight:800;color:var(--accent);}
-  .stat.alt .num{color:var(--purple);}
   .stat .label{font-size:11px;color:var(--muted);margin-top:2px;}
 
   .sets-list{display:flex;flex-direction:column;gap:8px;}
@@ -144,15 +140,28 @@
 
   canvas{width:100%;display:block;}
 
-  /* goal */
-  .goal-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .goal-row input{width:70px;padding:8px;border-radius:10px;border:none;background:var(--card2);
-    color:var(--text);font-size:16px;font-weight:700;text-align:center;font-family:inherit;}
-  .goal-row label{font-size:14px;color:var(--muted);}
-  .progress-wrap{background:var(--card2);border-radius:999px;height:16px;overflow:hidden;}
-  .progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));
+  /* mini table */
+  table.mini{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:12px;}
+  .mini th{color:var(--muted);font-weight:600;font-size:11px;padding:0 4px 2px;text-align:center;}
+  .mini th:first-child{text-align:right;}
+  .mini td{padding:9px 4px;text-align:center;background:var(--card2);}
+  .mini td:first-child{text-align:right;padding-right:10px;border-radius:0 10px 10px 0;font-weight:700;font-size:12px;white-space:nowrap;}
+  .mini td:last-child{border-radius:10px 0 0 10px;}
+  .mini td b{color:var(--purple);font-size:13px;}
+
+  /* goals */
+  .goal-block{margin-bottom:14px;}
+  .goal-block:last-child{margin-bottom:0;}
+  .goal-head{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+  .goal-head .g-name{font-size:13px;font-weight:700;flex:1;}
+  .goal-head input{width:64px;padding:6px;border-radius:10px;border:none;background:var(--card2);
+    color:var(--text);font-size:14px;font-weight:700;text-align:center;font-family:inherit;}
+  .goal-head .g-unit{font-size:11px;color:var(--muted);}
+  .progress-wrap{background:var(--card2);border-radius:999px;height:12px;overflow:hidden;}
+  .progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));
     transition:width .4s ease;min-width:0;}
-  .progress-text{font-size:12px;color:var(--muted);margin-top:6px;text-align:center;}
+  .progress-bar.done{background:linear-gradient(90deg,var(--good),#6ee7b7);}
+  .goal-text{font-size:11px;color:var(--muted);margin-top:4px;}
 
   /* trend */
   .trend-box{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 0 2px;}
@@ -162,13 +171,11 @@
   .trend-pct.down{color:var(--danger);}
   .trend-desc{font-size:12px;color:var(--muted);text-align:center;margin-top:4px;}
 
-  /* per-exercise summary */
-  .ex-row{display:flex;align-items:center;gap:10px;background:var(--card2);
-    border-radius:12px;padding:10px 12px;margin-bottom:8px;}
-  .ex-row .ex-name{font-size:13px;font-weight:700;flex:1;display:flex;align-items:center;gap:7px;}
-  .ex-row .ex-cell{text-align:center;min-width:56px;}
-  .ex-row .ex-cell b{display:block;font-size:14px;color:var(--purple);}
-  .ex-row .ex-cell span{font-size:10px;color:var(--muted);}
+  .chart-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .chart-chips .chip{font-size:12px;padding:6px 12px;}
+
+  .points-today{text-align:center;font-size:13px;color:var(--muted);margin-bottom:10px;}
+  .points-today b{color:var(--pink);font-size:18px;}
 
   /* history */
   .day-row{background:var(--card2);border-radius:14px;margin-bottom:8px;overflow:hidden;}
@@ -202,9 +209,9 @@
       <div class="date" id="todayLabel"></div>
     </div>
   </header>
-  <div class="tiles">
 
-    <button class="tile tile-exercise tile-hero" data-ex="pullups">
+  <div class="tiles">
+    <button class="tile tile-ex" data-ex="pullups">
       <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="22" x2="162" y2="22"/>
         <line x1="24" y1="22" x2="24" y2="145"/>
@@ -220,35 +227,33 @@
       <span class="tile-sub" data-ex-sub="pullups"></span>
     </button>
 
-    <div class="tile-grid">
-      <button class="tile tile-exercise tile-small" data-ex="hang">
-        <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="20" x2="162" y2="20"/>
-          <circle cx="90" cy="72" r="12" fill="#0b1220"/>
-          <line x1="90" y1="84" x2="90" y2="122"/>
-          <line x1="90" y1="88" x2="68" y2="24"/>
-          <line x1="90" y1="88" x2="112" y2="24"/>
-          <line x1="90" y1="122" x2="82" y2="158"/>
-          <line x1="90" y1="122" x2="98" y2="158"/>
-        </svg>
-        <span class="tile-name">תליה פסיבית</span>
-        <span class="tile-sub" data-ex-sub="hang"></span>
-      </button>
+    <button class="tile tile-ex" data-ex="hang">
+      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="162" y2="20"/>
+        <circle cx="90" cy="72" r="12" fill="#0b1220"/>
+        <line x1="90" y1="84" x2="90" y2="122"/>
+        <line x1="90" y1="88" x2="68" y2="24"/>
+        <line x1="90" y1="88" x2="112" y2="24"/>
+        <line x1="90" y1="122" x2="82" y2="158"/>
+        <line x1="90" y1="122" x2="98" y2="158"/>
+      </svg>
+      <span class="tile-name">תליה פסיבית</span>
+      <span class="tile-sub" data-ex-sub="hang"></span>
+    </button>
 
-      <button class="tile tile-exercise tile-small" data-ex="abs">
-        <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="14" y1="150" x2="166" y2="150"/>
-          <circle cx="52" cy="86" r="12" fill="#0b1220"/>
-          <polyline points="60,96 88,118 118,118"/>
-          <polyline points="118,118 136,92 130,148"/>
-          <polyline points="60,100 78,80 92,92"/>
-        </svg>
-        <span class="tile-name">בטן</span>
-        <span class="tile-sub" data-ex-sub="abs"></span>
-      </button>
-    </div>
+    <button class="tile tile-ex" data-ex="abs">
+      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="14" y1="150" x2="166" y2="150"/>
+        <circle cx="52" cy="86" r="12" fill="#0b1220"/>
+        <polyline points="60,96 88,118 118,118"/>
+        <polyline points="118,118 136,92 130,148"/>
+        <polyline points="60,100 78,80 92,92"/>
+      </svg>
+      <span class="tile-name">בטן</span>
+      <span class="tile-sub" data-ex-sub="abs"></span>
+    </button>
 
-    <button class="tile tile-exercise tile-wide" data-ex="handstand">
+    <button class="tile tile-ex" data-ex="handstand">
       <svg viewBox="0 0 130 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
         <line x1="14" y1="158" x2="116" y2="158"/>
         <circle cx="65" cy="128" r="12" fill="#0b1220"/>
@@ -258,19 +263,15 @@
         <polyline points="65,66 52,34 60,10"/>
         <polyline points="65,66 80,38 74,12"/>
       </svg>
-      <div class="tile-text">
-        <span class="tile-name">עמידת ידיים</span>
-        <span class="tile-sub" data-ex-sub="handstand"></span>
-      </div>
+      <span class="tile-name">עמידת ידיים</span>
+      <span class="tile-sub" data-ex-sub="handstand"></span>
     </button>
-
-    <button class="tile tile-stats" id="tileStats">
-      <div class="mini-bars"><span style="height:30%"></span><span style="height:55%"></span><span style="height:40%"></span><span style="height:75%"></span><span style="height:60%"></span><span style="height:100%"></span></div>
-      <span class="tile-name">סטטיסטיקה</span>
-      <span class="tile-sub">היסטוריה · מגמות · יעדים</span>
-    </button>
-
   </div>
+
+  <button class="tile tile-stats" id="tileStats">
+    <div class="mini-bars"><span style="height:30%"></span><span style="height:55%"></span><span style="height:40%"></span><span style="height:75%"></span><span style="height:100%"></span></div>
+    <span class="tile-name">סטטיסטיקה</span>
+  </button>
 </div>
 
 <!-- ============ GENERIC LOG SCREEN ============ -->
@@ -323,23 +324,16 @@
   <main>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">🏆</span> סיכום</p>
-      <div class="stats-grid">
-        <div class="stat alt"><div class="num" id="sStreak">0</div><div class="label">ימים ברצף</div></div>
-        <div class="stat alt"><div class="num" id="sAvgPull">0</div><div class="label">ממוצע מתח יומי</div></div>
-        <div class="stat alt"><div class="num" id="sAvgSets">0</div><div class="label">ממוצע סטים יומי</div></div>
-      </div>
+      <p class="card-title"><span class="emoji">🏆</span> סיכום לפי תרגיל</p>
+      <table class="mini">
+        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>סטים/יום</th><th>כמות/יום</th></tr></thead>
+        <tbody id="miniTableBody"></tbody>
+      </table>
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">🎯</span> יעד יומי — מתח</p>
-      <div class="goal-row">
-        <label>היעד שלי:</label>
-        <input type="number" id="goalInput" min="1" max="1000" inputmode="numeric">
-        <label>חזרות ביום</label>
-      </div>
-      <div class="progress-wrap"><div class="progress-bar" id="goalBar" style="width:0%"></div></div>
-      <div class="progress-text" id="goalText"></div>
+      <p class="card-title"><span class="emoji">🎯</span> יעדים יומיים</p>
+      <div id="goalsList"></div>
     </div>
 
     <div class="card">
@@ -352,13 +346,15 @@
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">📅</span> חזרות מתח לפי יום</p>
-      <canvas id="dailyChart" height="170" dir="ltr"></canvas>
+      <p class="card-title"><span class="emoji">📅</span> גרף שבועי</p>
+      <div class="chart-chips" id="chartChips"></div>
+      <canvas id="weeklyChart" height="180" dir="ltr"></canvas>
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">🤸</span> תרגילים נוספים</p>
-      <div id="exSummary"></div>
+      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · עמידת ידיים=שניות×רמה</span></p>
+      <div class="points-today">היום: <b id="pointsToday">0</b> נקודות</div>
+      <canvas id="pointsChart" height="170" dir="ltr"></canvas>
     </div>
 
     <div class="card">
@@ -378,25 +374,37 @@
   "use strict";
 
   const STORAGE_KEY = "sportapp_sets_v1";
-  const GOAL_KEY = "sportapp_goal_v1";
+  const GOALS_KEY = "sportapp_goals_v1";
+  const OLD_GOAL_KEY = "sportapp_goal_v1";
   const LEVEL_KEY = "sportapp_level_v1";
 
   function fmtSecs(v){
-    const m = Math.floor(v/60), s = v%60;
+    const m = Math.floor(v/60), s = Math.round(v%60);
     if(m === 0) return s + " שנ׳";
     return m + ":" + String(s).padStart(2,"0");
   }
 
   const EXERCISES = {
     pullups:   { name:"מתח", emoji:"🧗", unit:"חזרות", step:1, min:0, max:500, def:8,
-                 chips:[5,8,10,12,15], fmt:v=>String(v), hasLevel:false },
+                 chips:[5,8,10,12,15], fmt:v=>String(v), hasLevel:false, goalDef:50 },
     hang:      { name:"תליה פסיבית", emoji:"🪢", unit:"שניות", step:10, min:0, max:900, def:50,
-                 chips:[30,50,60,70,90], fmt:fmtSecs, hasLevel:false },
+                 chips:[30,50,60,70,90], fmt:fmtSecs, hasLevel:false, goalDef:120 },
     abs:       { name:"בטן", emoji:"🔥", unit:"דקות", step:1, min:0, max:180, def:4,
-                 chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false },
+                 chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false, goalDef:10 },
     handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:5, min:0, max:600, def:20,
-                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true }
+                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:60 }
   };
+  const EX_KEYS = Object.keys(EXERCISES);
+
+  function setPoints(s){
+    switch(s.exercise){
+      case "pullups":   return s.val;
+      case "hang":      return s.val * 0.5;
+      case "abs":       return s.val * 8;
+      case "handstand": return s.val * (s.level || 1);
+    }
+    return 0;
+  }
 
   /* ---------- data ---------- */
   function loadSets(){
@@ -407,12 +415,25 @@
   }
   function saveSets(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(sets)); }
 
+  function loadGoals(){
+    let g = {};
+    try{ g = JSON.parse(localStorage.getItem(GOALS_KEY)) || {}; }catch(e){}
+    // migrate old single pull-up goal
+    const old = parseInt(localStorage.getItem(OLD_GOAL_KEY), 10);
+    EX_KEYS.forEach(k=>{
+      if(!(g[k] >= 1)) g[k] = (k === "pullups" && old >= 1) ? old : EXERCISES[k].goalDef;
+    });
+    return g;
+  }
+  function saveGoals(){ localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
+
   let sets = loadSets();
-  let goal = parseInt(localStorage.getItem(GOAL_KEY), 10) || 50;
+  let goals = loadGoals();
   let level = parseInt(localStorage.getItem(LEVEL_KEY), 10) || 5;
   let currentEx = "pullups";
+  let chartEx = "pullups";
   const counters = {};
-  Object.keys(EXERCISES).forEach(k=>{
+  EX_KEYS.forEach(k=>{
     const v = parseInt(localStorage.getItem("sportapp_counter_" + k), 10);
     counters[k] = (v >= 0 ? v : EXERCISES[k].def) || EXERCISES[k].def;
   });
@@ -440,6 +461,7 @@
   function fmtDate(d){
     return d.toLocaleDateString("he-IL", { weekday:"long", day:"numeric", month:"long" });
   }
+  const HEB_DAYS = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
 
   /* ---------- navigation ---------- */
   const screens = {
@@ -483,22 +505,18 @@
   /* ---------- HOME ---------- */
   function renderHome(){
     document.getElementById("todayLabel").textContent = fmtDate(new Date());
-    Object.keys(EXERCISES).forEach(ex=>{
+    EX_KEYS.forEach(ex=>{
       const el = document.querySelector('[data-ex-sub="' + ex + '"]');
       if(!el) return;
       const t = todaysSets(ex);
-      if(t.length === 0){
-        el.textContent = ex === "pullups" ? "לחץ כדי להתחיל 🚀" : "עוד לא היום";
-        return;
-      }
+      if(t.length === 0){ el.textContent = "עוד לא היום"; return; }
       const total = t.reduce((s,x)=> s + x.val, 0);
-      el.textContent = "היום: " + t.length + " סטים · " + EXERCISES[ex].fmt(total);
+      el.textContent = t.length + " סטים · " + EXERCISES[ex].fmt(total);
     });
   }
 
   /* ---------- LOG SCREEN ---------- */
   const counterVal = document.getElementById("counterVal");
-
   function cfg(){ return EXERCISES[currentEx]; }
 
   function renderCounter(){
@@ -600,53 +618,71 @@
     });
   }
 
-  /* ---------- STATS ---------- */
-  const goalInput = document.getElementById("goalInput");
-  goalInput.addEventListener("change", ()=>{
-    const v = parseInt(goalInput.value, 10);
-    if(v >= 1 && v <= 1000){ goal = v; localStorage.setItem(GOAL_KEY, String(goal)); }
-    renderGoal();
-  });
-
-  function renderGoal(){
-    goalInput.value = goal;
-    const reps = totalForKey("pullups", dayKey(Date.now()));
-    const pct = Math.min(100, Math.round(reps / goal * 100));
-    document.getElementById("goalBar").style.width = pct + "%";
-    document.getElementById("goalText").textContent =
-      reps >= goal ? "🎉 עמדת ביעד! " + reps + "/" + goal + " חזרות היום"
-                   : reps + "/" + goal + " חזרות היום (" + pct + "%)";
-  }
-
-  function anyForKey(key){
-    return sets.some(s => dayKey(s.ts) === key);
-  }
-  function computeStreak(){
+  /* ---------- STATS: mini table ---------- */
+  function exStreak(ex){
+    const has = key => exSets(ex).some(s => dayKey(s.ts) === key);
     let streak = 0;
-    let offset = anyForKey(dayKey(startOfDay(0).getTime())) ? 0 : -1;
+    let offset = has(dayKey(startOfDay(0).getTime())) ? 0 : -1;
     while(true){
       const key = dayKey(startOfDay(offset - streak).getTime());
-      if(anyForKey(key)) streak++;
+      if(has(key)) streak++;
       else break;
     }
     return streak;
   }
 
-  function renderSummary(){
-    document.getElementById("sStreak").textContent = computeStreak();
-
-    const pull = exSets("pullups");
-    const pullDays = new Set(pull.map(s => dayKey(s.ts)));
-    const pullReps = pull.reduce((s,x)=> s + x.val, 0);
-    document.getElementById("sAvgPull").textContent =
-      pullDays.size ? Math.round(pullReps / pullDays.size) : 0;
-
-    const allDays = new Set(sets.map(s => dayKey(s.ts)));
-    const avgSets = allDays.size ? sets.length / allDays.size : 0;
-    document.getElementById("sAvgSets").textContent =
-      avgSets ? (Math.round(avgSets * 10) / 10) : 0;
+  function renderTable(){
+    const body = document.getElementById("miniTableBody");
+    body.innerHTML = "";
+    EX_KEYS.forEach(ex=>{
+      const c = EXERCISES[ex];
+      const all = exSets(ex);
+      const days = new Set(all.map(s => dayKey(s.ts))).size;
+      const totalVal = all.reduce((s,x)=> s + x.val, 0);
+      const avgSets = days ? Math.round(all.length / days * 10) / 10 : 0;
+      const avgVal = days ? Math.round(totalVal / days) : 0;
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + c.emoji + " " + c.name + "</td>" +
+        "<td><b>" + exStreak(ex) + "</b></td>" +
+        "<td><b>" + (avgSets || "—") + "</b></td>" +
+        "<td><b>" + (avgVal ? c.fmt(avgVal) : "—") + "</b></td>";
+      body.appendChild(tr);
+    });
   }
 
+  /* ---------- STATS: goals ---------- */
+  function renderGoals(){
+    const wrap = document.getElementById("goalsList");
+    wrap.innerHTML = "";
+    EX_KEYS.forEach(ex=>{
+      const c = EXERCISES[ex];
+      const g = goals[ex];
+      const done = totalForKey(ex, dayKey(Date.now()));
+      const pct = Math.min(100, Math.round(done / g * 100));
+      const block = document.createElement("div");
+      block.className = "goal-block";
+      block.innerHTML =
+        '<div class="goal-head">' +
+          '<span class="g-name">' + c.emoji + ' ' + c.name + '</span>' +
+          '<input type="number" min="1" max="10000" inputmode="numeric" value="' + g + '" data-goal="' + ex + '">' +
+          '<span class="g-unit">' + c.unit + '/יום</span>' +
+        '</div>' +
+        '<div class="progress-wrap"><div class="progress-bar' + (pct >= 100 ? ' done' : '') + '" style="width:' + pct + '%"></div></div>' +
+        '<div class="goal-text">' + (pct >= 100 ? '🎉 עמדת ביעד! ' : '') + c.fmt(done) + ' מתוך ' + c.fmt(g) + ' (' + pct + '%)</div>';
+      wrap.appendChild(block);
+    });
+    wrap.querySelectorAll("input[data-goal]").forEach(inp=>{
+      inp.addEventListener("change", ()=>{
+        const v = parseInt(inp.value, 10);
+        const ex = inp.getAttribute("data-goal");
+        if(v >= 1 && v <= 10000){ goals[ex] = v; saveGoals(); }
+        renderGoals();
+      });
+    });
+  }
+
+  /* ---------- STATS: trend (pullups) ---------- */
   function renderTrend(){
     const last7 = [], prev7 = [];
     for(let i=6;i>=0;i--) last7.push(totalForKey("pullups", dayKey(startOfDay(-i).getTime())));
@@ -675,6 +711,7 @@
     desc.textContent = "השבוע: " + s2 + " חזרות · שבוע שעבר: " + s1;
   }
 
+  /* ---------- canvas helpers ---------- */
   function setupCanvas(canvas, cssHeight){
     const dpr = window.devicePixelRatio || 1;
     const cssWidth = canvas.parentElement.clientWidth - 36;
@@ -688,13 +725,96 @@
     return { ctx, w: cssWidth, h: cssHeight };
   }
 
-  function renderDailyChart(){
-    const canvas = document.getElementById("dailyChart");
+  /* ---------- STATS: weekly per-exercise chart ---------- */
+  function buildChartChips(){
+    const wrap = document.getElementById("chartChips");
+    wrap.innerHTML = "";
+    EX_KEYS.forEach(ex=>{
+      const b = document.createElement("button");
+      b.className = "chip" + (ex === chartEx ? " sel" : "");
+      b.textContent = EXERCISES[ex].emoji + " " + EXERCISES[ex].name;
+      b.addEventListener("click", ()=>{
+        chartEx = ex;
+        buildChartChips();
+        renderWeeklyChart();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderWeeklyChart(){
+    const canvas = document.getElementById("weeklyChart");
+    const { ctx, w, h } = setupCanvas(canvas, 180);
+    const c = EXERCISES[chartEx];
+
+    const days = [], totals = [];
+    for(let i=6;i>=0;i--){
+      const d = startOfDay(-i);
+      days.push(d);
+      totals.push(totalForKey(chartEx, dayKey(d.getTime())));
+    }
+    const max = Math.max(1, ...totals);
+
+    const axisL = 34, top = 16, bottom = h - 24;
+    ctx.clearRect(0,0,w,h);
+
+    // y axis gridlines: 0, mid, max
+    ctx.font = "600 10px sans-serif";
+    [0, .5, 1].forEach(f=>{
+      const y = bottom - f * (bottom - top);
+      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
+      ctx.fillStyle = "#94a3b8";
+      ctx.textAlign = "right";
+      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
+    });
+
+    const n = totals.length;
+    const gap = 10;
+    const bw = (w - axisL - gap*(n-1)) / n;
+
+    totals.forEach((val,i)=>{
+      const bh = val === 0 ? 0 : Math.max(4, (val/max) * (bottom-top));
+      const x = axisL + i * (bw + gap);
+      const y = bottom - bh;
+      if(val > 0){
+        const grad = ctx.createLinearGradient(0, y, 0, bottom);
+        grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#818cf8");
+        ctx.fillStyle = grad;
+        const r = Math.min(6, bw/2);
+        ctx.beginPath();
+        ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+        ctx.arcTo(x+bw, y, x+bw, y+r, r);
+        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "700 12px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(c.unit === "דקות" || c.unit === "חזרות" ? val : fmtSecs(val), x + bw/2, y - 5);
+      }
+      // weekday label
+      ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
+      ctx.font = (i === n-1 ? "800" : "600") + " 11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(HEB_DAYS[days[i].getDay()], x + bw/2, h - 8);
+    });
+  }
+
+  /* ---------- STATS: points chart ---------- */
+  function pointsForKey(key){
+    return sets.filter(s => dayKey(s.ts) === key).reduce((sum,x)=> sum + setPoints(x), 0);
+  }
+
+  function renderPointsChart(){
+    document.getElementById("pointsToday").textContent =
+      Math.round(pointsForKey(dayKey(Date.now())));
+
+    const canvas = document.getElementById("pointsChart");
     const { ctx, w, h } = setupCanvas(canvas, 170);
-    const pull = exSets("pullups");
 
     let firstTs = Date.now();
-    pull.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
+    sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
     const first = new Date(firstTs); first.setHours(0,0,0,0);
     const today = startOfDay(0);
     let nDays = Math.round((today - first) / 86400000) + 1;
@@ -705,14 +825,13 @@
     for(let i = nDays - 1; i >= 0; i--){
       const d = startOfDay(-i);
       days.push(d);
-      totals.push(totalForKey("pullups", dayKey(d.getTime())));
+      totals.push(pointsForKey(dayKey(d.getTime())));
     }
     const max = Math.max(1, ...totals);
 
     const top = 20, bottom = h - 26;
     ctx.clearRect(0,0,w,h);
 
-    // baseline
     ctx.strokeStyle = "rgba(148,163,184,.25)";
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, bottom); ctx.lineTo(w, bottom); ctx.stroke();
@@ -720,77 +839,53 @@
     const step = totals.length > 1 ? w / (totals.length - 1) : w;
     const pts = totals.map((v,i)=> [i*step, bottom - (v/max)*(bottom-top)]);
 
-    // area
     ctx.beginPath();
     ctx.moveTo(pts[0][0], bottom);
     pts.forEach(p => ctx.lineTo(p[0], p[1]));
     ctx.lineTo(pts[pts.length-1][0], bottom);
     ctx.closePath();
     const fillGrad = ctx.createLinearGradient(0, top, 0, bottom);
-    fillGrad.addColorStop(0, "rgba(34,211,238,.30)");
-    fillGrad.addColorStop(1, "rgba(129,140,248,0)");
+    fillGrad.addColorStop(0, "rgba(244,114,182,.30)");
+    fillGrad.addColorStop(1, "rgba(167,139,250,0)");
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // line
     ctx.beginPath();
     pts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
     const lineGrad = ctx.createLinearGradient(0,0,w,0);
-    lineGrad.addColorStop(0, "#22d3ee"); lineGrad.addColorStop(1, "#818cf8");
+    lineGrad.addColorStop(0, "#f472b6"); lineGrad.addColorStop(1, "#a78bfa");
     ctx.strokeStyle = lineGrad;
     ctx.lineWidth = 2.5;
     ctx.lineJoin = "round";
     ctx.stroke();
 
-    // dots + value labels when few days
     if(totals.length <= 14){
       pts.forEach((p,i)=>{
         ctx.beginPath();
         ctx.arc(p[0], p[1], 3.5, 0, Math.PI*2);
-        ctx.fillStyle = "#22d3ee";
+        ctx.fillStyle = "#f472b6";
         ctx.fill();
         if(totals[i] > 0){
           ctx.fillStyle = "#e2e8f0";
           ctx.font = "700 12px sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(totals[i], p[0], p[1] - 9);
+          ctx.fillText(Math.round(totals[i]), p[0], p[1] - 9);
         }
       });
     }
 
-    // x-axis date labels (~4)
     ctx.fillStyle = "#94a3b8";
     ctx.font = "600 10px sans-serif";
     const tickCount = Math.min(4, totals.length);
     for(let t=0; t<tickCount; t++){
       const idx = tickCount === 1 ? 0 : Math.round(t * (totals.length-1) / (tickCount-1));
       const d = days[idx];
-      const label = d.getDate() + "." + (d.getMonth()+1);
       ctx.textAlign = t === 0 ? "left" : (t === tickCount-1 ? "right" : "center");
-      ctx.fillText(label, pts[idx][0], h - 8);
+      ctx.fillText(d.getDate() + "." + (d.getMonth()+1), pts[idx][0], h - 8);
     }
   }
 
-  function renderExSummary(){
-    const wrap = document.getElementById("exSummary");
-    wrap.innerHTML = "";
-    const weekAgo = startOfDay(-6).getTime();
-    ["hang","abs","handstand"].forEach(ex=>{
-      const c = EXERCISES[ex];
-      const all = exSets(ex);
-      const week = all.filter(s => s.ts >= weekAgo).reduce((s,x)=> s + x.val, 0);
-      const record = all.reduce((m,x)=> Math.max(m, x.val), 0);
-      const row = document.createElement("div");
-      row.className = "ex-row";
-      row.innerHTML =
-        '<span class="ex-name">' + c.emoji + ' ' + c.name + '</span>' +
-        '<span class="ex-cell"><b>' + all.length + '</b><span>סטים</span></span>' +
-        '<span class="ex-cell"><b>' + (week ? c.fmt(week) : "—") + '</b><span>השבוע</span></span>' +
-        '<span class="ex-cell"><b>' + (record ? c.fmt(record) : "—") + '</b><span>שיא</span></span>';
-      wrap.appendChild(row);
-    });
-  }
-
+  /* ---------- STATS: history ---------- */
   function renderHistory(){
     const wrap = document.getElementById("historyList");
     wrap.innerHTML = "";
@@ -807,14 +902,14 @@
     keys.forEach(k=>{
       const daySets = byDay[k].sort((a,b)=> b.ts - a.ts);
       const d = new Date(daySets[0].ts);
-      const pullTotal = daySets.filter(s=>s.exercise==="pullups").reduce((s,x)=> s + x.val, 0);
+      const dayPts = Math.round(daySets.reduce((s,x)=> s + setPoints(x), 0));
       const row = document.createElement("div");
       row.className = "day-row" + (openDays.has(k) ? " open" : "");
       row.innerHTML =
         '<div class="day-head">' +
         '<span class="d-date">' + d.toLocaleDateString("he-IL",{weekday:"short", day:"numeric", month:"numeric"}) + '</span>' +
         '<span class="d-info">' + daySets.length + ' סטים</span>' +
-        (pullTotal ? '<span class="d-total">מתח ' + pullTotal + '</span>' : '') +
+        '<span class="d-total">⭐ ' + dayPts + '</span>' +
         '<button class="d-trash" title="מחק יום">🗑️</button>' +
         '</div><div class="day-body"></div>';
       const body = row.querySelector(".day-body");
@@ -860,16 +955,17 @@
   });
 
   function renderStats(){
-    renderSummary();
-    renderGoal();
+    renderTable();
+    renderGoals();
     renderTrend();
-    renderDailyChart();
-    renderExSummary();
+    buildChartChips();
+    renderWeeklyChart();
+    renderPointsChart();
     renderHistory();
   }
 
   window.addEventListener("resize", ()=>{
-    if(screens.stats.classList.contains("active")) renderDailyChart();
+    if(screens.stats.classList.contains("active")){ renderWeeklyChart(); renderPointsChart(); }
   });
 
   /* ---------- init ---------- */
