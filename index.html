@@ -41,7 +41,7 @@
   .screen{display:none;}
   .screen.active{display:block;}
 
-  /* ===== Home: full viewport, no scroll ===== */
+  /* ===== Home: full viewport, stats centered, no scroll ===== */
   #screen-home.active{
     display:flex;flex-direction:column;
     height:100vh;height:100dvh;
@@ -50,45 +50,52 @@
   }
   .tiles{
     flex:1;min-height:0;
-    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
-    gap:12px;padding:4px 16px 12px;
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    grid-template-rows:1fr 1fr 1fr;
+    gap:12px;
+    padding:4px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
   }
-  .tile{border:none;border-radius:24px;cursor:pointer;text-align:center;
-    transition:transform .1s ease;padding:0;color:inherit;font-family:inherit;}
+  .t-a{grid-column:1/4;}
+  .t-b{grid-column:4/7;}
+  .t-c{grid-column:1/3;}
+  .t-mid{grid-column:3/5;}
+  .t-d{grid-column:5/7;}
+  .t-e{grid-column:1/7;}
+
+  .tile{border:none;border-radius:22px;cursor:pointer;text-align:center;
+    transition:transform .1s ease;padding:0;color:inherit;font-family:inherit;min-height:0;}
   .tile:active{transform:scale(.97);}
 
   .tile-ex{
     background:linear-gradient(150deg,var(--accent) 0%,var(--accent2) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     box-shadow:0 8px 22px rgba(34,211,238,.25);
-    overflow:hidden;padding:6px;min-height:0;
+    overflow:hidden;padding:6px;
   }
-  .tile-ex svg{height:44%;width:auto;min-height:0;}
-  .tile-ex .tile-name{font-size:clamp(15px,5.2vw,22px);font-weight:900;color:#0b1220;letter-spacing:.3px;}
-  .tile-ex .tile-sub{font-size:11px;font-weight:600;color:rgba(11,18,32,.65);}
+  .tile-ex svg{height:40%;width:auto;min-height:0;}
+  .tile-ex .tile-name{font-size:clamp(13px,4.4vw,20px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;}
+  .tile-ex .tile-sub{font-size:10px;font-weight:600;color:rgba(11,18,32,.65);}
 
   .tile-stats{
-    flex:0 0 auto;
-    height:clamp(84px,13vh,120px);
-    margin:0 16px;
-    margin-bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
     background:rgba(167,139,250,.08);
     border:3px solid transparent;
     background-clip:padding-box;
     position:relative;
-    display:flex;flex-direction:row;align-items:center;justify-content:center;gap:16px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    overflow:hidden;
   }
   .tile-stats::before{
-    content:"";position:absolute;inset:-3px;border-radius:24px;z-index:-1;
+    content:"";position:absolute;inset:-3px;border-radius:22px;z-index:-1;
     background:linear-gradient(135deg,var(--pink),var(--purple),var(--pink));
   }
   .tile-stats .tile-name{
-    font-size:28px;font-weight:900;
+    font-size:clamp(14px,4.6vw,20px);font-weight:900;
     background:linear-gradient(135deg,var(--pink),var(--purple));
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
-  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:4px;height:32px;}
-  .tile-stats .mini-bars span{width:8px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
+  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:4px;height:24px;}
+  .tile-stats .mini-bars span{width:7px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
 
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
@@ -120,11 +127,6 @@
     background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b1220;
     box-shadow:0 6px 16px rgba(34,211,238,.25);font-family:inherit;}
   .add-btn:active{transform:scale(.98);}
-
-  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .stat{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
-  .stat .num{font-size:21px;font-weight:800;color:var(--accent);}
-  .stat .label{font-size:11px;color:var(--muted);margin-top:2px;}
 
   .sets-list{display:flex;flex-direction:column;gap:8px;}
   .set-row{display:flex;align-items:center;justify-content:space-between;
@@ -163,16 +165,12 @@
   .progress-bar.done{background:linear-gradient(90deg,var(--good),#6ee7b7);}
   .goal-text{font-size:11px;color:var(--muted);margin-top:4px;}
 
-  /* trend */
-  .trend-box{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 0 2px;}
-  .trend-arrow{font-size:34px;}
-  .trend-pct{font-size:28px;font-weight:900;}
-  .trend-pct.up{color:var(--good);}
-  .trend-pct.down{color:var(--danger);}
-  .trend-desc{font-size:12px;color:var(--muted);text-align:center;margin-top:4px;}
-
-  .chart-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .chart-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
   .chart-chips .chip{font-size:12px;padding:6px 12px;}
+  .mode-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .mode-row .chip{font-size:12px;padding:6px 14px;}
+  .avg-line{margin-right:auto;font-size:13px;color:var(--muted);}
+  .avg-line b{color:var(--accent);font-size:16px;}
 
   .points-today{text-align:center;font-size:13px;color:var(--muted);margin-bottom:10px;}
   .points-today b{color:var(--pink);font-size:18px;}
@@ -211,7 +209,36 @@
   </header>
 
   <div class="tiles">
-    <button class="tile tile-ex" data-ex="pullups">
+
+    <button class="tile tile-ex t-a" data-ex="hang">
+      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="162" y2="20"/>
+        <circle cx="90" cy="72" r="12" fill="#0b1220"/>
+        <line x1="90" y1="84" x2="90" y2="122"/>
+        <line x1="90" y1="88" x2="68" y2="24"/>
+        <line x1="90" y1="88" x2="112" y2="24"/>
+        <line x1="90" y1="122" x2="82" y2="158"/>
+        <line x1="90" y1="122" x2="98" y2="158"/>
+      </svg>
+      <span class="tile-name">תליה פסיבית</span>
+      <span class="tile-sub" data-ex-sub="hang"></span>
+    </button>
+
+    <button class="tile tile-ex t-b" data-ex="handstand">
+      <svg viewBox="0 0 130 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="14" y1="158" x2="116" y2="158"/>
+        <circle cx="65" cy="128" r="12" fill="#0b1220"/>
+        <line x1="65" y1="116" x2="65" y2="66"/>
+        <line x1="65" y1="112" x2="44" y2="158"/>
+        <line x1="65" y1="112" x2="86" y2="158"/>
+        <polyline points="65,66 52,34 60,10"/>
+        <polyline points="65,66 80,38 74,12"/>
+      </svg>
+      <span class="tile-name">עמידת ידיים</span>
+      <span class="tile-sub" data-ex-sub="handstand"></span>
+    </button>
+
+    <button class="tile tile-ex t-c" data-ex="pullups">
       <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="22" x2="162" y2="22"/>
         <line x1="24" y1="22" x2="24" y2="145"/>
@@ -227,21 +254,12 @@
       <span class="tile-sub" data-ex-sub="pullups"></span>
     </button>
 
-    <button class="tile tile-ex" data-ex="hang">
-      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="20" x2="162" y2="20"/>
-        <circle cx="90" cy="72" r="12" fill="#0b1220"/>
-        <line x1="90" y1="84" x2="90" y2="122"/>
-        <line x1="90" y1="88" x2="68" y2="24"/>
-        <line x1="90" y1="88" x2="112" y2="24"/>
-        <line x1="90" y1="122" x2="82" y2="158"/>
-        <line x1="90" y1="122" x2="98" y2="158"/>
-      </svg>
-      <span class="tile-name">תליה פסיבית</span>
-      <span class="tile-sub" data-ex-sub="hang"></span>
+    <button class="tile tile-stats t-mid" id="tileStats">
+      <div class="mini-bars"><span style="height:35%"></span><span style="height:60%"></span><span style="height:45%"></span><span style="height:100%"></span></div>
+      <span class="tile-name">סטטיסטיקה</span>
     </button>
 
-    <button class="tile tile-ex" data-ex="abs">
+    <button class="tile tile-ex t-d" data-ex="abs">
       <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
         <line x1="14" y1="150" x2="166" y2="150"/>
         <circle cx="52" cy="86" r="12" fill="#0b1220"/>
@@ -253,25 +271,22 @@
       <span class="tile-sub" data-ex-sub="abs"></span>
     </button>
 
-    <button class="tile tile-ex" data-ex="handstand">
-      <svg viewBox="0 0 130 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="14" y1="158" x2="116" y2="158"/>
-        <circle cx="65" cy="128" r="12" fill="#0b1220"/>
-        <line x1="65" y1="116" x2="65" y2="66"/>
-        <line x1="65" y1="112" x2="44" y2="158"/>
-        <line x1="65" y1="112" x2="86" y2="158"/>
-        <polyline points="65,66 52,34 60,10"/>
-        <polyline points="65,66 80,38 74,12"/>
+    <button class="tile tile-ex t-e" data-ex="jumps">
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="20" y1="142" x2="70" y2="142"/>
+        <line x1="110" y1="142" x2="160" y2="142"/>
+        <circle cx="90" cy="38" r="12" fill="#0b1220"/>
+        <line x1="90" y1="50" x2="90" y2="86"/>
+        <polyline points="90,56 68,42 58,18"/>
+        <polyline points="90,56 112,42 122,18"/>
+        <polyline points="90,86 72,104 80,122"/>
+        <polyline points="90,86 108,104 100,122"/>
       </svg>
-      <span class="tile-name">עמידת ידיים</span>
-      <span class="tile-sub" data-ex-sub="handstand"></span>
+      <span class="tile-name">קפיצות</span>
+      <span class="tile-sub" data-ex-sub="jumps"></span>
     </button>
-  </div>
 
-  <button class="tile tile-stats" id="tileStats">
-    <div class="mini-bars"><span style="height:30%"></span><span style="height:55%"></span><span style="height:40%"></span><span style="height:75%"></span><span style="height:100%"></span></div>
-    <span class="tile-name">סטטיסטיקה</span>
-  </button>
+  </div>
 </div>
 
 <!-- ============ GENERIC LOG SCREEN ============ -->
@@ -298,20 +313,6 @@
       </div>
       <button class="add-btn" id="addBtn">✅ הוסף סט</button>
     </div>
-
-    <div class="card">
-      <p class="card-title"><span class="emoji">📊</span> היום</p>
-      <div class="stats-grid">
-        <div class="stat"><div class="num" id="statSets">0</div><div class="label">סטים</div></div>
-        <div class="stat"><div class="num" id="statTotal">0</div><div class="label" id="statTotalLabel">סה"כ</div></div>
-        <div class="stat"><div class="num" id="statBest">0</div><div class="label">הכי טוב</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <p class="card-title"><span class="emoji">📝</span> סטים של היום</p>
-      <div class="sets-list" id="setsList"></div>
-    </div>
   </main>
 </div>
 
@@ -337,22 +338,18 @@
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">📈</span> מגמת שיפור — מתח</p>
-      <div class="trend-box">
-        <span class="trend-arrow" id="trendArrow"></span>
-        <span class="trend-pct" id="trendPct"></span>
-      </div>
-      <div class="trend-desc" id="trendDesc"></div>
-    </div>
-
-    <div class="card">
-      <p class="card-title"><span class="emoji">📅</span> גרף שבועי</p>
+      <p class="card-title"><span class="emoji">📅</span> גרף אימונים</p>
       <div class="chart-chips" id="chartChips"></div>
-      <canvas id="weeklyChart" height="180" dir="ltr"></canvas>
+      <div class="mode-row">
+        <button class="chip" id="modeDay">ימים</button>
+        <button class="chip" id="modeWeek">שבועות</button>
+        <span class="avg-line" id="avgLine"></span>
+      </div>
+      <canvas id="mainChart" height="180" dir="ltr"></canvas>
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · עמידת ידיים=שניות×רמה</span></p>
+      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · עמידת ידיים=שניות×רמה · קפיצה=1</span></p>
       <div class="points-today">היום: <b id="pointsToday">0</b> נקודות</div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
     </div>
@@ -391,8 +388,10 @@
                  chips:[30,50,60,70,90], fmt:fmtSecs, hasLevel:false, goalDef:120 },
     abs:       { name:"בטן", emoji:"🔥", unit:"דקות", step:1, min:0, max:180, def:4,
                  chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false, goalDef:10 },
-    handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:5, min:0, max:600, def:20,
-                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:60 }
+    handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:1, min:0, max:600, def:20,
+                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:60 },
+    jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:5, min:0, max:5000, def:50,
+                 chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false, goalDef:200 }
   };
   const EX_KEYS = Object.keys(EXERCISES);
 
@@ -402,6 +401,7 @@
       case "hang":      return s.val * 0.5;
       case "abs":       return s.val * 8;
       case "handstand": return s.val * (s.level || 1);
+      case "jumps":     return s.val;
     }
     return 0;
   }
@@ -418,7 +418,6 @@
   function loadGoals(){
     let g = {};
     try{ g = JSON.parse(localStorage.getItem(GOALS_KEY)) || {}; }catch(e){}
-    // migrate old single pull-up goal
     const old = parseInt(localStorage.getItem(OLD_GOAL_KEY), 10);
     EX_KEYS.forEach(k=>{
       if(!(g[k] >= 1)) g[k] = (k === "pullups" && old >= 1) ? old : EXERCISES[k].goalDef;
@@ -432,6 +431,7 @@
   let level = parseInt(localStorage.getItem(LEVEL_KEY), 10) || 5;
   let currentEx = "pullups";
   let chartEx = "pullups";
+  let chartMode = "day";
   const counters = {};
   EX_KEYS.forEach(k=>{
     const v = parseInt(localStorage.getItem("sportapp_counter_" + k), 10);
@@ -461,7 +461,6 @@
   function fmtDate(d){
     return d.toLocaleDateString("he-IL", { weekday:"long", day:"numeric", month:"long" });
   }
-  const HEB_DAYS = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
 
   /* ---------- navigation ---------- */
   const screens = {
@@ -477,7 +476,6 @@
       const ex = h.slice(4);
       if(EXERCISES[ex]){ name = "log"; currentEx = ex; }
     }
-    else if(h === "pullups"){ name = "log"; currentEx = "pullups"; }
     Object.values(screens).forEach(s => s.classList.remove("active"));
     screens[name].classList.add("active");
     window.scrollTo(0,0);
@@ -572,7 +570,6 @@
     sets.push(entry);
     saveSets();
     showToast("סט נשמר: " + cfg().fmt(v) + " " + cfg().emoji);
-    renderLog();
   });
 
   function renderLog(){
@@ -581,41 +578,11 @@
     document.getElementById("logDateLabel").textContent = fmtDate(new Date());
     document.getElementById("logQuestion").textContent =
       c.unit === "חזרות" ? "כמה חזרות עשית?" :
+      c.unit === "קפיצות" ? "כמה קפיצות עשית?" :
       c.unit === "דקות" ? "כמה דקות עשית?" : "כמה שניות החזקת?";
-    document.getElementById("statTotalLabel").textContent = 'סה"כ ' + c.unit;
     buildChips();
     buildLevels();
     renderCounter();
-
-    const today = todaysSets(currentEx);
-    const total = today.reduce((s,x)=> s + x.val, 0);
-    const best = today.reduce((m,x)=> Math.max(m, x.val), 0);
-    document.getElementById("statSets").textContent = today.length;
-    document.getElementById("statTotal").textContent = c.fmt(total);
-    document.getElementById("statBest").textContent = today.length ? c.fmt(best) : 0;
-
-    const list = document.getElementById("setsList");
-    list.innerHTML = "";
-    if(today.length === 0){
-      list.innerHTML = '<div class="empty">עוד לא עשית סטים היום — קדימה! 💪</div>';
-      return;
-    }
-    today.forEach(s=>{
-      const row = document.createElement("div");
-      row.className = "set-row";
-      const time = new Date(s.ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
-      row.innerHTML = '<div class="left"><span class="badge">' + c.fmt(s.val) + '</span>' +
-        (s.level ? '<span class="lvl">רמה ' + s.level + '</span>' : '') +
-        '<span class="time">' + time + '</span></div>' +
-        '<button class="del" data-id="' + s.id + '">✕</button>';
-      list.appendChild(row);
-    });
-    list.querySelectorAll(".del").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        sets = sets.filter(s => String(s.id) !== btn.getAttribute("data-id"));
-        saveSets(); renderLog();
-      });
-    });
   }
 
   /* ---------- STATS: mini table ---------- */
@@ -682,35 +649,6 @@
     });
   }
 
-  /* ---------- STATS: trend (pullups) ---------- */
-  function renderTrend(){
-    const last7 = [], prev7 = [];
-    for(let i=6;i>=0;i--) last7.push(totalForKey("pullups", dayKey(startOfDay(-i).getTime())));
-    for(let i=13;i>=7;i--) prev7.push(totalForKey("pullups", dayKey(startOfDay(-i).getTime())));
-    const sum = a => a.reduce((x,y)=>x+y,0);
-    const s1 = sum(prev7), s2 = sum(last7);
-    const arrow = document.getElementById("trendArrow");
-    const pctEl = document.getElementById("trendPct");
-    const desc = document.getElementById("trendDesc");
-    if(s1 === 0 && s2 === 0){
-      arrow.textContent = "📭"; pctEl.textContent = ""; pctEl.className = "trend-pct";
-      desc.textContent = "אין עדיין מספיק נתונים — תתחיל להתאמן ותראה כאן מגמות";
-      return;
-    }
-    if(s1 === 0){
-      arrow.textContent = "🚀"; pctEl.textContent = "התחלה חדשה"; pctEl.className = "trend-pct up";
-      desc.textContent = "השבוע: " + s2 + " חזרות · שבוע שעבר: 0";
-      return;
-    }
-    const pct = Math.round((s2 - s1) / s1 * 100);
-    if(pct >= 0){
-      arrow.textContent = "📈"; pctEl.textContent = "+" + pct + "%"; pctEl.className = "trend-pct up";
-    } else {
-      arrow.textContent = "📉"; pctEl.textContent = pct + "%"; pctEl.className = "trend-pct down";
-    }
-    desc.textContent = "השבוע: " + s2 + " חזרות · שבוע שעבר: " + s1;
-  }
-
   /* ---------- canvas helpers ---------- */
   function setupCanvas(canvas, cssHeight){
     const dpr = window.devicePixelRatio || 1;
@@ -725,8 +663,8 @@
     return { ctx, w: cssWidth, h: cssHeight };
   }
 
-  /* ---------- STATS: weekly per-exercise chart ---------- */
-  function buildChartChips(){
+  /* ---------- STATS: main chart (day/week columns) ---------- */
+  function buildChartControls(){
     const wrap = document.getElementById("chartChips");
     wrap.innerHTML = "";
     EX_KEYS.forEach(ex=>{
@@ -735,30 +673,73 @@
       b.textContent = EXERCISES[ex].emoji + " " + EXERCISES[ex].name;
       b.addEventListener("click", ()=>{
         chartEx = ex;
-        buildChartChips();
-        renderWeeklyChart();
+        buildChartControls();
+        renderMainChart();
       });
       wrap.appendChild(b);
     });
+    document.getElementById("modeDay").className = "chip" + (chartMode === "day" ? " sel" : "");
+    document.getElementById("modeWeek").className = "chip" + (chartMode === "week" ? " sel" : "");
+  }
+  document.getElementById("modeDay").addEventListener("click", ()=>{
+    chartMode = "day"; buildChartControls(); renderMainChart();
+  });
+  document.getElementById("modeWeek").addEventListener("click", ()=>{
+    chartMode = "week"; buildChartControls(); renderMainChart();
+  });
+
+  function weekStart(offsetWeeks){
+    const d = startOfDay(0);
+    d.setDate(d.getDate() - d.getDay() + offsetWeeks * 7);
+    return d;
   }
 
-  function renderWeeklyChart(){
-    const canvas = document.getElementById("weeklyChart");
+  function renderMainChart(){
+    const canvas = document.getElementById("mainChart");
     const { ctx, w, h } = setupCanvas(canvas, 180);
     const c = EXERCISES[chartEx];
 
-    const days = [], totals = [];
-    for(let i=6;i>=0;i--){
-      const d = startOfDay(-i);
-      days.push(d);
-      totals.push(totalForKey(chartEx, dayKey(d.getTime())));
-    }
-    const max = Math.max(1, ...totals);
+    let labels = [], totals = [], highlight = -1;
 
+    if(chartMode === "day"){
+      const N = 14;
+      for(let i = N-1; i >= 0; i--){
+        const d = startOfDay(-i);
+        totals.push(totalForKey(chartEx, dayKey(d.getTime())));
+        labels.push(d.getDate() + "." + (d.getMonth()+1));
+      }
+      highlight = totals.length - 1;
+    } else {
+      const N = 12;
+      for(let i = N-1; i >= 0; i--){
+        const ws = weekStart(-i);
+        let sum = 0;
+        for(let j=0; j<7; j++){
+          const d = new Date(ws); d.setDate(d.getDate()+j);
+          if(d > new Date()) break;
+          sum += totalForKey(chartEx, dayKey(d.getTime()));
+        }
+        totals.push(sum);
+        labels.push(ws.getDate() + "." + (ws.getMonth()+1));
+      }
+      highlight = totals.length - 1;
+    }
+
+    // average over period starting from first activity
+    let firstIdx = totals.findIndex(v => v > 0);
+    let avg = 0;
+    if(firstIdx >= 0){
+      const span = totals.slice(firstIdx);
+      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
+    }
+    document.getElementById("avgLine").innerHTML =
+      (chartMode === "day" ? "ממוצע יומי: " : "ממוצע שבועי: ") +
+      "<b>" + (avg ? c.fmt(avg) : "—") + "</b>";
+
+    const max = Math.max(1, ...totals);
     const axisL = 34, top = 16, bottom = h - 24;
     ctx.clearRect(0,0,w,h);
 
-    // y axis gridlines: 0, mid, max
     ctx.font = "600 10px sans-serif";
     [0, .5, 1].forEach(f=>{
       const y = bottom - f * (bottom - top);
@@ -770,34 +751,48 @@
       ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
     });
 
+    // average dashed line
+    if(avg > 0){
+      const yAvg = bottom - (avg/max) * (bottom - top);
+      ctx.strokeStyle = "rgba(244,114,182,.6)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.moveTo(axisL, yAvg); ctx.lineTo(w, yAvg); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
     const n = totals.length;
-    const gap = 10;
+    const gap = 6;
     const bw = (w - axisL - gap*(n-1)) / n;
 
     totals.forEach((val,i)=>{
-      const bh = val === 0 ? 0 : Math.max(4, (val/max) * (bottom-top));
       const x = axisL + i * (bw + gap);
-      const y = bottom - bh;
       if(val > 0){
+        const bh = Math.max(4, (val/max) * (bottom-top));
+        const y = bottom - bh;
         const grad = ctx.createLinearGradient(0, y, 0, bottom);
         grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#818cf8");
         ctx.fillStyle = grad;
-        const r = Math.min(6, bw/2);
+        const r = Math.min(5, bw/2);
         ctx.beginPath();
         ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
         ctx.arcTo(x+bw, y, x+bw, y+r, r);
         ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
         ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "#e2e8f0";
-        ctx.font = "700 12px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(c.unit === "דקות" || c.unit === "חזרות" ? val : fmtSecs(val), x + bw/2, y - 5);
+        if(bw > 18 || val === max){
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "700 10px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(val, x + bw/2, y - 4);
+        }
       }
-      // weekday label
-      ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
-      ctx.font = (i === n-1 ? "800" : "600") + " 11px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(HEB_DAYS[days[i].getDay()], x + bw/2, h - 8);
+      // x labels: every other + last
+      if(i % 2 === (n-1) % 2 || i === n-1){
+        ctx.fillStyle = i === highlight ? "#e2e8f0" : "#94a3b8";
+        ctx.font = (i === highlight ? "800" : "600") + " 9px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(labels[i], x + bw/2, h - 8);
+      }
     });
   }
 
@@ -957,15 +952,14 @@
   function renderStats(){
     renderTable();
     renderGoals();
-    renderTrend();
-    buildChartChips();
-    renderWeeklyChart();
+    buildChartControls();
+    renderMainChart();
     renderPointsChart();
     renderHistory();
   }
 
   window.addEventListener("resize", ()=>{
-    if(screens.stats.classList.contains("active")){ renderWeeklyChart(); renderPointsChart(); }
+    if(screens.stats.classList.contains("active")){ renderMainChart(); renderPointsChart(); }
   });
 
   /* ---------- init ---------- */
