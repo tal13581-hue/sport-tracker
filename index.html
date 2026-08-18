@@ -50,18 +50,10 @@
   }
   .tiles{
     flex:1;min-height:0;
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    grid-template-rows:1fr 1fr 1fr;
-    gap:12px;
-    padding:4px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    position:relative;
+    margin:4px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
   }
-  .t-a{grid-column:1/4;}
-  .t-b{grid-column:4/7;}
-  .t-c{grid-column:1/3;}
-  .t-mid{grid-column:3/5;}
-  .t-d{grid-column:5/7;}
-  .t-e{grid-column:1/7;}
+  .tiles .tile{position:absolute;}
 
   .tile{border:none;border-radius:22px;cursor:pointer;text-align:center;
     transition:transform .1s ease;padding:0;color:inherit;font-family:inherit;min-height:0;}
@@ -73,29 +65,21 @@
     box-shadow:0 8px 22px rgba(34,211,238,.25);
     overflow:hidden;padding:6px;
   }
-  .tile-ex svg{height:40%;width:auto;min-height:0;}
-  .tile-ex .tile-name{font-size:clamp(13px,4.4vw,20px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;}
-  .tile-ex .tile-sub{font-size:10px;font-weight:600;color:rgba(11,18,32,.65);}
+  .tile-ex svg{height:38%;width:auto;min-height:0;}
+  .tile-ex .tile-name{font-size:clamp(11px,3.6vw,16px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;}
+  .tile-ex .tile-sub{font-size:9px;font-weight:600;color:rgba(11,18,32,.65);}
 
   .tile-stats{
-    background:rgba(167,139,250,.08);
-    border:3px solid transparent;
-    background-clip:padding-box;
-    position:relative;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-    overflow:hidden;
-  }
-  .tile-stats::before{
-    content:"";position:absolute;inset:-3px;border-radius:22px;z-index:-1;
-    background:linear-gradient(135deg,var(--pink),var(--purple),var(--pink));
+    background:linear-gradient(135deg,var(--pink),var(--purple));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    border-radius:0;
+    box-shadow:0 8px 22px rgba(244,114,182,.3);
   }
   .tile-stats .tile-name{
-    font-size:clamp(14px,4.6vw,20px);font-weight:900;
-    background:linear-gradient(135deg,var(--pink),var(--purple));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
+    font-size:clamp(11px,3.6vw,15px);font-weight:900;color:#0b1220;
   }
-  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:4px;height:24px;}
-  .tile-stats .mini-bars span{width:7px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
+  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:3px;height:18px;}
+  .tile-stats .mini-bars span{width:6px;border-radius:2px;background:#0b1220;opacity:.75;}
 
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
@@ -390,7 +374,7 @@
                  chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false, goalDef:10 },
     handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:1, min:0, max:600, def:20,
                  chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:60 },
-    jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:5, min:0, max:5000, def:50,
+    jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:1, min:0, max:5000, def:50,
                  chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false, goalDef:200 }
   };
   const EX_KEYS = Object.keys(EXERCISES);
@@ -501,6 +485,53 @@
   }
 
   /* ---------- HOME ---------- */
+  // radial order clockwise starting from the top
+  const RADIAL_ORDER = ["pullups","hang","abs","handstand","jumps"];
+
+  function polyPoints(n, scale){
+    const pts = [];
+    for(let i=0;i<n;i++){
+      const a = -Math.PI/2 + i*2*Math.PI/n;
+      pts.push((50 + 50*scale*Math.cos(a)).toFixed(1) + "% " +
+               (50 + 50*scale*Math.sin(a)).toFixed(1) + "%");
+    }
+    return "polygon(" + pts.join(",") + ")";
+  }
+
+  function layoutHome(){
+    if(!screens.home.classList.contains("active")) return;
+    const cont = document.querySelector(".tiles");
+    const W = cont.clientWidth, H = cont.clientHeight;
+    if(W === 0 || H === 0) return;
+    const order = RADIAL_ORDER.filter(ex => document.querySelector('.tile-ex[data-ex="' + ex + '"]'));
+    const n = order.length;
+    // equal tile size, capped so adjacent tiles never overlap
+    let tw = Math.min(W*0.36, H*0.20, 150, (W/2 - 2)/1.36);
+    const cx = W/2, cy = H/2;
+    const rx = W/2 - tw/2 - 2;
+    const th = tw*1.06;
+    const ry = H/2 - th/2 - 4;
+    order.forEach((ex,i)=>{
+      const t = document.querySelector('.tile-ex[data-ex="' + ex + '"]');
+      const a = -Math.PI/2 + i*2*Math.PI/n;
+      const x = cx + rx*Math.cos(a);
+      const y = cy + ry*Math.sin(a);
+      t.style.width = tw + "px";
+      t.style.height = th + "px";
+      t.style.left = (x - tw/2) + "px";
+      t.style.top = (y - th/2) + "px";
+    });
+    // central stats tile: n-sided polygon (pentagon for 5, hexagon for 6...)
+    const st = document.getElementById("tileStats");
+    const ssz = Math.min(tw*1.18, 170);
+    st.style.width = ssz + "px";
+    st.style.height = ssz + "px";
+    st.style.left = (cx - ssz/2) + "px";
+    st.style.top = (cy - ssz/2) + "px";
+    st.style.clipPath = polyPoints(n, 1);
+    st.style.webkitClipPath = polyPoints(n, 1);
+  }
+
   function renderHome(){
     document.getElementById("todayLabel").textContent = fmtDate(new Date());
     EX_KEYS.forEach(ex=>{
@@ -511,6 +542,9 @@
       const total = t.reduce((s,x)=> s + x.val, 0);
       el.textContent = t.length + " סטים · " + EXERCISES[ex].fmt(total);
     });
+    layoutHome();
+    requestAnimationFrame(layoutHome);
+    setTimeout(layoutHome, 150);
   }
 
   /* ---------- LOG SCREEN ---------- */
@@ -960,6 +994,7 @@
 
   window.addEventListener("resize", ()=>{
     if(screens.stats.classList.contains("active")){ renderMainChart(); renderPointsChart(); }
+    layoutHome();
   });
 
   /* ---------- init ---------- */
