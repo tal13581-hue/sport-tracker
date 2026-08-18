@@ -17,36 +17,81 @@
     --card2:#243247;
     --accent:#22d3ee;
     --accent2:#818cf8;
+    --pink:#f472b6;
+    --purple:#a78bfa;
     --text:#e2e8f0;
     --muted:#94a3b8;
     --good:#34d399;
     --danger:#f87171;
-    --radius:18px;
+    --radius:20px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     -webkit-user-select:none;user-select:none;overscroll-behavior-y:contain;}
-  body{padding-bottom:40px;}
-  header{
-    padding:22px 20px 14px;
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  header h1{font-size:20px;margin:0;font-weight:700;}
-  header .date{font-size:13px;color:var(--muted);margin-top:2px;}
-  main{padding:0 16px;display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto;}
+  body{padding-bottom:40px;min-height:100vh;}
 
-  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);}
-  .card-title{font-size:15px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:8px;color:var(--text);}
+  header{padding:22px 20px 10px;display:flex;align-items:center;gap:12px;}
+  header h1{font-size:20px;margin:0;font-weight:700;flex:1;}
+  header .date{font-size:13px;color:var(--muted);margin-top:2px;}
+  .back-btn{background:var(--card);border:none;color:var(--text);font-size:20px;
+    width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .back-btn:active{background:var(--card2);}
+
+  main{padding:0 16px;display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .screen main{padding-top:4px;}
+
+  /* ===== Home tiles ===== */
+  .tiles{display:flex;flex-direction:column;gap:18px;padding:8px 16px;max-width:480px;margin:0 auto;}
+
+  .tile{border:none;width:100%;border-radius:26px;cursor:pointer;text-align:center;
+    transition:transform .1s ease;padding:0;color:inherit;font-family:inherit;}
+  .tile:active{transform:scale(.97);}
+
+  .tile-exercise{
+    aspect-ratio:1.05;
+    background:linear-gradient(150deg,var(--accent) 0%,var(--accent2) 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    box-shadow:0 10px 30px rgba(34,211,238,.3);
+    position:relative;overflow:hidden;
+  }
+  .tile-exercise svg{width:46%;height:auto;}
+  .tile-exercise .tile-name{font-size:44px;font-weight:900;color:#0b1220;letter-spacing:1px;}
+  .tile-exercise .tile-sub{font-size:15px;font-weight:600;color:rgba(11,18,32,.65);}
+
+  .tile-stats{
+    aspect-ratio:2.1;
+    background:rgba(167,139,250,.08);
+    border:3px solid transparent;
+    background-clip:padding-box;
+    position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  }
+  .tile-stats::before{
+    content:"";position:absolute;inset:-3px;border-radius:26px;z-index:-1;
+    background:linear-gradient(135deg,var(--pink),var(--purple),var(--pink));
+  }
+  .tile-stats .tile-name{
+    font-size:34px;font-weight:900;
+    background:linear-gradient(135deg,var(--pink),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .tile-stats .tile-sub{font-size:14px;color:var(--muted);}
+  .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:5px;height:34px;}
+  .tile-stats .mini-bars span{width:9px;border-radius:3px;background:linear-gradient(180deg,var(--pink),var(--purple));opacity:.85;}
+
+  /* ===== Cards ===== */
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
+  .card-title{font-size:15px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
   .card-title .emoji{font-size:20px;}
+  .card-title .spacer{flex:1;}
 
   .counter-row{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:16px;}
-  .counter-btn{
-    width:56px;height:56px;border-radius:50%;border:none;
+  .counter-btn{width:56px;height:56px;border-radius:50%;border:none;
     background:var(--card2);color:var(--text);font-size:26px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;
-    transition:transform .08s ease, background .15s ease;
-  }
+    display:flex;align-items:center;justify-content:center;transition:transform .08s ease;}
   .counter-btn:active{transform:scale(.9);background:#2f3f59;}
   .counter-value{font-size:52px;font-weight:800;min-width:90px;text-align:center;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -57,16 +102,16 @@
     font-size:14px;border:none;font-weight:600;}
   .chip:active{background:#2f3f59;color:var(--text);}
 
-  .add-btn{
-    width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:700;
+  .add-btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:700;
     background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b1220;
-    box-shadow:0 6px 16px rgba(34,211,238,.25);
-  }
+    box-shadow:0 6px 16px rgba(34,211,238,.25);}
   .add-btn:active{transform:scale(.98);}
 
   .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .stat{background:var(--card2);border-radius:14px;padding:12px 8px;text-align:center;}
+  .stats-grid.g4{grid-template-columns:repeat(4,1fr);}
+  .stat{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
   .stat .num{font-size:22px;font-weight:800;color:var(--accent);}
+  .stat.alt .num{color:var(--purple);}
   .stat .label{font-size:11px;color:var(--muted);margin-top:2px;}
 
   .sets-list{display:flex;flex-direction:column;gap:8px;}
@@ -82,66 +127,180 @@
   canvas{width:100%;display:block;}
   .chart-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--muted);}
 
-  .toast{
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  /* goal */
+  .goal-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .goal-row input{width:70px;padding:8px;border-radius:10px;border:none;background:var(--card2);
+    color:var(--text);font-size:16px;font-weight:700;text-align:center;font-family:inherit;}
+  .goal-row label{font-size:14px;color:var(--muted);}
+  .progress-wrap{background:var(--card2);border-radius:999px;height:16px;overflow:hidden;}
+  .progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));
+    transition:width .4s ease;min-width:0;}
+  .progress-text{font-size:12px;color:var(--muted);margin-top:6px;text-align:center;}
+
+  /* trend */
+  .trend-box{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 0 2px;}
+  .trend-arrow{font-size:34px;}
+  .trend-pct{font-size:30px;font-weight:900;}
+  .trend-pct.up{color:var(--good);}
+  .trend-pct.down{color:var(--danger);}
+  .trend-desc{font-size:12px;color:var(--muted);text-align:center;margin-top:4px;}
+
+  /* history */
+  .day-row{background:var(--card2);border-radius:14px;margin-bottom:8px;overflow:hidden;}
+  .day-head{display:flex;align-items:center;padding:12px 14px;gap:10px;cursor:pointer;}
+  .day-head .d-date{font-weight:700;font-size:14px;flex:1;}
+  .day-head .d-info{font-size:12px;color:var(--muted);}
+  .day-head .d-total{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;
+    font-weight:800;font-size:13px;border-radius:8px;padding:4px 10px;}
+  .day-head .d-trash{background:none;border:none;color:var(--danger);font-size:16px;padding:2px 6px;}
+  .day-body{display:none;padding:0 14px 12px;}
+  .day-row.open .day-body{display:block;}
+  .day-body .set-row{background:var(--card);}
+
+  .danger-btn{width:100%;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:700;
+    background:rgba(248,113,113,.12);color:var(--danger);border:1px solid rgba(248,113,113,.35);}
+  .danger-btn:active{background:rgba(248,113,113,.25);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--good);color:#052e19;font-weight:700;padding:10px 20px;border-radius:999px;
-    font-size:14px;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;z-index:50;
-  }
+    font-size:14px;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;z-index:50;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <h1>💪 מעקב ספורט</h1>
-    <div class="date" id="todayLabel"></div>
-  </div>
-</header>
-
-<main>
-
-  <div class="card">
-    <p class="card-title"><span class="emoji">🧗</span> מתח — סט חדש</p>
-    <div class="counter-row">
-      <button class="counter-btn" id="minusBtn">−</button>
-      <div class="counter-value" id="counterVal">8</div>
-      <button class="counter-btn" id="plusBtn">+</button>
+<!-- ============ HOME ============ -->
+<div class="screen active" id="screen-home">
+  <header>
+    <div>
+      <h1>💪 מעקב ספורט</h1>
+      <div class="date" id="todayLabel"></div>
     </div>
-    <div class="quick-chips" id="quickChips"></div>
-    <button class="add-btn" id="addBtn">✅ הוסף סט</button>
-  </div>
+  </header>
+  <div class="tiles">
 
-  <div class="card">
-    <p class="card-title"><span class="emoji">📊</span> היום</p>
-    <div class="stats-grid">
-      <div class="stat"><div class="num" id="statSets">0</div><div class="label">סטים</div></div>
-      <div class="stat"><div class="num" id="statReps">0</div><div class="label">חזרות</div></div>
-      <div class="stat"><div class="num" id="statBest">0</div><div class="label">סט הכי טוב</div></div>
+    <button class="tile tile-exercise" id="tilePullups">
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <!-- bar + posts -->
+        <line x1="18" y1="22" x2="162" y2="22"/>
+        <line x1="24" y1="22" x2="24" y2="145"/>
+        <line x1="156" y1="22" x2="156" y2="145"/>
+        <!-- figure -->
+        <circle cx="90" cy="52" r="12" fill="#0b1220"/>
+        <line x1="90" y1="64" x2="90" y2="100"/>
+        <polyline points="90,68 70,48 63,24"/>
+        <polyline points="90,68 110,48 117,24"/>
+        <polyline points="90,100 78,118 88,132"/>
+        <polyline points="90,100 102,118 92,130"/>
+      </svg>
+      <span class="tile-name">מתח</span>
+      <span class="tile-sub" id="tilePullupsSub"></span>
+    </button>
+
+    <button class="tile tile-stats" id="tileStats">
+      <div class="mini-bars"><span style="height:30%"></span><span style="height:55%"></span><span style="height:40%"></span><span style="height:75%"></span><span style="height:60%"></span><span style="height:100%"></span></div>
+      <span class="tile-name">סטטיסטיקה</span>
+      <span class="tile-sub">היסטוריה · מגמות · יעדים</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- ============ PULL-UPS LOG ============ -->
+<div class="screen" id="screen-pullups">
+  <header>
+    <button class="back-btn" data-back>→</button>
+    <div>
+      <h1>🧗 מתח</h1>
+      <div class="date" id="pullupsDateLabel"></div>
     </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title"><span class="emoji">📝</span> סטים של היום</p>
-    <div class="sets-list" id="setsList"></div>
-  </div>
-
-  <div class="card">
-    <p class="card-title"><span class="emoji">📈</span> 7 ימים אחרונים</p>
-    <canvas id="weekChart" height="140" dir="ltr"></canvas>
-    <div class="chart-labels" id="chartLabels" dir="ltr"></div>
-  </div>
-
-  <div class="card">
-    <p class="card-title"><span class="emoji">🏆</span> סה"כ</p>
-    <div class="stats-grid">
-      <div class="stat"><div class="num" id="statTotalSets">0</div><div class="label">סטים בכל הזמנים</div></div>
-      <div class="stat"><div class="num" id="statTotalReps">0</div><div class="label">חזרות בכל הזמנים</div></div>
-      <div class="stat"><div class="num" id="statRecord">0</div><div class="label">שיא אישי</div></div>
+  </header>
+  <main>
+    <div class="card">
+      <p class="card-title"><span class="emoji">✏️</span> כמה חזרות עשית?</p>
+      <div class="counter-row">
+        <button class="counter-btn" id="minusBtn">−</button>
+        <div class="counter-value" id="counterVal">8</div>
+        <button class="counter-btn" id="plusBtn">+</button>
+      </div>
+      <div class="quick-chips" id="quickChips"></div>
+      <button class="add-btn" id="addBtn">✅ הוסף סט</button>
     </div>
-  </div>
 
-</main>
+    <div class="card">
+      <p class="card-title"><span class="emoji">📊</span> היום</p>
+      <div class="stats-grid">
+        <div class="stat"><div class="num" id="statSets">0</div><div class="label">סטים</div></div>
+        <div class="stat"><div class="num" id="statReps">0</div><div class="label">חזרות</div></div>
+        <div class="stat"><div class="num" id="statBest">0</div><div class="label">סט הכי טוב</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📝</span> סטים של היום</p>
+      <div class="sets-list" id="setsList"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ STATS ============ -->
+<div class="screen" id="screen-stats">
+  <header>
+    <button class="back-btn" data-back>→</button>
+    <div><h1>📊 סטטיסטיקה</h1></div>
+  </header>
+  <main>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🏆</span> מספרים גדולים</p>
+      <div class="stats-grid g4">
+        <div class="stat alt"><div class="num" id="tSets">0</div><div class="label">סטים</div></div>
+        <div class="stat alt"><div class="num" id="tReps">0</div><div class="label">חזרות</div></div>
+        <div class="stat alt"><div class="num" id="tRecord">0</div><div class="label">שיא בסט</div></div>
+        <div class="stat alt"><div class="num" id="tStreak">0</div><div class="label">ימי רצף</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🎯</span> יעד יומי</p>
+      <div class="goal-row">
+        <label>היעד שלי:</label>
+        <input type="number" id="goalInput" min="1" max="1000" inputmode="numeric">
+        <label>חזרות ביום</label>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" id="goalBar" style="width:0%"></div></div>
+      <div class="progress-text" id="goalText"></div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📈</span> מגמת שיפור</p>
+      <div class="trend-box">
+        <span class="trend-arrow" id="trendArrow"></span>
+        <span class="trend-pct" id="trendPct"></span>
+      </div>
+      <div class="trend-desc" id="trendDesc"></div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📅</span> 7 ימים אחרונים</p>
+      <canvas id="weekChart" height="140" dir="ltr"></canvas>
+      <div class="chart-labels" id="chartLabels" dir="ltr"></div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🗓️</span> 30 ימים אחרונים</p>
+      <canvas id="monthChart" height="120" dir="ltr"></canvas>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📚</span> היסטוריית אימונים <span class="spacer"></span></p>
+      <div id="historyList"></div>
+    </div>
+
+    <button class="danger-btn" id="wipeBtn">🗑️ מחיקת כל הנתונים</button>
+
+  </main>
+</div>
 
 <div class="toast" id="toast">נשמר!</div>
 
@@ -151,120 +310,209 @@
 
   const STORAGE_KEY = "sportapp_sets_v1";
   const COUNTER_KEY = "sportapp_last_counter_v1";
+  const GOAL_KEY = "sportapp_goal_v1";
   const EXERCISE = "pullups";
 
   function loadSets(){
     try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     catch(e){ return []; }
   }
-  function saveSets(sets){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sets));
-  }
+  function saveSets(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(sets)); }
 
   let sets = loadSets();
   let counter = parseInt(localStorage.getItem(COUNTER_KEY), 10) || 8;
+  let goal = parseInt(localStorage.getItem(GOAL_KEY), 10) || 50;
+  const openDays = new Set();
 
-  const counterVal = document.getElementById("counterVal");
-  const minusBtn = document.getElementById("minusBtn");
-  const plusBtn = document.getElementById("plusBtn");
-  const addBtn = document.getElementById("addBtn");
-  const quickChips = document.getElementById("quickChips");
-  const setsList = document.getElementById("setsList");
-  const toast = document.getElementById("toast");
-  const todayLabel = document.getElementById("todayLabel");
-
-  function fmtDate(d){
-    return d.toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "long" });
-  }
-  todayLabel.textContent = fmtDate(new Date());
-
+  /* ---------- helpers ---------- */
   function dayKey(ts){
     const d = new Date(ts);
     return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
   }
-  const todayKey = dayKey(Date.now());
+  function startOfDay(offsetDays){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + offsetDays);
+    return d;
+  }
+  function totalForKey(key){
+    return sets.filter(s => s.exercise === EXERCISE && dayKey(s.ts) === key)
+               .reduce((sum,x)=> sum + x.reps, 0);
+  }
+  function todaysSets(){
+    const tk = dayKey(Date.now());
+    return sets.filter(s => s.exercise === EXERCISE && dayKey(s.ts) === tk)
+               .sort((a,b)=> b.ts - a.ts);
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString("he-IL", { weekday:"long", day:"numeric", month:"long" });
+  }
 
+  /* ---------- navigation ---------- */
+  const screens = {
+    home: document.getElementById("screen-home"),
+    pullups: document.getElementById("screen-pullups"),
+    stats: document.getElementById("screen-stats")
+  };
+  function route(){
+    const h = (location.hash || "").replace("#","");
+    const name = screens[h] ? h : "home";
+    Object.values(screens).forEach(s => s.classList.remove("active"));
+    screens[name].classList.add("active");
+    window.scrollTo(0,0);
+    if(name === "home") renderHome();
+    if(name === "pullups") renderLog();
+    if(name === "stats") renderStats();
+  }
+  window.addEventListener("hashchange", route);
+  document.getElementById("tilePullups").addEventListener("click", ()=> location.hash = "pullups");
+  document.getElementById("tileStats").addEventListener("click", ()=> location.hash = "stats");
+  document.querySelectorAll("[data-back]").forEach(b =>
+    b.addEventListener("click", ()=> { location.hash = ""; }));
+
+  /* ---------- toast ---------- */
+  const toast = document.getElementById("toast");
+  let toastTimer;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.classList.remove("show"), 1300);
+  }
+
+  /* ---------- HOME ---------- */
+  function renderHome(){
+    document.getElementById("todayLabel").textContent = fmtDate(new Date());
+    const t = todaysSets();
+    const reps = t.reduce((s,x)=> s + x.reps, 0);
+    document.getElementById("tilePullupsSub").textContent =
+      t.length ? `היום: ${t.length} סטים · ${reps} חזרות` : "לחץ כדי להתחיל 🚀";
+  }
+
+  /* ---------- PULL-UPS LOG ---------- */
+  const counterVal = document.getElementById("counterVal");
   function renderCounter(){
     counterVal.textContent = counter;
     localStorage.setItem(COUNTER_KEY, String(counter));
   }
+  document.getElementById("minusBtn").addEventListener("click", ()=>{
+    counter = Math.max(0, counter - 1); renderCounter();
+  });
+  document.getElementById("plusBtn").addEventListener("click", ()=>{
+    counter = Math.min(200, counter + 1); renderCounter();
+  });
 
-  function renderQuickChips(){
-    const vals = Array.from(new Set([5,8,10,12,15])).sort((a,b)=>a-b);
-    quickChips.innerHTML = "";
-    vals.forEach(v=>{
+  (function buildChips(){
+    const qc = document.getElementById("quickChips");
+    [5,8,10,12,15].forEach(v=>{
       const b = document.createElement("button");
-      b.className = "chip";
-      b.textContent = v;
+      b.className = "chip"; b.textContent = v;
       b.addEventListener("click", ()=>{ counter = v; renderCounter(); });
-      quickChips.appendChild(b);
+      qc.appendChild(b);
     });
-  }
+  })();
 
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 1200);
-  }
+  document.getElementById("addBtn").addEventListener("click", ()=>{
+    if(counter <= 0) return;
+    sets.push({ id: Date.now() + "_" + Math.random().toString(36).slice(2),
+                exercise: EXERCISE, reps: counter, ts: Date.now() });
+    saveSets();
+    showToast("סט נשמר: " + counter + " חזרות 💪");
+    renderLog();
+  });
 
-  function todaysSets(){
-    return sets.filter(s => s.exercise === EXERCISE && dayKey(s.ts) === todayKey)
-                .sort((a,b)=> b.ts - a.ts);
-  }
-
-  function renderStats(){
+  function renderLog(){
+    document.getElementById("pullupsDateLabel").textContent = fmtDate(new Date());
     const today = todaysSets();
-    const totalRepsToday = today.reduce((s,x)=> s + x.reps, 0);
-    const bestToday = today.reduce((m,x)=> Math.max(m, x.reps), 0);
-
+    const reps = today.reduce((s,x)=> s + x.reps, 0);
+    const best = today.reduce((m,x)=> Math.max(m, x.reps), 0);
     document.getElementById("statSets").textContent = today.length;
-    document.getElementById("statReps").textContent = totalRepsToday;
-    document.getElementById("statBest").textContent = bestToday;
+    document.getElementById("statReps").textContent = reps;
+    document.getElementById("statBest").textContent = best;
 
-    const all = sets.filter(s => s.exercise === EXERCISE);
-    const totalReps = all.reduce((s,x)=> s + x.reps, 0);
-    const record = all.reduce((m,x)=> Math.max(m, x.reps), 0);
-    document.getElementById("statTotalSets").textContent = all.length;
-    document.getElementById("statTotalReps").textContent = totalReps;
-    document.getElementById("statRecord").textContent = record;
-  }
-
-  function renderSetsList(){
-    const today = todaysSets();
-    setsList.innerHTML = "";
+    const list = document.getElementById("setsList");
+    list.innerHTML = "";
     if(today.length === 0){
-      setsList.innerHTML = '<div class="empty">עוד לא עשית סטים היום — קדימה! 💪</div>';
+      list.innerHTML = '<div class="empty">עוד לא עשית סטים היום — קדימה! 💪</div>';
       return;
     }
     today.forEach(s=>{
       const row = document.createElement("div");
       row.className = "set-row";
-      const time = new Date(s.ts).toLocaleTimeString("he-IL", {hour:"2-digit", minute:"2-digit"});
-      row.innerHTML = `
-        <div class="left">
-          <span class="badge">${s.reps}</span>
-          <span class="time">${time}</span>
-        </div>
-        <button class="del" data-id="${s.id}">✕</button>
-      `;
-      setsList.appendChild(row);
+      const time = new Date(s.ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+      row.innerHTML = `<div class="left"><span class="badge">${s.reps}</span>
+        <span class="time">${time}</span></div>
+        <button class="del" data-id="${s.id}">✕</button>`;
+      list.appendChild(row);
     });
-    setsList.querySelectorAll(".del").forEach(btn=>{
+    list.querySelectorAll(".del").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        const id = btn.getAttribute("data-id");
-        sets = sets.filter(s => String(s.id) !== id);
-        saveSets(sets);
-        renderAll();
+        sets = sets.filter(s => String(s.id) !== btn.getAttribute("data-id"));
+        saveSets(); renderLog();
       });
     });
   }
 
-  function renderChart(){
-    const canvas = document.getElementById("weekChart");
-    const labelsEl = document.getElementById("chartLabels");
+  /* ---------- STATS ---------- */
+  const goalInput = document.getElementById("goalInput");
+  goalInput.addEventListener("change", ()=>{
+    const v = parseInt(goalInput.value, 10);
+    if(v >= 1 && v <= 1000){ goal = v; localStorage.setItem(GOAL_KEY, String(goal)); }
+    renderGoal();
+  });
+
+  function renderGoal(){
+    goalInput.value = goal;
+    const reps = totalForKey(dayKey(Date.now()));
+    const pct = Math.min(100, Math.round(reps / goal * 100));
+    document.getElementById("goalBar").style.width = pct + "%";
+    document.getElementById("goalText").textContent =
+      reps >= goal ? `🎉 עמדת ביעד! ${reps}/${goal} חזרות היום`
+                   : `${reps}/${goal} חזרות היום (${pct}%)`;
+  }
+
+  function computeStreak(){
+    let streak = 0;
+    let offset = totalForKey(dayKey(startOfDay(0).getTime())) > 0 ? 0 : -1;
+    while(true){
+      const key = dayKey(startOfDay(offset - streak).getTime());
+      if(totalForKey(key) > 0) streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  function renderTrend(){
+    const last7 = [], prev7 = [];
+    for(let i=6;i>=0;i--) last7.push(totalForKey(dayKey(startOfDay(-i).getTime())));
+    for(let i=13;i>=7;i--) prev7.push(totalForKey(dayKey(startOfDay(-i).getTime())));
+    const sum = a => a.reduce((x,y)=>x+y,0);
+    const s1 = sum(prev7), s2 = sum(last7);
+    const arrow = document.getElementById("trendArrow");
+    const pctEl = document.getElementById("trendPct");
+    const desc = document.getElementById("trendDesc");
+    if(s1 === 0 && s2 === 0){
+      arrow.textContent = "📭"; pctEl.textContent = ""; pctEl.className = "trend-pct";
+      desc.textContent = "אין עדיין מספיק נתונים — תתחיל להתאמן ותראה כאן מגמות";
+      return;
+    }
+    if(s1 === 0){
+      arrow.textContent = "🚀"; pctEl.textContent = "התחלה חדשה"; pctEl.className = "trend-pct up";
+      desc.textContent = `השבוע: ${s2} חזרות · שבוע שעבר: 0`;
+      return;
+    }
+    const pct = Math.round((s2 - s1) / s1 * 100);
+    if(pct >= 0){
+      arrow.textContent = "📈"; pctEl.textContent = "+" + pct + "%"; pctEl.className = "trend-pct up";
+    } else {
+      arrow.textContent = "📉"; pctEl.textContent = pct + "%"; pctEl.className = "trend-pct down";
+    }
+    desc.textContent = `השבוע: ${s2} חזרות · שבוע שעבר: ${s1}`;
+  }
+
+  function setupCanvas(canvas, cssHeight){
     const dpr = window.devicePixelRatio || 1;
     const cssWidth = canvas.parentElement.clientWidth - 36;
-    const cssHeight = 140;
     canvas.width = cssWidth * dpr;
     canvas.height = cssHeight * dpr;
     canvas.style.width = cssWidth + "px";
@@ -272,92 +520,176 @@
     const ctx = canvas.getContext("2d");
     ctx.scale(dpr, dpr);
     ctx.direction = "ltr";
+    return { ctx, w: cssWidth, h: cssHeight };
+  }
 
+  function renderWeekChart(){
+    const canvas = document.getElementById("weekChart");
+    const { ctx, w, h } = setupCanvas(canvas, 140);
     const days = [];
-    for(let i=6; i>=0; i--){
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      d.setHours(0,0,0,0);
-      days.push(d);
-    }
-    const totals = days.map(d=>{
-      const key = dayKey(d.getTime());
-      return sets.filter(s => s.exercise === EXERCISE && dayKey(s.ts) === key)
-                  .reduce((sum,x)=> sum + x.reps, 0);
-    });
+    for(let i=6;i>=0;i--) days.push(startOfDay(-i));
+    const totals = days.map(d => totalForKey(dayKey(d.getTime())));
     const max = Math.max(1, ...totals);
 
-    ctx.clearRect(0,0,cssWidth,cssHeight);
-    const barCount = totals.length;
+    ctx.clearRect(0,0,w,h);
     const gap = 10;
-    const barWidth = (cssWidth - gap*(barCount-1)) / barCount;
-    const chartTop = 8, chartBottom = cssHeight - 8;
-    const usableH = chartBottom - chartTop;
+    const bw = (w - gap*(totals.length-1)) / totals.length;
+    const top = 18, bottom = h - 6;
 
-    totals.forEach((val, i)=>{
-      const h = Math.max(4, (val / max) * usableH);
-      const x = i * (barWidth + gap);
-      const y = chartBottom - h;
-      const grad = ctx.createLinearGradient(0, y, 0, chartBottom);
-      grad.addColorStop(0, "#22d3ee");
-      grad.addColorStop(1, "#818cf8");
+    totals.forEach((val,i)=>{
+      const bh = Math.max(4, (val/max) * (bottom-top));
+      const x = i * (bw + gap);
+      const y = bottom - bh;
+      const grad = ctx.createLinearGradient(0, y, 0, bottom);
+      grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#818cf8");
       ctx.fillStyle = grad;
       const r = 6;
       ctx.beginPath();
-      ctx.moveTo(x, y+r);
-      ctx.arcTo(x, y, x+r, y, r);
-      ctx.arcTo(x+barWidth, y, x+barWidth, y+r, r);
-      ctx.lineTo(x+barWidth, chartBottom);
-      ctx.lineTo(x, chartBottom);
-      ctx.closePath();
-      ctx.fill();
-
+      ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+      ctx.arcTo(x+bw, y, x+bw, y+r, r);
+      ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
+      ctx.closePath(); ctx.fill();
       if(val > 0){
         ctx.fillStyle = "#e2e8f0";
         ctx.font = "700 13px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(val, x + barWidth/2, y - 4);
+        ctx.fillText(val, x + bw/2, y - 5);
       }
     });
 
-    labelsEl.innerHTML = "";
+    const labels = document.getElementById("chartLabels");
+    labels.innerHTML = "";
     days.forEach(d=>{
       const span = document.createElement("span");
-      span.style.width = (barWidth) + "px";
+      span.style.width = bw + "px";
       span.style.textAlign = "center";
-      span.textContent = d.toLocaleDateString("he-IL", {weekday:"short"});
-      labelsEl.appendChild(span);
+      span.textContent = d.toLocaleDateString("he-IL",{weekday:"short"});
+      labels.appendChild(span);
     });
   }
 
-  function renderAll(){
-    renderStats();
-    renderSetsList();
-    renderChart();
+  function renderMonthChart(){
+    const canvas = document.getElementById("monthChart");
+    const { ctx, w, h } = setupCanvas(canvas, 120);
+    const totals = [];
+    for(let i=29;i>=0;i--) totals.push(totalForKey(dayKey(startOfDay(-i).getTime())));
+    const max = Math.max(1, ...totals);
+
+    ctx.clearRect(0,0,w,h);
+    const top = 8, bottom = h - 8;
+    const step = w / 29;
+    const pts = totals.map((v,i)=> [i*step, bottom - (v/max)*(bottom-top)]);
+
+    // area fill
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], bottom);
+    pts.forEach(p => ctx.lineTo(p[0], p[1]));
+    ctx.lineTo(pts[pts.length-1][0], bottom);
+    ctx.closePath();
+    const fillGrad = ctx.createLinearGradient(0, top, 0, bottom);
+    fillGrad.addColorStop(0, "rgba(244,114,182,.35)");
+    fillGrad.addColorStop(1, "rgba(167,139,250,0)");
+    ctx.fillStyle = fillGrad;
+    ctx.fill();
+
+    // line
+    ctx.beginPath();
+    pts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
+    const lineGrad = ctx.createLinearGradient(0,0,w,0);
+    lineGrad.addColorStop(0, "#f472b6"); lineGrad.addColorStop(1, "#a78bfa");
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = "round";
+    ctx.stroke();
   }
 
-  minusBtn.addEventListener("click", ()=>{
-    counter = Math.max(0, counter - 1);
-    renderCounter();
-  });
-  plusBtn.addEventListener("click", ()=>{
-    counter = Math.min(200, counter + 1);
-    renderCounter();
+  function renderHistory(){
+    const wrap = document.getElementById("historyList");
+    wrap.innerHTML = "";
+    const byDay = {};
+    sets.filter(s => s.exercise === EXERCISE).forEach(s=>{
+      const k = dayKey(s.ts);
+      (byDay[k] = byDay[k] || []).push(s);
+    });
+    const keys = Object.keys(byDay).sort((a,b)=> byDay[b][0].ts - byDay[a][0].ts);
+    if(keys.length === 0){
+      wrap.innerHTML = '<div class="empty">אין עדיין נתונים — ההיסטוריה תופיע כאן</div>';
+      return;
+    }
+    keys.forEach(k=>{
+      const daySets = byDay[k].sort((a,b)=> b.ts - a.ts);
+      const total = daySets.reduce((s,x)=> s + x.reps, 0);
+      const d = new Date(daySets[0].ts);
+      const row = document.createElement("div");
+      row.className = "day-row" + (openDays.has(k) ? " open" : "");
+      row.innerHTML = `
+        <div class="day-head">
+          <span class="d-date">${d.toLocaleDateString("he-IL",{weekday:"short", day:"numeric", month:"numeric"})}</span>
+          <span class="d-info">${daySets.length} סטים</span>
+          <span class="d-total">${total}</span>
+          <button class="d-trash" title="מחק יום">🗑️</button>
+        </div>
+        <div class="day-body"></div>`;
+      const body = row.querySelector(".day-body");
+      daySets.forEach(s=>{
+        const time = new Date(s.ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+        const sr = document.createElement("div");
+        sr.className = "set-row";
+        sr.style.marginBottom = "6px";
+        sr.innerHTML = `<div class="left"><span class="badge">${s.reps}</span>
+          <span class="time">${time}</span></div>
+          <button class="del" data-id="${s.id}">✕</button>`;
+        body.appendChild(sr);
+      });
+      row.querySelector(".day-head").addEventListener("click", (e)=>{
+        if(e.target.classList.contains("d-trash")) return;
+        row.classList.toggle("open");
+        if(row.classList.contains("open")) openDays.add(k); else openDays.delete(k);
+      });
+      row.querySelector(".d-trash").addEventListener("click", ()=>{
+        if(!confirm("למחוק את כל הסטים של יום זה?")) return;
+        sets = sets.filter(s => dayKey(s.ts) !== k);
+        saveSets(); renderStats();
+      });
+      body.querySelectorAll(".del").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          sets = sets.filter(s => String(s.id) !== btn.getAttribute("data-id"));
+          saveSets(); renderStats();
+        });
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  document.getElementById("wipeBtn").addEventListener("click", ()=>{
+    if(!confirm("למחוק את כל הנתונים? אי אפשר לשחזר!")) return;
+    if(!confirm("בטוח בטוח? הכל יימחק לצמיתות")) return;
+    sets = [];
+    saveSets();
+    showToast("כל הנתונים נמחקו");
+    renderStats();
   });
 
-  addBtn.addEventListener("click", ()=>{
-    if(counter <= 0) return;
-    sets.push({ id: Date.now() + "_" + Math.random().toString(36).slice(2), exercise: EXERCISE, reps: counter, ts: Date.now() });
-    saveSets(sets);
-    showToast("סט נשמר: " + counter + " חזרות 💪");
-    renderAll();
+  function renderStats(){
+    const all = sets.filter(s => s.exercise === EXERCISE);
+    document.getElementById("tSets").textContent = all.length;
+    document.getElementById("tReps").textContent = all.reduce((s,x)=> s + x.reps, 0);
+    document.getElementById("tRecord").textContent = all.reduce((m,x)=> Math.max(m, x.reps), 0);
+    document.getElementById("tStreak").textContent = computeStreak();
+    renderGoal();
+    renderTrend();
+    renderWeekChart();
+    renderMonthChart();
+    renderHistory();
+  }
+
+  window.addEventListener("resize", ()=>{
+    if(screens.stats.classList.contains("active")){ renderWeekChart(); renderMonthChart(); }
   });
 
-  window.addEventListener("resize", renderChart);
-
+  /* ---------- init ---------- */
   renderCounter();
-  renderQuickChips();
-  renderAll();
+  route();
 
   if("serviceWorker" in navigator){
     window.addEventListener("load", ()=>{
