@@ -174,6 +174,12 @@
 
   canvas{width:100%;display:block;}
 
+  .workrest-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+  .wr-box{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
+  .wr-box b{display:block;font-size:22px;font-weight:800;color:var(--good);}
+  .wr-box.rest b{color:var(--muted);}
+  .wr-box span{font-size:11px;color:var(--muted);}
+
   /* mini table */
   table.mini{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:12px;}
   .mini th{color:var(--muted);font-weight:600;font-size:11px;padding:0 4px 2px;text-align:center;}
@@ -329,12 +335,14 @@
 
   <button class="tile-aerobic" data-ex="aerobic">
     <svg viewBox="0 0 170 150" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="112" cy="30" r="12" fill="#0b1220"/>
-      <polyline points="104,44 82,66 100,88"/>
-      <polyline points="100,88 76,110 60,134"/>
-      <polyline points="100,88 118,108 140,116"/>
-      <polyline points="82,66 58,72 38,58"/>
-      <polyline points="104,50 126,62 148,54"/>
+      <circle cx="116" cy="24" r="12" fill="#0b1220"/>
+      <line x1="110" y1="36" x2="92" y2="78"/>
+      <polyline points="106,46 126,60 146,50"/>
+      <polyline points="104,50 84,58 68,44"/>
+      <polyline points="92,78 116,98 130,126"/>
+      <polyline points="92,78 70,98 84,122"/>
+      <line x1="30" y1="136" x2="58" y2="136"/>
+      <line x1="112" y1="140" x2="146" y2="140"/>
     </svg>
     <span class="tile-name">אירובי</span>
     <span class="tile-sub" id="aerobicSub"></span>
@@ -378,16 +386,11 @@
   <main>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">🏆</span> סיכום לפי תרגיל</p>
-      <table class="mini">
-        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>ממוצע ליום</th></tr></thead>
-        <tbody id="miniTableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <p class="card-title"><span class="emoji">🎯</span> יעדים יומיים</p>
-      <div id="goalsList"></div>
+      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה</span></p>
+      <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
+      <div id="pointsBreakdown" style="display:none"></div>
+      <canvas id="pointsChart" height="170" dir="ltr"></canvas>
+      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט של יום ספציפי</div>
     </div>
 
     <div class="card">
@@ -402,11 +405,20 @@
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×רמה · קפיצה=1 · אירובי=50+רמה</span></p>
-      <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
-      <div id="pointsBreakdown" style="display:none"></div>
-      <canvas id="pointsChart" height="170" dir="ltr"></canvas>
-      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט של יום ספציפי</div>
+      <p class="card-title"><span class="emoji">🏆</span> סיכום לפי תרגיל</p>
+      <div class="workrest-row">
+        <div class="wr-box"><b id="workDays">0</b><span>סה"כ ימי עבודה</span></div>
+        <div class="wr-box rest"><b id="restDays">0</b><span>סה"כ ימי מנוחה</span></div>
+      </div>
+      <table class="mini">
+        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>ממוצע ליום</th></tr></thead>
+        <tbody id="miniTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🎯</span> יעדים יומיים</p>
+      <div id="goalsList"></div>
     </div>
 
     <div class="card">
@@ -457,7 +469,7 @@
       case "pullups":   return s.val;
       case "hang":      return s.val * 0.5;
       case "abs":       return s.val * 8;
-      case "handstand": return s.val * (s.level || 1);
+      case "handstand": return s.val * (s.level || 1) / 2;
       case "jumps":     return s.val;
       case "aerobic":   return 50 + s.val;
     }
@@ -727,6 +739,18 @@
   }
 
   function renderTable(){
+    // work days = days with any activity; rest days = days since first workout with nothing
+    const activeDays = new Set(sets.map(s => dayKey(s.ts)));
+    let work = activeDays.size, rest = 0;
+    if(sets.length){
+      const firstTs = Math.min.apply(null, sets.map(s => s.ts));
+      const first = new Date(firstTs); first.setHours(0,0,0,0);
+      const nDays = Math.round((startOfDay(0) - first) / 86400000) + 1;
+      rest = Math.max(0, nDays - work);
+    }
+    document.getElementById("workDays").textContent = work;
+    document.getElementById("restDays").textContent = rest;
+
     const body = document.getElementById("miniTableBody");
     body.innerHTML = "";
     EX_KEYS.forEach(ex=>{
