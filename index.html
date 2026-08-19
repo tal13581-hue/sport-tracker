@@ -19,6 +19,8 @@
     --accent2:#818cf8;
     --pink:#f472b6;
     --purple:#a78bfa;
+    --orange:#fb923c;
+    --orange2:#f97316;
     --text:#e2e8f0;
     --muted:#94a3b8;
     --good:#34d399;
@@ -41,7 +43,7 @@
   .screen{display:none;}
   .screen.active{display:block;}
 
-  /* ===== Home: full viewport, stats centered, no scroll ===== */
+  /* ===== Home ===== */
   #screen-home.active{
     display:flex;flex-direction:column;
     height:100vh;height:100dvh;
@@ -51,7 +53,7 @@
   .tiles{
     flex:1;min-height:0;
     position:relative;
-    margin:4px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    margin:2px 16px 8px;
   }
   .tiles .tile{position:absolute;}
 
@@ -61,14 +63,23 @@
 
   .tile-ex{
     background:linear-gradient(150deg,var(--accent) 0%,var(--accent2) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     box-shadow:0 8px 22px rgba(34,211,238,.25);
-    overflow:hidden;padding:8px;
+    overflow:hidden;padding:0;
     border-radius:50%;
+    position:absolute;
   }
-  .tile-ex svg{height:32%;width:auto;min-height:0;}
-  .tile-ex .tile-name{font-size:clamp(11px,3.4vw,15px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;}
-  .tile-ex .tile-sub{font-size:9px;font-weight:600;color:rgba(11,18,32,.65);}
+  .tile-ex.not-done{
+    background:linear-gradient(150deg,#fda4af 0%,#f87171 100%);
+    box-shadow:0 8px 22px rgba(248,113,113,.22);
+  }
+  .tile-ex svg{
+    position:absolute;left:10%;right:10%;top:20%;bottom:6%;
+    width:80%;height:74%;opacity:.92;
+  }
+  .tile-ex .tile-name{
+    position:absolute;top:8%;left:0;right:0;
+    font-size:clamp(11px,3.5vw,15px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;
+  }
 
   .tile-stats{
     background:linear-gradient(135deg,var(--pink),var(--purple));
@@ -82,18 +93,36 @@
   .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:3px;height:18px;}
   .tile-stats .mini-bars span{width:6px;border-radius:2px;background:#0b1220;opacity:.75;}
 
+  .tile-aerobic{
+    flex:0 0 auto;
+    height:62px;
+    margin:0 16px;
+    margin-bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
+    background:linear-gradient(135deg,var(--orange),var(--orange2));
+    box-shadow:0 8px 22px rgba(251,146,60,.3);
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    border:none;border-radius:20px;cursor:pointer;
+    transition:transform .1s ease;font-family:inherit;
+  }
+  .tile-aerobic:active{transform:scale(.97);}
+  .tile-aerobic svg{height:34px;width:auto;}
+  .tile-aerobic .tile-name{font-size:22px;font-weight:900;color:#0b1220;}
+  .tile-aerobic .tile-sub{font-size:11px;font-weight:600;color:rgba(11,18,32,.65);}
+
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
   .card-title{font-size:15px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
   .card-title .emoji{font-size:20px;}
-  .card-title .note{font-size:11px;color:var(--muted);font-weight:400;margin-right:auto;}
+  .card-title .note{font-size:10px;color:var(--muted);font-weight:400;margin-right:auto;max-width:55%;text-align:left;}
+  .card-title.clickable{cursor:pointer;margin-bottom:0;}
+  .card-title .arrow{margin-right:auto;color:var(--muted);font-size:13px;}
 
   .counter-row{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:16px;}
   .counter-btn{width:56px;height:56px;border-radius:50%;border:none;
     background:var(--card2);color:var(--text);font-size:26px;font-weight:700;
     display:flex;align-items:center;justify-content:center;transition:transform .08s ease;}
   .counter-btn:active{transform:scale(.9);background:#2f3f59;}
-  .counter-value{font-size:46px;font-weight:800;min-width:120px;text-align:center;
+  .counter-value{font-size:44px;font-weight:800;min-width:120px;text-align:center;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     -webkit-background-clip:text;background-clip:text;color:transparent;}
 
@@ -113,6 +142,9 @@
     box-shadow:0 6px 16px rgba(34,211,238,.25);font-family:inherit;}
   .add-btn:active{transform:scale(.98);}
 
+  .today-line{text-align:center;font-size:13px;color:var(--muted);margin-top:12px;}
+  .today-line b{color:var(--accent);}
+
   .sets-list{display:flex;flex-direction:column;gap:8px;}
   .set-row{display:flex;align-items:center;justify-content:space-between;
     background:var(--card2);border-radius:12px;padding:10px 14px;}
@@ -122,6 +154,7 @@
   .set-row .lvl{font-size:11px;color:var(--muted);background:var(--card);border-radius:6px;padding:3px 7px;}
   .set-row .time{color:var(--muted);font-size:12px;}
   .set-row .del{background:none;border:none;color:var(--danger);font-size:18px;padding:4px 8px;}
+  .set-row .edit{background:none;border:none;font-size:15px;padding:4px 8px;}
   .set-row .ex-emoji{font-size:16px;}
   .empty{color:var(--muted);font-size:13px;text-align:center;padding:10px 0;}
 
@@ -144,7 +177,7 @@
   .goal-head input{width:64px;padding:6px;border-radius:10px;border:none;background:var(--card2);
     color:var(--text);font-size:14px;font-weight:700;text-align:center;font-family:inherit;}
   .goal-head .g-unit{font-size:11px;color:var(--muted);}
-  .progress-wrap{background:var(--card2);border-radius:999px;height:12px;overflow:hidden;}
+  .progress-wrap{background:var(--card2);border-radius:999px;height:12px;overflow:hidden;direction:ltr;}
   .progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));
     transition:width .4s ease;min-width:0;}
   .progress-bar.done{background:linear-gradient(90deg,var(--good),#6ee7b7);}
@@ -161,29 +194,34 @@
     margin-bottom:10px;background:none;border:none;font-family:inherit;padding:4px;}
   .points-today b{color:var(--pink);font-size:18px;}
   .pt-hint{font-size:11px;color:var(--muted);opacity:.8;}
+  .pt-chart-hint{text-align:center;font-size:10px;color:var(--muted);opacity:.7;margin-top:6px;}
   #pointsBreakdown{margin-bottom:12px;}
+  .pb-title{font-size:12px;font-weight:700;color:var(--pink);margin-bottom:8px;text-align:center;}
   .pb-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;}
   .pb-row .pb-name{width:104px;font-weight:700;white-space:nowrap;}
-  .pb-row .pb-track{flex:1;background:var(--card2);border-radius:999px;height:14px;overflow:hidden;}
+  .pb-row .pb-track{flex:1;background:var(--card2);border-radius:999px;height:14px;overflow:hidden;direction:ltr;}
   .pb-row .pb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));min-width:2px;}
   .pb-row .pb-pct{width:74px;text-align:left;color:var(--muted);font-size:11px;white-space:nowrap;}
   .pb-row .pb-pct b{color:var(--pink);font-size:12px;}
 
   /* history */
+  #historyList{margin-top:14px;}
   .day-row{background:var(--card2);border-radius:14px;margin-bottom:8px;overflow:hidden;}
   .day-head{display:flex;align-items:center;padding:12px 14px;gap:10px;cursor:pointer;}
   .day-head .d-date{font-weight:700;font-size:14px;flex:1;}
   .day-head .d-info{font-size:12px;color:var(--muted);}
   .day-head .d-total{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;
-    font-weight:800;font-size:13px;border-radius:8px;padding:4px 10px;white-space:nowrap;}
+    font-weight:800;font-size:13px;border-radius:8px;padding:4px 10px;white-space:nowrap;border:none;font-family:inherit;}
   .day-head .d-trash{background:none;border:none;color:var(--danger);font-size:16px;padding:2px 6px;}
   .day-body{display:none;padding:0 14px 12px;}
   .day-row.open .day-body{display:block;}
   .day-body .set-row{background:var(--card);margin-bottom:6px;}
+  .day-breakdown{padding:4px 0 8px;}
 
-  .danger-btn{width:100%;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:700;
-    background:rgba(248,113,113,.12);color:var(--danger);border:1px solid rgba(248,113,113,.35);font-family:inherit;}
-  .danger-btn:active{background:rgba(248,113,113,.25);}
+  .edit-btn{width:100%;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:700;
+    background:rgba(129,140,248,.14);color:var(--accent2);border:1px solid rgba(129,140,248,.4);font-family:inherit;}
+  .edit-btn.on{background:rgba(129,140,248,.3);color:#c7d2fe;}
+  .edit-btn:active{background:rgba(129,140,248,.35);}
 
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--good);color:#052e19;font-weight:700;padding:10px 20px;border-radius:999px;
@@ -204,8 +242,22 @@
 
   <div class="tiles">
 
-    <button class="tile tile-ex t-a" data-ex="hang">
-      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <button class="tile tile-ex" data-ex="pullups">
+      <span class="tile-name">מתח</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="22" x2="162" y2="22"/>
+        <circle cx="90" cy="52" r="12" fill="#0b1220"/>
+        <line x1="90" y1="64" x2="90" y2="100"/>
+        <polyline points="90,68 70,48 63,24"/>
+        <polyline points="90,68 110,48 117,24"/>
+        <polyline points="90,100 78,118 88,132"/>
+        <polyline points="90,100 102,118 92,130"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-ex="hang">
+      <span class="tile-name">תליה פסיבית</span>
+      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="20" x2="162" y2="20"/>
         <circle cx="90" cy="72" r="12" fill="#0b1220"/>
         <line x1="90" y1="84" x2="90" y2="122"/>
@@ -214,12 +266,22 @@
         <line x1="90" y1="122" x2="82" y2="158"/>
         <line x1="90" y1="122" x2="98" y2="158"/>
       </svg>
-      <span class="tile-name">תליה פסיבית</span>
-      <span class="tile-sub" data-ex-sub="hang"></span>
     </button>
 
-    <button class="tile tile-ex t-b" data-ex="handstand">
-      <svg viewBox="0 0 130 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <button class="tile tile-ex" data-ex="abs">
+      <span class="tile-name">בטן</span>
+      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="14" y1="150" x2="166" y2="150"/>
+        <circle cx="52" cy="86" r="12" fill="#0b1220"/>
+        <polyline points="60,96 88,118 118,118"/>
+        <polyline points="118,118 136,92 130,148"/>
+        <polyline points="60,100 78,80 92,92"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-ex="handstand">
+      <span class="tile-name">עמידת ידיים</span>
+      <svg viewBox="0 0 130 170" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="14" y1="158" x2="116" y2="158"/>
         <circle cx="65" cy="128" r="12" fill="#0b1220"/>
         <line x1="65" y1="116" x2="65" y2="66"/>
@@ -228,45 +290,11 @@
         <polyline points="65,66 52,34 60,10"/>
         <polyline points="65,66 80,38 74,12"/>
       </svg>
-      <span class="tile-name">עמידת ידיים</span>
-      <span class="tile-sub" data-ex-sub="handstand"></span>
     </button>
 
-    <button class="tile tile-ex t-c" data-ex="pullups">
-      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="22" x2="162" y2="22"/>
-        <line x1="24" y1="22" x2="24" y2="145"/>
-        <line x1="156" y1="22" x2="156" y2="145"/>
-        <circle cx="90" cy="52" r="12" fill="#0b1220"/>
-        <line x1="90" y1="64" x2="90" y2="100"/>
-        <polyline points="90,68 70,48 63,24"/>
-        <polyline points="90,68 110,48 117,24"/>
-        <polyline points="90,100 78,118 88,132"/>
-        <polyline points="90,100 102,118 92,130"/>
-      </svg>
-      <span class="tile-name">מתח</span>
-      <span class="tile-sub" data-ex-sub="pullups"></span>
-    </button>
-
-    <button class="tile tile-stats t-mid" id="tileStats">
-      <div class="mini-bars"><span style="height:35%"></span><span style="height:60%"></span><span style="height:45%"></span><span style="height:100%"></span></div>
-      <span class="tile-name">סטטיסטיקה</span>
-    </button>
-
-    <button class="tile tile-ex t-d" data-ex="abs">
-      <svg viewBox="0 0 180 170" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="14" y1="150" x2="166" y2="150"/>
-        <circle cx="52" cy="86" r="12" fill="#0b1220"/>
-        <polyline points="60,96 88,118 118,118"/>
-        <polyline points="118,118 136,92 130,148"/>
-        <polyline points="60,100 78,80 92,92"/>
-      </svg>
-      <span class="tile-name">בטן</span>
-      <span class="tile-sub" data-ex-sub="abs"></span>
-    </button>
-
-    <button class="tile tile-ex t-e" data-ex="jumps">
-      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <button class="tile tile-ex" data-ex="jumps">
+      <span class="tile-name">קפיצות</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="20" y1="142" x2="70" y2="142"/>
         <line x1="110" y1="142" x2="160" y2="142"/>
         <circle cx="90" cy="38" r="12" fill="#0b1220"/>
@@ -276,11 +304,27 @@
         <polyline points="90,86 72,104 80,122"/>
         <polyline points="90,86 108,104 100,122"/>
       </svg>
-      <span class="tile-name">קפיצות</span>
-      <span class="tile-sub" data-ex-sub="jumps"></span>
+    </button>
+
+    <button class="tile tile-stats" id="tileStats">
+      <div class="mini-bars"><span style="height:35%"></span><span style="height:60%"></span><span style="height:45%"></span><span style="height:100%"></span></div>
+      <span class="tile-name">סטטיסטיקה</span>
     </button>
 
   </div>
+
+  <button class="tile-aerobic" data-ex="aerobic">
+    <svg viewBox="0 0 170 150" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="112" cy="30" r="12" fill="#0b1220"/>
+      <polyline points="104,44 82,66 100,88"/>
+      <polyline points="100,88 76,110 60,134"/>
+      <polyline points="100,88 118,108 140,116"/>
+      <polyline points="82,66 58,72 38,58"/>
+      <polyline points="104,50 126,62 148,54"/>
+    </svg>
+    <span class="tile-name">אירובי</span>
+    <span class="tile-sub" id="aerobicSub"></span>
+  </button>
 </div>
 
 <!-- ============ GENERIC LOG SCREEN ============ -->
@@ -306,6 +350,7 @@
         <div class="level-chips" id="levelChips"></div>
       </div>
       <button class="add-btn" id="addBtn">✅ הוסף סט</button>
+      <div class="today-line" id="todayLine"></div>
     </div>
   </main>
 </div>
@@ -321,7 +366,7 @@
     <div class="card">
       <p class="card-title"><span class="emoji">🏆</span> סיכום לפי תרגיל</p>
       <table class="mini">
-        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>סטים/יום</th><th>כמות/יום</th></tr></thead>
+        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>ממוצע ליום</th></tr></thead>
         <tbody id="miniTableBody"></tbody>
       </table>
     </div>
@@ -343,18 +388,19 @@
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · עמידת ידיים=שניות×רמה · קפיצה=1</span></p>
+      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×רמה · קפיצה=1 · אירובי=50+רמה</span></p>
       <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
       <div id="pointsBreakdown" style="display:none"></div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
+      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט של יום ספציפי</div>
     </div>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">📚</span> היסטוריית אימונים</p>
-      <div id="historyList"></div>
+      <p class="card-title clickable" id="historyToggle"><span class="emoji">📚</span> היסטוריית אימונים <span class="arrow" id="historyArrow">▾ פתח</span></p>
+      <div id="historyList" style="display:none"></div>
     </div>
 
-    <button class="danger-btn" id="wipeBtn">🗑️ מחיקת כל הנתונים</button>
+    <button class="edit-btn" id="editBtn">✏️ ערוך נתונים</button>
 
   </main>
 </div>
@@ -384,9 +430,11 @@
     abs:       { name:"בטן", emoji:"🔥", unit:"דקות", step:1, min:0, max:180, def:4,
                  chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false, goalDef:10 },
     handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:1, min:0, max:600, def:20,
-                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:60 },
+                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:100 },
     jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:1, min:0, max:5000, def:50,
-                 chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false, goalDef:200 }
+                 chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false, goalDef:200 },
+    aerobic:   { name:"אירובי", emoji:"🏃", unit:"רמת קושי", step:1, min:1, max:50, def:25,
+                 chips:[10,20,30,40,50], fmt:v=>"רמה "+v, hasLevel:false, goalDef:30 }
   };
   const EX_KEYS = Object.keys(EXERCISES);
 
@@ -397,6 +445,7 @@
       case "abs":       return s.val * 8;
       case "handstand": return s.val * (s.level || 1);
       case "jumps":     return s.val;
+      case "aerobic":   return 50 + s.val;
     }
     return 0;
   }
@@ -417,6 +466,7 @@
     EX_KEYS.forEach(k=>{
       if(!(g[k] >= 1)) g[k] = (k === "pullups" && old >= 1) ? old : EXERCISES[k].goalDef;
     });
+    if(g.handstand === 60) g.handstand = 100; // migrate old default
     return g;
   }
   function saveGoals(){ localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
@@ -427,6 +477,8 @@
   let currentEx = "pullups";
   let chartEx = "pullups";
   let chartMode = "day";
+  let historyOpen = false;
+  let editMode = false;
   const counters = {};
   EX_KEYS.forEach(k=>{
     const v = parseInt(localStorage.getItem("sportapp_counter_" + k), 10);
@@ -496,7 +548,6 @@
   }
 
   /* ---------- HOME ---------- */
-  // radial order clockwise starting from the top
   const RADIAL_ORDER = ["pullups","hang","abs","handstand","jumps"];
 
   function polyPoints(n, scale){
@@ -517,13 +568,10 @@
     const order = RADIAL_ORDER.filter(ex => document.querySelector('.tile-ex[data-ex="' + ex + '"]'));
     const n = order.length;
 
-    // circular tiles of diameter D placed evenly on a TRUE circle of radius R
-    // around the center — perfectly symmetric, guaranteed gaps between circles.
     const gap = 10;
-    const chord = 2 * Math.sin(Math.PI / n); // distance between adjacent centers = chord * R
+    const chord = 2 * Math.sin(Math.PI / n);
     let D = Math.min(W * 0.30, H * 0.19, 140);
     let R = Math.min(W/2 - D/2 - 4, H/2 - D/2 - 4);
-    // shrink D until adjacent circles have a gap
     for(let k=0; k<8 && chord * R < D + gap; k++){
       D = chord * R - gap;
       R = Math.min(W/2 - D/2 - 4, H/2 - D/2 - 4);
@@ -541,8 +589,6 @@
       t.style.top = (y - D/2) + "px";
     });
 
-    // central stats tile: n-sided polygon (pentagon for 5, hexagon for 6...),
-    // sized to keep a clear gap from the surrounding circles
     const st = document.getElementById("tileStats");
     const ssz = Math.max(70, 2 * (R - D/2 - 8));
     st.style.width = ssz + "px";
@@ -555,17 +601,15 @@
 
   function renderHome(){
     document.getElementById("todayLabel").textContent = fmtDate(new Date());
-    EX_KEYS.forEach(ex=>{
-      const el = document.querySelector('[data-ex-sub="' + ex + '"]');
-      if(!el) return;
-      const t = todaysSets(ex);
-      if(t.length === 0){ el.textContent = "עוד לא היום"; return; }
-      const total = t.reduce((s,x)=> s + x.val, 0);
-      el.textContent = t.length + " סטים · " + EXERCISES[ex].fmt(total);
+    RADIAL_ORDER.forEach(ex=>{
+      const t = document.querySelector('.tile-ex[data-ex="' + ex + '"]');
+      if(!t) return;
+      t.classList.toggle("not-done", todaysSets(ex).length === 0);
     });
-    layoutHome();
+    const aSub = document.getElementById("aerobicSub");
+    const aToday = todaysSets("aerobic");
+    aSub.textContent = aToday.length ? "✔ בוצע היום" : "";
     requestAnimationFrame(layoutHome);
-    setTimeout(layoutHome, 150);
   }
 
   /* ---------- LOG SCREEN ---------- */
@@ -616,6 +660,18 @@
     }
   }
 
+  function renderTodayLine(){
+    const c = cfg();
+    const today = todaysSets(currentEx);
+    const el = document.getElementById("todayLine");
+    if(today.length === 0){
+      el.innerHTML = "עוד לא עשית היום — זה הזמן! 💪";
+      return;
+    }
+    const total = today.reduce((s,x)=> s + x.val, 0);
+    el.innerHTML = 'היום עד כה: <b>' + today.length + '</b> סטים · <b>' + c.fmt(total) + '</b>';
+  }
+
   document.getElementById("addBtn").addEventListener("click", ()=>{
     const v = counters[currentEx];
     if(v <= 0) return;
@@ -625,6 +681,7 @@
     sets.push(entry);
     saveSets();
     showToast("סט נשמר: " + cfg().fmt(v) + " " + cfg().emoji);
+    renderTodayLine();
   });
 
   function renderLog(){
@@ -632,12 +689,14 @@
     document.getElementById("logTitle").textContent = c.emoji + " " + c.name;
     document.getElementById("logDateLabel").textContent = fmtDate(new Date());
     document.getElementById("logQuestion").textContent =
+      currentEx === "aerobic" ? "מה רמת הקושי של התרגיל?" :
       c.unit === "חזרות" ? "כמה חזרות עשית?" :
       c.unit === "קפיצות" ? "כמה קפיצות עשית?" :
       c.unit === "דקות" ? "כמה דקות עשית?" : "כמה שניות החזקת?";
     buildChips();
     buildLevels();
     renderCounter();
+    renderTodayLine();
   }
 
   /* ---------- STATS: mini table ---------- */
@@ -659,16 +718,20 @@
     EX_KEYS.forEach(ex=>{
       const c = EXERCISES[ex];
       const all = exSets(ex);
-      const days = new Set(all.map(s => dayKey(s.ts))).size;
-      const totalVal = all.reduce((s,x)=> s + x.val, 0);
-      const avgSets = days ? Math.round(all.length / days * 10) / 10 : 0;
-      const avgVal = days ? Math.round(totalVal / days) : 0;
+      let avgTxt = "—";
+      if(all.length){
+        let firstTs = Math.min.apply(null, all.map(s => s.ts));
+        const first = new Date(firstTs); first.setHours(0,0,0,0);
+        const nDays = Math.round((startOfDay(0) - first) / 86400000) + 1;
+        const totalVal = all.reduce((s,x)=> s + x.val, 0);
+        const avgVal = Math.round(totalVal / nDays);
+        avgTxt = avgVal ? c.fmt(avgVal) : "0";
+      }
       const tr = document.createElement("tr");
       tr.innerHTML =
         "<td>" + c.emoji + " " + c.name + "</td>" +
         "<td><b>" + exStreak(ex) + "</b></td>" +
-        "<td><b>" + (avgSets || "—") + "</b></td>" +
-        "<td><b>" + (avgVal ? c.fmt(avgVal) : "—") + "</b></td>";
+        "<td><b>" + avgTxt + "</b></td>";
       body.appendChild(tr);
     });
   }
@@ -718,7 +781,7 @@
     return { ctx, w: cssWidth, h: cssHeight };
   }
 
-  /* ---------- STATS: main chart (day/week columns) ---------- */
+  /* ---------- STATS: main chart ---------- */
   function buildChartControls(){
     const wrap = document.getElementById("chartChips");
     wrap.innerHTML = "";
@@ -754,6 +817,7 @@
     const { ctx, w, h } = setupCanvas(canvas, 180);
     const c = EXERCISES[chartEx];
 
+    // oldest on the LEFT, newest on the RIGHT (left-to-right time axis)
     let labels = [], totals = [], highlight = -1;
 
     if(chartMode === "day"){
@@ -780,7 +844,6 @@
       highlight = totals.length - 1;
     }
 
-    // average over period starting from first activity
     let firstIdx = totals.findIndex(v => v > 0);
     let avg = 0;
     if(firstIdx >= 0){
@@ -806,7 +869,6 @@
       ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
     });
 
-    // average dashed line
     if(avg > 0){
       const yAvg = bottom - (avg/max) * (bottom - top);
       ctx.strokeStyle = "rgba(244,114,182,.6)";
@@ -841,7 +903,6 @@
           ctx.fillText(val, x + bw/2, y - 4);
         }
       }
-      // x labels: every other + last
       if(i % 2 === (n-1) % 2 || i === n-1){
         ctx.fillStyle = i === highlight ? "#e2e8f0" : "#94a3b8";
         ctx.font = (i === highlight ? "800" : "600") + " 9px sans-serif";
@@ -851,22 +912,30 @@
     });
   }
 
-  /* ---------- STATS: points chart ---------- */
+  /* ---------- STATS: points ---------- */
   function pointsForKey(key){
     return sets.filter(s => dayKey(s.ts) === key).reduce((sum,x)=> sum + setPoints(x), 0);
   }
 
-  function renderPointsBreakdown(){
+  function renderPointsBreakdown(key, label){
     const wrap = document.getElementById("pointsBreakdown");
     wrap.innerHTML = "";
-    const tk = dayKey(Date.now());
     const perEx = {};
-    sets.filter(s => dayKey(s.ts) === tk).forEach(s=>{
+    sets.filter(s => dayKey(s.ts) === key).forEach(s=>{
       perEx[s.exercise] = (perEx[s.exercise] || 0) + setPoints(s);
     });
     const total = Object.values(perEx).reduce((a,b)=>a+b, 0);
+    if(label){
+      const t = document.createElement("div");
+      t.className = "pb-title";
+      t.textContent = "פירוט " + label + " · " + Math.round(total) + " נק׳";
+      wrap.appendChild(t);
+    }
     if(total <= 0){
-      wrap.innerHTML = '<div class="empty">אין עדיין נקודות היום</div>';
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "אין נקודות ביום זה";
+      wrap.appendChild(e);
       return;
     }
     EX_KEYS.filter(ex => perEx[ex] > 0)
@@ -890,13 +959,30 @@
     const open = bd.style.display !== "none";
     bd.style.display = open ? "none" : "";
     document.getElementById("ptHint").textContent = open ? "▾ לחץ לפירוט" : "▴ סגור פירוט";
-    if(!open) renderPointsBreakdown();
+    if(!open) renderPointsBreakdown(dayKey(Date.now()), "היום");
+  });
+
+  // click on a specific day in the points chart → breakdown for that day
+  const pcState = { days: [], step: 0 };
+  document.getElementById("pointsChart").addEventListener("click", (e)=>{
+    if(pcState.days.length === 0) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    let idx = Math.round(x / pcState.step);
+    idx = Math.max(0, Math.min(pcState.days.length - 1, idx));
+    const d = pcState.days[idx];
+    const bd = document.getElementById("pointsBreakdown");
+    bd.style.display = "";
+    document.getElementById("ptHint").textContent = "▴ סגור פירוט";
+    renderPointsBreakdown(dayKey(d.getTime()),
+      d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" }));
   });
 
   function renderPointsChart(){
     document.getElementById("pointsToday").textContent =
       Math.round(pointsForKey(dayKey(Date.now())));
-    if(document.getElementById("pointsBreakdown").style.display !== "none") renderPointsBreakdown();
+    if(document.getElementById("pointsBreakdown").style.display !== "none")
+      renderPointsBreakdown(dayKey(Date.now()), "היום");
 
     const canvas = document.getElementById("pointsChart");
     const { ctx, w, h } = setupCanvas(canvas, 170);
@@ -909,6 +995,7 @@
     if(nDays < 7) nDays = 7;
     if(nDays > 60) nDays = 60;
 
+    // oldest on the LEFT, newest on the RIGHT
     const days = [], totals = [];
     for(let i = nDays - 1; i >= 0; i--){
       const d = startOfDay(-i);
@@ -925,6 +1012,8 @@
     ctx.beginPath(); ctx.moveTo(0, bottom); ctx.lineTo(w, bottom); ctx.stroke();
 
     const step = totals.length > 1 ? w / (totals.length - 1) : w;
+    pcState.days = days;
+    pcState.step = step;
     const pts = totals.map((v,i)=> [i*step, bottom - (v/max)*(bottom-top)]);
 
     ctx.beginPath();
@@ -973,9 +1062,29 @@
     }
   }
 
-  /* ---------- STATS: history ---------- */
+  /* ---------- STATS: history + edit ---------- */
+  function editSet(id){
+    const s = sets.find(x => String(x.id) === String(id));
+    if(!s) return;
+    const c = EXERCISES[s.exercise] || EXERCISES.pullups;
+    const nv = parseInt(prompt(c.emoji + " " + c.name + " — ערך חדש (" + c.unit + "):", s.val), 10);
+    if(!isNaN(nv) && nv >= 1 && nv <= c.max) s.val = nv;
+    if(c.hasLevel){
+      const nl = parseInt(prompt("רמת קושי (1–10):", s.level || 5), 10);
+      if(!isNaN(nl) && nl >= 1 && nl <= 10) s.level = nl;
+    }
+    saveSets();
+    renderStats();
+    showToast("עודכן ✔");
+  }
+
   function renderHistory(){
     const wrap = document.getElementById("historyList");
+    const arrow = document.getElementById("historyArrow");
+    wrap.style.display = historyOpen ? "" : "none";
+    arrow.textContent = historyOpen ? "▴ סגור" : "▾ פתח";
+    if(!historyOpen) return;
+
     wrap.innerHTML = "";
     const byDay = {};
     sets.forEach(s=>{
@@ -997,9 +1106,9 @@
         '<div class="day-head">' +
         '<span class="d-date">' + d.toLocaleDateString("he-IL",{weekday:"short", day:"numeric", month:"numeric"}) + '</span>' +
         '<span class="d-info">' + daySets.length + ' סטים</span>' +
-        '<span class="d-total">⭐ ' + dayPts + '</span>' +
-        '<button class="d-trash" title="מחק יום">🗑️</button>' +
-        '</div><div class="day-body"></div>';
+        '<button class="d-total">⭐ ' + dayPts + '</button>' +
+        (editMode ? '<button class="d-trash" title="מחק יום">🗑️</button>' : '') +
+        '</div><div class="day-breakdown" style="display:none"></div><div class="day-body"></div>';
       const body = row.querySelector(".day-body");
       daySets.forEach(s=>{
         const c = EXERCISES[s.exercise] || EXERCISES.pullups;
@@ -1010,36 +1119,74 @@
           '<span class="badge">' + c.fmt(s.val) + '</span>' +
           (s.level ? '<span class="lvl">רמה ' + s.level + '</span>' : '') +
           '<span class="time">' + time + '</span></div>' +
-          '<button class="del" data-id="' + s.id + '">✕</button>';
+          '<div>' +
+          (editMode ? '<button class="edit" data-id="' + s.id + '">✏️</button>' +
+                      '<button class="del" data-id="' + s.id + '">✕</button>' : '') +
+          '</div>';
         body.appendChild(sr);
       });
+      // day points button → per-day percentage breakdown
+      row.querySelector(".d-total").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const bd = row.querySelector(".day-breakdown");
+        if(bd.style.display !== "none"){ bd.style.display = "none"; return; }
+        bd.style.display = "";
+        bd.innerHTML = "";
+        const perEx = {};
+        daySets.forEach(s=>{ perEx[s.exercise] = (perEx[s.exercise] || 0) + setPoints(s); });
+        const total = Object.values(perEx).reduce((a,b)=>a+b, 0);
+        EX_KEYS.filter(ex => perEx[ex] > 0)
+          .sort((a,b)=> perEx[b] - perEx[a])
+          .forEach(ex=>{
+            const c = EXERCISES[ex];
+            const pct = Math.round(perEx[ex] / total * 100);
+            const r2 = document.createElement("div");
+            r2.className = "pb-row";
+            r2.innerHTML =
+              '<span class="pb-name">' + c.emoji + ' ' + c.name + '</span>' +
+              '<span class="pb-track"><span class="pb-fill" style="width:' + pct + '%"></span></span>' +
+              '<span class="pb-pct"><b>' + pct + '%</b> · ' + Math.round(perEx[ex]) + ' נק׳</span>';
+            bd.appendChild(r2);
+          });
+      });
       row.querySelector(".day-head").addEventListener("click", (e)=>{
-        if(e.target.classList.contains("d-trash")) return;
+        if(e.target.classList.contains("d-trash") || e.target.classList.contains("d-total")) return;
         row.classList.toggle("open");
         if(row.classList.contains("open")) openDays.add(k); else openDays.delete(k);
       });
-      row.querySelector(".d-trash").addEventListener("click", ()=>{
+      const trash = row.querySelector(".d-trash");
+      if(trash) trash.addEventListener("click", ()=>{
         if(!confirm("למחוק את כל הסטים של יום זה?")) return;
         sets = sets.filter(s => dayKey(s.ts) !== k);
         saveSets(); renderStats();
       });
       body.querySelectorAll(".del").forEach(btn=>{
         btn.addEventListener("click", ()=>{
+          if(!confirm("למחוק את הסט הזה?")) return;
           sets = sets.filter(s => String(s.id) !== btn.getAttribute("data-id"));
           saveSets(); renderStats();
         });
+      });
+      body.querySelectorAll(".edit").forEach(btn=>{
+        btn.addEventListener("click", ()=> editSet(btn.getAttribute("data-id")));
       });
       wrap.appendChild(row);
     });
   }
 
-  document.getElementById("wipeBtn").addEventListener("click", ()=>{
-    if(!confirm("למחוק את כל הנתונים? אי אפשר לשחזר!")) return;
-    if(!confirm("בטוח בטוח? הכל יימחק לצמיתות")) return;
-    sets = [];
-    saveSets();
-    showToast("כל הנתונים נמחקו");
-    renderStats();
+  document.getElementById("historyToggle").addEventListener("click", ()=>{
+    historyOpen = !historyOpen;
+    renderHistory();
+  });
+
+  document.getElementById("editBtn").addEventListener("click", ()=>{
+    editMode = !editMode;
+    const b = document.getElementById("editBtn");
+    b.classList.toggle("on", editMode);
+    b.textContent = editMode ? "✔ סיום עריכה" : "✏️ ערוך נתונים";
+    if(editMode) historyOpen = true;
+    renderHistory();
+    if(editMode) document.getElementById("historyToggle").scrollIntoView({behavior:"smooth"});
   });
 
   function renderStats(){
@@ -1053,7 +1200,7 @@
 
   window.addEventListener("resize", ()=>{
     if(screens.stats.classList.contains("active")){ renderMainChart(); renderPointsChart(); }
-    layoutHome();
+    if(screens.home.classList.contains("active")) layoutHome();
   });
 
   /* ---------- init ---------- */
