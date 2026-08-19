@@ -43,6 +43,20 @@
   .screen{display:none;}
   .screen.active{display:block;}
 
+  /* log screen: entry card vertically centered */
+  #screen-log.active{
+    display:flex;flex-direction:column;
+    height:100vh;height:100dvh;
+    max-width:480px;margin:0 auto;
+    overflow:hidden;
+  }
+  #screen-log main{
+    flex:1;width:100%;
+    justify-content:center;
+    padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 24px);
+  }
+  #screen-log .card{margin-bottom:0;}
+
   /* ===== Home ===== */
   #screen-home.active{
     display:flex;flex-direction:column;
@@ -77,8 +91,8 @@
     width:80%;height:74%;opacity:.92;
   }
   .tile-ex .tile-name{
-    position:absolute;top:8%;left:0;right:0;
-    font-size:clamp(11px,3.5vw,15px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;
+    position:absolute;top:9%;left:0;right:0;
+    font-size:clamp(9px,2.8vw,12px);font-weight:900;color:#0b1220;letter-spacing:.2px;white-space:nowrap;
   }
 
   .tile-stats{
