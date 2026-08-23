@@ -389,8 +389,13 @@
       <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה</span></p>
       <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
       <div id="pointsBreakdown" style="display:none"></div>
+      <div class="mode-row">
+        <button class="chip" id="ptModeDay">ימים</button>
+        <button class="chip" id="ptModeWeek">שבועות</button>
+        <span class="avg-line" id="ptAvgLine"></span>
+      </div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
-      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט של יום ספציפי</div>
+      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט</div>
     </div>
 
     <div class="card">
@@ -951,15 +956,22 @@
   }
 
   /* ---------- STATS: points ---------- */
+  let pointsMode = "day";
+
   function pointsForKey(key){
     return sets.filter(s => dayKey(s.ts) === key).reduce((sum,x)=> sum + setPoints(x), 0);
   }
+  function pointsForKeys(keys){
+    const set = new Set(keys);
+    return sets.filter(s => set.has(dayKey(s.ts))).reduce((sum,x)=> sum + setPoints(x), 0);
+  }
 
-  function renderPointsBreakdown(key, label){
+  function renderPointsBreakdown(keys, label){
     const wrap = document.getElementById("pointsBreakdown");
     wrap.innerHTML = "";
+    const keySet = new Set(Array.isArray(keys) ? keys : [keys]);
     const perEx = {};
-    sets.filter(s => dayKey(s.ts) === key).forEach(s=>{
+    sets.filter(s => keySet.has(dayKey(s.ts))).forEach(s=>{
       perEx[s.exercise] = (perEx[s.exercise] || 0) + setPoints(s);
     });
     const total = Object.values(perEx).reduce((a,b)=>a+b, 0);
@@ -1000,20 +1012,30 @@
     if(!open) renderPointsBreakdown(dayKey(Date.now()), "היום");
   });
 
-  // click on a specific day in the points chart → breakdown for that day
-  const pcState = { days: [], step: 0 };
+  document.getElementById("ptModeDay").addEventListener("click", ()=>{
+    pointsMode = "day"; updatePtModeButtons(); renderPointsChart();
+  });
+  document.getElementById("ptModeWeek").addEventListener("click", ()=>{
+    pointsMode = "week"; updatePtModeButtons(); renderPointsChart();
+  });
+  function updatePtModeButtons(){
+    document.getElementById("ptModeDay").className = "chip" + (pointsMode === "day" ? " sel" : "");
+    document.getElementById("ptModeWeek").className = "chip" + (pointsMode === "week" ? " sel" : "");
+  }
+
+  // click on a point in the points chart → breakdown for that day/week
+  const pcState = { entries: [], padX: 0, step: 0 };
   document.getElementById("pointsChart").addEventListener("click", (e)=>{
-    if(pcState.days.length === 0) return;
+    if(pcState.entries.length === 0) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    const x = e.clientX - rect.left - pcState.padX;
     let idx = Math.round(x / pcState.step);
-    idx = Math.max(0, Math.min(pcState.days.length - 1, idx));
-    const d = pcState.days[idx];
+    idx = Math.max(0, Math.min(pcState.entries.length - 1, idx));
+    const entry = pcState.entries[idx];
     const bd = document.getElementById("pointsBreakdown");
     bd.style.display = "";
     document.getElementById("ptHint").textContent = "▴ סגור פירוט";
-    renderPointsBreakdown(dayKey(d.getTime()),
-      d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" }));
+    renderPointsBreakdown(entry.keys, entry.label);
   });
 
   function renderPointsChart(){
@@ -1025,22 +1047,55 @@
     const canvas = document.getElementById("pointsChart");
     const { ctx, w, h } = setupCanvas(canvas, 170);
 
-    let firstTs = Date.now();
-    sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
-    const first = new Date(firstTs); first.setHours(0,0,0,0);
-    const today = startOfDay(0);
-    let nDays = Math.round((today - first) / 86400000) + 1;
-    if(nDays < 7) nDays = 7;
-    if(nDays > 60) nDays = 60;
-
-    // oldest on the LEFT, newest on the RIGHT
-    const days = [], totals = [];
-    for(let i = nDays - 1; i >= 0; i--){
-      const d = startOfDay(-i);
-      days.push(d);
-      totals.push(pointsForKey(dayKey(d.getTime())));
+    // build entries: oldest on the LEFT, newest on the RIGHT
+    const entries = [];
+    if(pointsMode === "day"){
+      let firstTs = Date.now();
+      sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
+      const first = new Date(firstTs); first.setHours(0,0,0,0);
+      const today = startOfDay(0);
+      let nDays = Math.round((today - first) / 86400000) + 1;
+      if(nDays < 7) nDays = 7;
+      if(nDays > 60) nDays = 60;
+      for(let i = nDays - 1; i >= 0; i--){
+        const d = startOfDay(-i);
+        const k = dayKey(d.getTime());
+        entries.push({
+          val: pointsForKeys([k]), keys: [k],
+          axisLabel: d.getDate() + "." + (d.getMonth()+1),
+          label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
+        });
+      }
+    } else {
+      const N = 12;
+      for(let i = N-1; i >= 0; i--){
+        const ws = weekStart(-i);
+        const keys = [];
+        for(let j=0; j<7; j++){
+          const d = new Date(ws); d.setDate(d.getDate()+j);
+          if(d > new Date()) break;
+          keys.push(dayKey(d.getTime()));
+        }
+        entries.push({
+          val: pointsForKeys(keys), keys,
+          axisLabel: ws.getDate() + "." + (ws.getMonth()+1),
+          label: "שבוע " + ws.getDate() + "." + (ws.getMonth()+1)
+        });
+      }
     }
+    const totals = entries.map(e => e.val);
     const max = Math.max(1, ...totals);
+
+    // average since first non-zero entry
+    const firstIdx = totals.findIndex(v => v > 0);
+    let avg = 0;
+    if(firstIdx >= 0){
+      const span = totals.slice(firstIdx);
+      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
+    }
+    document.getElementById("ptAvgLine").innerHTML =
+      (pointsMode === "day" ? "ממוצע יומי: " : "ממוצע שבועי: ") +
+      "<b>" + (avg || "—") + "</b>";
 
     const top = 20, bottom = h - 26;
     ctx.clearRect(0,0,w,h);
@@ -1049,10 +1104,14 @@
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, bottom); ctx.lineTo(w, bottom); ctx.stroke();
 
-    const step = totals.length > 1 ? w / (totals.length - 1) : w;
-    pcState.days = days;
+    // horizontal padding keeps first/last points & labels fully on-canvas
+    const padX = 16;
+    const plotW = w - padX*2;
+    const step = totals.length > 1 ? plotW / (totals.length - 1) : plotW;
+    pcState.entries = entries;
+    pcState.padX = padX;
     pcState.step = step;
-    const pts = totals.map((v,i)=> [i*step, bottom - (v/max)*(bottom-top)]);
+    const pts = totals.map((v,i)=> [padX + i*step, bottom - (v/max)*(bottom-top)]);
 
     ctx.beginPath();
     ctx.moveTo(pts[0][0], bottom);
@@ -1083,7 +1142,7 @@
         if(totals[i] > 0){
           ctx.fillStyle = "#e2e8f0";
           ctx.font = "700 12px sans-serif";
-          ctx.textAlign = "center";
+          ctx.textAlign = i === 0 ? "left" : (i === pts.length-1 ? "right" : "center");
           ctx.fillText(Math.round(totals[i]), p[0], p[1] - 9);
         }
       });
@@ -1091,12 +1150,11 @@
 
     ctx.fillStyle = "#94a3b8";
     ctx.font = "600 10px sans-serif";
-    const tickCount = Math.min(4, totals.length);
+    const tickCount = Math.min(4, entries.length);
     for(let t=0; t<tickCount; t++){
-      const idx = tickCount === 1 ? 0 : Math.round(t * (totals.length-1) / (tickCount-1));
-      const d = days[idx];
-      ctx.textAlign = t === 0 ? "left" : (t === tickCount-1 ? "right" : "center");
-      ctx.fillText(d.getDate() + "." + (d.getMonth()+1), pts[idx][0], h - 8);
+      const idx = tickCount === 1 ? 0 : Math.round(t * (entries.length-1) / (tickCount-1));
+      ctx.textAlign = idx === 0 ? "left" : (idx === entries.length-1 ? "right" : "center");
+      ctx.fillText(entries[idx].axisLabel, pts[idx][0], h - 8);
     }
   }
 
@@ -1232,6 +1290,7 @@
     renderGoals();
     buildChartControls();
     renderMainChart();
+    updatePtModeButtons();
     renderPointsChart();
     renderHistory();
   }
