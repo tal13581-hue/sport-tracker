@@ -127,7 +127,7 @@
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
   .card-title{font-size:15px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
   .card-title .emoji{font-size:20px;}
-  .card-title .note{font-size:10px;color:var(--muted);font-weight:400;margin-right:auto;max-width:55%;text-align:left;}
+  .points-note{font-size:11px;color:var(--muted);font-weight:400;text-align:right;line-height:1.6;margin:-6px 0 14px;}
   .card-title.clickable{cursor:pointer;margin-bottom:0;}
   .card-title .arrow{margin-right:auto;color:var(--muted);font-size:13px;}
 
@@ -386,7 +386,8 @@
   <main>
 
     <div class="card">
-      <p class="card-title"><span class="emoji">⭐</span> נקודות <span class="note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה</span></p>
+      <p class="card-title"><span class="emoji">⭐</span> נקודות</p>
+      <div class="points-note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה</div>
       <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
       <div id="pointsBreakdown" style="display:none"></div>
       <div class="mode-row">
@@ -898,7 +899,7 @@
       "<b>" + (avg ? c.fmt(avg) : "—") + "</b>";
 
     const max = Math.max(1, ...totals);
-    const axisL = 34, top = 24, bottom = h - 24;
+    const axisL = 34, top = 38, bottom = h - 24;
     ctx.clearRect(0,0,w,h);
 
     ctx.font = "600 10px sans-serif";
@@ -975,7 +976,7 @@
     ctx.font = "800 10px sans-serif";
     ctx.textAlign = "right";
     ctx.fillText("ממוצע נע (" + winSize + (chartMode === "day" ? " ימים" : " שבועות") + "): " + c.fmt(Math.round(movingAvg[movingAvg.length-1])),
-      w, top - 8);
+      w, 12);
   }
 
   /* ---------- STATS: points ---------- */
@@ -1120,7 +1121,7 @@
       (pointsMode === "day" ? "ממוצע יומי: " : "ממוצע שבועי: ") +
       "<b>" + (avg || "—") + "</b>";
 
-    const axisL = 34, top = 24, bottom = h - 24;
+    const axisL = 34, top = 38, bottom = h - 24;
     ctx.clearRect(0,0,w,h);
 
     // y-axis gridlines: 0, mid, max
@@ -1202,7 +1203,7 @@
     ctx.font = "800 10px sans-serif";
     ctx.textAlign = "right";
     ctx.fillText("ממוצע נע (" + winSize + (pointsMode === "day" ? " ימים" : " שבועות") + "): " + Math.round(movingAvg[movingAvg.length-1]),
-      w, top - 4);
+      w, 12);
   }
 
   /* ---------- STATS: history + edit ---------- */
