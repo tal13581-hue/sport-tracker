@@ -898,7 +898,7 @@
       "<b>" + (avg ? c.fmt(avg) : "—") + "</b>";
 
     const max = Math.max(1, ...totals);
-    const axisL = 34, top = 16, bottom = h - 24;
+    const axisL = 34, top = 24, bottom = h - 24;
     ctx.clearRect(0,0,w,h);
 
     ctx.font = "600 10px sans-serif";
@@ -912,18 +912,17 @@
       ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
     });
 
-    if(avg > 0){
-      const yAvg = bottom - (avg/max) * (bottom - top);
-      ctx.strokeStyle = "rgba(244,114,182,.6)";
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([5,4]);
-      ctx.beginPath(); ctx.moveTo(axisL, yAvg); ctx.lineTo(w, yAvg); ctx.stroke();
-      ctx.setLineDash([]);
-    }
-
     const n = totals.length;
     const gap = 6;
     const bw = (w - axisL - gap*(n-1)) / n;
+
+    // rolling (trailing) average — tracks recent data instead of a flat line
+    const winSize = chartMode === "day" ? 7 : 4;
+    const movingAvg = totals.map((_,i)=>{
+      const start = Math.max(0, i - winSize + 1);
+      const win = totals.slice(start, i+1);
+      return win.reduce((a,b)=>a+b, 0) / win.length;
+    });
 
     totals.forEach((val,i)=>{
       const x = axisL + i * (bw + gap);
@@ -953,6 +952,30 @@
         ctx.fillText(labels[i], x + bw/2, h - 8);
       }
     });
+
+    // moving-average trend line — drawn on top of the bars, rises and falls with the data
+    const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
+    ctx.beginPath();
+    avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
+    ctx.strokeStyle = "#facc15";
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(15,23,42,.6)";
+    ctx.shadowBlur = 3;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    const lastAvgPt = avgPts[avgPts.length-1];
+    ctx.beginPath();
+    ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
+    ctx.fillStyle = "#facc15";
+    ctx.fill();
+    ctx.fillStyle = "#facc15";
+    ctx.font = "800 10px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("ממוצע נע (" + winSize + (chartMode === "day" ? " ימים" : " שבועות") + "): " + c.fmt(Math.round(movingAvg[movingAvg.length-1])),
+      w, top - 8);
   }
 
   /* ---------- STATS: points ---------- */
