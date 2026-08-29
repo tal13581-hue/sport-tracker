@@ -174,10 +174,11 @@
 
   canvas{width:100%;display:block;}
 
-  .workrest-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+  .workrest-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
   .wr-box{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
   .wr-box b{display:block;font-size:22px;font-weight:800;color:var(--good);}
   .wr-box.rest b{color:var(--muted);}
+  .wr-box.streak b{color:var(--pink);}
   .wr-box span{font-size:11px;color:var(--muted);}
 
   /* mini table */
@@ -415,9 +416,10 @@
       <div class="workrest-row">
         <div class="wr-box"><b id="workDays">0</b><span>סה"כ ימי עבודה</span></div>
         <div class="wr-box rest"><b id="restDays">0</b><span>סה"כ ימי מנוחה</span></div>
+        <div class="wr-box streak"><b id="bestStreakOverall">0</b><span>שיא רצף ימים</span></div>
       </div>
       <table class="mini">
-        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>ממוצע ליום</th></tr></thead>
+        <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>שיא רצף</th><th>ממוצע ליום</th></tr></thead>
         <tbody id="miniTableBody"></tbody>
       </table>
     </div>
@@ -744,6 +746,22 @@
     return streak;
   }
 
+  // longest-ever run of consecutive active days, from a set of "Y-M-D" day keys
+  function longestStreak(dayKeySet){
+    if(dayKeySet.size === 0) return 0;
+    const dates = [...dayKeySet].map(k=>{
+      const [y,m,d] = k.split("-").map(Number);
+      return new Date(y, m-1, d).getTime();
+    }).sort((a,b)=>a-b);
+    let best = 1, cur = 1;
+    for(let i=1;i<dates.length;i++){
+      const diffDays = Math.round((dates[i]-dates[i-1])/86400000);
+      cur = diffDays === 1 ? cur+1 : 1;
+      if(cur>best) best = cur;
+    }
+    return best;
+  }
+
   function renderTable(){
     // work days = days with any activity; rest days = days since first workout with nothing
     const activeDays = new Set(sets.map(s => dayKey(s.ts)));
@@ -756,6 +774,7 @@
     }
     document.getElementById("workDays").textContent = work;
     document.getElementById("restDays").textContent = rest;
+    document.getElementById("bestStreakOverall").textContent = longestStreak(activeDays);
 
     const body = document.getElementById("miniTableBody");
     body.innerHTML = "";
@@ -771,10 +790,12 @@
         const avgVal = Math.round(totalVal / nDays);
         avgTxt = avgVal ? c.fmt(avgVal) : "0";
       }
+      const exDays = new Set(all.map(s => dayKey(s.ts)));
       const tr = document.createElement("tr");
       tr.innerHTML =
         "<td>" + c.emoji + " " + c.name + "</td>" +
         "<td><b>" + exStreak(ex) + "</b></td>" +
+        "<td><b>" + longestStreak(exDays) + "</b></td>" +
         "<td><b>" + avgTxt + "</b></td>";
       body.appendChild(tr);
     });
