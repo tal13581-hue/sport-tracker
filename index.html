@@ -174,12 +174,12 @@
 
   canvas{width:100%;display:block;}
 
-  .workrest-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
-  .wr-box{background:var(--card2);border-radius:14px;padding:12px 6px;text-align:center;}
-  .wr-box b{display:block;font-size:22px;font-weight:800;color:var(--good);}
+  .workrest-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+  .wr-box{background:var(--card2);border-radius:14px;padding:10px 4px;text-align:center;}
+  .wr-box b{display:block;font-size:19px;font-weight:800;color:var(--good);}
   .wr-box.rest b{color:var(--muted);}
   .wr-box.streak b{color:var(--pink);}
-  .wr-box span{font-size:11px;color:var(--muted);}
+  .wr-box span{font-size:10px;color:var(--muted);}
 
   /* mini table */
   table.mini{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:12px;}
@@ -190,24 +190,10 @@
   .mini td:last-child{border-radius:10px 0 0 10px;}
   .mini td b{color:var(--purple);font-size:13px;}
 
-  /* goals */
-  .goal-block{margin-bottom:14px;}
-  .goal-block:last-child{margin-bottom:0;}
-  .goal-head{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
-  .goal-head .g-name{font-size:13px;font-weight:700;flex:1;}
-  .goal-head input{width:64px;padding:6px;border-radius:10px;border:none;background:var(--card2);
-    color:var(--text);font-size:14px;font-weight:700;text-align:center;font-family:inherit;}
-  .goal-head .g-unit{font-size:11px;color:var(--muted);}
-  .progress-wrap{background:var(--card2);border-radius:999px;height:12px;overflow:hidden;direction:ltr;}
-  .progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));
-    transition:width .4s ease;min-width:0;}
-  .progress-bar.done{background:linear-gradient(90deg,var(--good),#6ee7b7);}
-  .goal-text{font-size:11px;color:var(--muted);margin-top:4px;}
-
   .chart-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
   .chart-chips .chip{font-size:12px;padding:6px 12px;}
-  .mode-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
-  .mode-row .chip{font-size:12px;padding:6px 14px;}
+  .mode-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;row-gap:8px;}
+  .mode-row .chip{font-size:12px;padding:6px 12px;}
   .avg-line{margin-right:auto;font-size:13px;color:var(--muted);}
   .avg-line b{color:var(--accent);font-size:16px;}
 
@@ -394,6 +380,7 @@
       <div class="mode-row">
         <button class="chip" id="ptModeDay">ימים</button>
         <button class="chip" id="ptModeWeek">שבועות</button>
+        <button class="chip" id="ptModeMonth">חודשים</button>
         <span class="avg-line" id="ptAvgLine"></span>
       </div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
@@ -406,6 +393,7 @@
       <div class="mode-row">
         <button class="chip" id="modeDay">ימים</button>
         <button class="chip" id="modeWeek">שבועות</button>
+        <button class="chip" id="modeMonth">חודשים</button>
         <span class="avg-line" id="avgLine"></span>
       </div>
       <canvas id="mainChart" height="180" dir="ltr"></canvas>
@@ -416,17 +404,13 @@
       <div class="workrest-row">
         <div class="wr-box"><b id="workDays">0</b><span>סה"כ ימי עבודה</span></div>
         <div class="wr-box rest"><b id="restDays">0</b><span>סה"כ ימי מנוחה</span></div>
+        <div class="wr-box streak"><b id="curStreakOverall">0</b><span>רצף נוכחי</span></div>
         <div class="wr-box streak"><b id="bestStreakOverall">0</b><span>שיא רצף ימים</span></div>
       </div>
       <table class="mini">
         <thead><tr><th>תרגיל</th><th>ימים ברצף</th><th>שיא רצף</th><th>ממוצע ליום</th></tr></thead>
         <tbody id="miniTableBody"></tbody>
       </table>
-    </div>
-
-    <div class="card">
-      <p class="card-title"><span class="emoji">🎯</span> יעדים יומיים</p>
-      <div id="goalsList"></div>
     </div>
 
     <div class="card">
@@ -446,8 +430,6 @@
   "use strict";
 
   const STORAGE_KEY = "sportapp_sets_v1";
-  const GOALS_KEY = "sportapp_goals_v1";
-  const OLD_GOAL_KEY = "sportapp_goal_v1";
   const LEVEL_KEY = "sportapp_level_v1";
 
   function fmtSecs(v){
@@ -458,17 +440,17 @@
 
   const EXERCISES = {
     pullups:   { name:"מתח", emoji:"🧗", unit:"חזרות", step:1, min:0, max:500, def:8,
-                 chips:[5,8,10,12,15], fmt:v=>String(v), hasLevel:false, goalDef:50 },
-    hang:      { name:"תליה פסיבית", emoji:"🪢", unit:"שניות", step:10, min:0, max:900, def:50,
-                 chips:[30,50,60,70,90], fmt:fmtSecs, hasLevel:false, goalDef:120 },
+                 chips:[5,8,10,12,15], fmt:v=>String(v), hasLevel:false },
+    hang:      { name:"תליה פסיבית", emoji:"🪢", unit:"שניות", step:5, min:0, max:900, def:50,
+                 chips:[30,50,60,70,90], fmt:fmtSecs, hasLevel:false },
     abs:       { name:"בטן", emoji:"🔥", unit:"דקות", step:1, min:0, max:180, def:4,
-                 chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false, goalDef:10 },
+                 chips:[3,4,5,6,8], fmt:v=>v+" דק׳", hasLevel:false },
     handstand: { name:"עמידת ידיים", emoji:"🤸", unit:"שניות", step:1, min:0, max:600, def:20,
-                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true, goalDef:100 },
+                 chips:[10,15,20,30,45], fmt:fmtSecs, hasLevel:true },
     jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:1, min:0, max:5000, def:50,
-                 chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false, goalDef:200 },
+                 chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false },
     aerobic:   { name:"אירובי", emoji:"🏃", unit:"רמת קושי", step:1, min:1, max:50, def:25,
-                 chips:[10,20,30,40,50], fmt:v=>"רמה "+v, hasLevel:false, goalDef:30 }
+                 chips:[10,20,30,40,50], fmt:v=>"רמה "+v, hasLevel:false }
   };
   const EX_KEYS = Object.keys(EXERCISES);
 
@@ -493,20 +475,7 @@
   }
   function saveSets(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(sets)); }
 
-  function loadGoals(){
-    let g = {};
-    try{ g = JSON.parse(localStorage.getItem(GOALS_KEY)) || {}; }catch(e){}
-    const old = parseInt(localStorage.getItem(OLD_GOAL_KEY), 10);
-    EX_KEYS.forEach(k=>{
-      if(!(g[k] >= 1)) g[k] = (k === "pullups" && old >= 1) ? old : EXERCISES[k].goalDef;
-    });
-    if(g.handstand === 60) g.handstand = 100; // migrate old default
-    return g;
-  }
-  function saveGoals(){ localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
-
   let sets = loadSets();
-  let goals = loadGoals();
   let level = parseInt(localStorage.getItem(LEVEL_KEY), 10) || 5;
   let currentEx = "pullups";
   let chartEx = "pullups";
@@ -746,6 +715,18 @@
     return streak;
   }
 
+  function overallStreak(){
+    const has = key => sets.some(s => dayKey(s.ts) === key);
+    let streak = 0;
+    let offset = has(dayKey(startOfDay(0).getTime())) ? 0 : -1;
+    while(true){
+      const key = dayKey(startOfDay(offset - streak).getTime());
+      if(has(key)) streak++;
+      else break;
+    }
+    return streak;
+  }
+
   // longest-ever run of consecutive active days, from a set of "Y-M-D" day keys
   function longestStreak(dayKeySet){
     if(dayKeySet.size === 0) return 0;
@@ -774,6 +755,7 @@
     }
     document.getElementById("workDays").textContent = work;
     document.getElementById("restDays").textContent = rest;
+    document.getElementById("curStreakOverall").textContent = overallStreak();
     document.getElementById("bestStreakOverall").textContent = longestStreak(activeDays);
 
     const body = document.getElementById("miniTableBody");
@@ -798,37 +780,6 @@
         "<td><b>" + longestStreak(exDays) + "</b></td>" +
         "<td><b>" + avgTxt + "</b></td>";
       body.appendChild(tr);
-    });
-  }
-
-  /* ---------- STATS: goals ---------- */
-  function renderGoals(){
-    const wrap = document.getElementById("goalsList");
-    wrap.innerHTML = "";
-    EX_KEYS.forEach(ex=>{
-      const c = EXERCISES[ex];
-      const g = goals[ex];
-      const done = totalForKey(ex, dayKey(Date.now()));
-      const pct = Math.min(100, Math.round(done / g * 100));
-      const block = document.createElement("div");
-      block.className = "goal-block";
-      block.innerHTML =
-        '<div class="goal-head">' +
-          '<span class="g-name">' + c.emoji + ' ' + c.name + '</span>' +
-          '<input type="number" min="1" max="10000" inputmode="numeric" value="' + g + '" data-goal="' + ex + '">' +
-          '<span class="g-unit">' + c.unit + '/יום</span>' +
-        '</div>' +
-        '<div class="progress-wrap"><div class="progress-bar' + (pct >= 100 ? ' done' : '') + '" style="width:' + pct + '%"></div></div>' +
-        '<div class="goal-text">' + (pct >= 100 ? '🎉 עמדת ביעד! ' : '') + c.fmt(done) + ' מתוך ' + c.fmt(g) + ' (' + pct + '%)</div>';
-      wrap.appendChild(block);
-    });
-    wrap.querySelectorAll("input[data-goal]").forEach(inp=>{
-      inp.addEventListener("change", ()=>{
-        const v = parseInt(inp.value, 10);
-        const ex = inp.getAttribute("data-goal");
-        if(v >= 1 && v <= 10000){ goals[ex] = v; saveGoals(); }
-        renderGoals();
-      });
     });
   }
 
@@ -863,6 +814,7 @@
     });
     document.getElementById("modeDay").className = "chip" + (chartMode === "day" ? " sel" : "");
     document.getElementById("modeWeek").className = "chip" + (chartMode === "week" ? " sel" : "");
+    document.getElementById("modeMonth").className = "chip" + (chartMode === "month" ? " sel" : "");
   }
   document.getElementById("modeDay").addEventListener("click", ()=>{
     chartMode = "day"; buildChartControls(); renderMainChart();
@@ -870,10 +822,20 @@
   document.getElementById("modeWeek").addEventListener("click", ()=>{
     chartMode = "week"; buildChartControls(); renderMainChart();
   });
+  document.getElementById("modeMonth").addEventListener("click", ()=>{
+    chartMode = "month"; buildChartControls(); renderMainChart();
+  });
 
   function weekStart(offsetWeeks){
     const d = startOfDay(0);
     d.setDate(d.getDate() - d.getDay() + offsetWeeks * 7);
+    return d;
+  }
+  function monthStart(offsetMonths){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(1);
+    d.setMonth(d.getMonth() + offsetMonths);
     return d;
   }
 
@@ -893,7 +855,7 @@
         labels.push(d.getDate() + "." + (d.getMonth()+1));
       }
       highlight = totals.length - 1;
-    } else {
+    } else if(chartMode === "week"){
       const N = 12;
       for(let i = N-1; i >= 0; i--){
         const ws = weekStart(-i);
@@ -907,6 +869,20 @@
         labels.push(ws.getDate() + "." + (ws.getMonth()+1));
       }
       highlight = totals.length - 1;
+    } else {
+      const N = 12;
+      for(let i = N-1; i >= 0; i--){
+        const ms = monthStart(-i);
+        const nextMs = monthStart(-i+1);
+        let sum = 0;
+        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
+          if(d > new Date()) break;
+          sum += totalForKey(chartEx, dayKey(d.getTime()));
+        }
+        totals.push(sum);
+        labels.push(ms.toLocaleDateString("he-IL", {month:"short"}));
+      }
+      highlight = totals.length - 1;
     }
 
     let firstIdx = totals.findIndex(v => v > 0);
@@ -916,7 +892,7 @@
       avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
     }
     document.getElementById("avgLine").innerHTML =
-      (chartMode === "day" ? "ממוצע יומי: " : "ממוצע שבועי: ") +
+      (chartMode === "day" ? "ממוצע יומי: " : chartMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
       "<b>" + (avg ? c.fmt(avg) : "—") + "</b>";
 
     const max = Math.max(1, ...totals);
@@ -939,7 +915,7 @@
     const bw = (w - axisL - gap*(n-1)) / n;
 
     // rolling (trailing) average — tracks recent data instead of a flat line
-    const winSize = chartMode === "day" ? 7 : 4;
+    const winSize = chartMode === "day" ? 7 : chartMode === "week" ? 4 : 3;
     const movingAvg = totals.map((_,i)=>{
       const start = Math.max(0, i - winSize + 1);
       const win = totals.slice(start, i+1);
@@ -996,7 +972,7 @@
     ctx.fillStyle = "#facc15";
     ctx.font = "800 10px sans-serif";
     ctx.textAlign = "right";
-    ctx.fillText("ממוצע נע (" + winSize + (chartMode === "day" ? " ימים" : " שבועות") + "): " + c.fmt(Math.round(movingAvg[movingAvg.length-1])),
+    ctx.fillText("ממוצע נע (" + winSize + (chartMode === "day" ? " ימים" : chartMode === "week" ? " שבועות" : " חודשים") + "): " + c.fmt(Math.round(movingAvg[movingAvg.length-1])),
       w, 12);
   }
 
@@ -1063,9 +1039,13 @@
   document.getElementById("ptModeWeek").addEventListener("click", ()=>{
     pointsMode = "week"; updatePtModeButtons(); renderPointsChart();
   });
+  document.getElementById("ptModeMonth").addEventListener("click", ()=>{
+    pointsMode = "month"; updatePtModeButtons(); renderPointsChart();
+  });
   function updatePtModeButtons(){
     document.getElementById("ptModeDay").className = "chip" + (pointsMode === "day" ? " sel" : "");
     document.getElementById("ptModeWeek").className = "chip" + (pointsMode === "week" ? " sel" : "");
+    document.getElementById("ptModeMonth").className = "chip" + (pointsMode === "month" ? " sel" : "");
   }
 
   // click on a bar in the points chart → breakdown for that day/week
@@ -1111,7 +1091,7 @@
           label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
         });
       }
-    } else {
+    } else if(pointsMode === "week"){
       const N = 12;
       for(let i = N-1; i >= 0; i--){
         const ws = weekStart(-i);
@@ -1127,6 +1107,23 @@
           label: "שבוע " + ws.getDate() + "." + (ws.getMonth()+1)
         });
       }
+    } else {
+      const N = 12;
+      for(let i = N-1; i >= 0; i--){
+        const ms = monthStart(-i);
+        const nextMs = monthStart(-i+1);
+        const keys = [];
+        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
+          if(d > new Date()) break;
+          keys.push(dayKey(d.getTime()));
+        }
+        const monthLabel = ms.toLocaleDateString("he-IL", {month:"short"});
+        entries.push({
+          val: pointsForKeys(keys), keys,
+          axisLabel: monthLabel,
+          label: monthLabel
+        });
+      }
     }
     const totals = entries.map(e => e.val);
     const max = Math.max(1, ...totals);
@@ -1139,7 +1136,7 @@
       avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
     }
     document.getElementById("ptAvgLine").innerHTML =
-      (pointsMode === "day" ? "ממוצע יומי: " : "ממוצע שבועי: ") +
+      (pointsMode === "day" ? "ממוצע יומי: " : pointsMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
       "<b>" + (avg || "—") + "</b>";
 
     const axisL = 34, top = 38, bottom = h - 24;
@@ -1166,7 +1163,7 @@
     pcState.gap = gap;
 
     // rolling (trailing) average — tracks recent data instead of a flat line
-    const winSize = pointsMode === "day" ? 7 : 4;
+    const winSize = pointsMode === "day" ? 7 : pointsMode === "week" ? 4 : 3;
     const movingAvg = totals.map((_,i)=>{
       const start = Math.max(0, i - winSize + 1);
       const win = totals.slice(start, i+1);
@@ -1223,7 +1220,7 @@
     ctx.fillStyle = "#facc15";
     ctx.font = "800 10px sans-serif";
     ctx.textAlign = "right";
-    ctx.fillText("ממוצע נע (" + winSize + (pointsMode === "day" ? " ימים" : " שבועות") + "): " + Math.round(movingAvg[movingAvg.length-1]),
+    ctx.fillText("ממוצע נע (" + winSize + (pointsMode === "day" ? " ימים" : pointsMode === "week" ? " שבועות" : " חודשים") + "): " + Math.round(movingAvg[movingAvg.length-1]),
       w, 12);
   }
 
@@ -1356,7 +1353,6 @@
 
   function renderStats(){
     renderTable();
-    renderGoals();
     buildChartControls();
     renderMainChart();
     updatePtModeButtons();
