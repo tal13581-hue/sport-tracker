@@ -520,9 +520,9 @@
   let currentEx = "pullups";
   let chartEx = "pullups";
   let chartMode = "day";
-  let chartDayRange = "week";
+  let chartDayRange = "all";
   let pointsMode = "day";
-  let pointsDayRange = "week";
+  let pointsDayRange = "all";
   let historyOpen = false;
   let editMode = false;
   const counters = {};
@@ -542,6 +542,13 @@
     d.setHours(0,0,0,0);
     d.setDate(d.getDate() + offsetDays);
     return d;
+  }
+  function daysSinceStart(){
+    if(sets.length === 0) return 0;
+    let firstTs = Date.now();
+    sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
+    const first = new Date(firstTs); first.setHours(0,0,0,0);
+    return Math.max(1, Math.round((startOfDay(0) - first) / 86400000) + 1);
   }
   function exSets(ex){ return sets.filter(s => s.exercise === ex); }
   function totalForKey(ex, key){
@@ -874,6 +881,8 @@
     document.getElementById("mainRangeWeek").className = "chip range-chip" + (chartDayRange === "week" ? " sel" : "");
     document.getElementById("mainRangeMonth").className = "chip range-chip" + (chartDayRange === "month" ? " sel" : "");
     document.getElementById("mainRangeAll").className = "chip range-chip" + (chartDayRange === "all" ? " sel" : "");
+    const mainDays = daysSinceStart();
+    document.getElementById("mainRangeAll").textContent = "מההתחלה" + (mainDays ? " (" + mainDays + " ימים)" : "");
   }
   document.getElementById("modeDay").addEventListener("click", ()=>{
     chartMode = "day"; buildChartControls(); renderMainChart();
@@ -1163,6 +1172,8 @@
     document.getElementById("ptRangeWeek").className = "chip range-chip" + (pointsDayRange === "week" ? " sel" : "");
     document.getElementById("ptRangeMonth").className = "chip range-chip" + (pointsDayRange === "month" ? " sel" : "");
     document.getElementById("ptRangeAll").className = "chip range-chip" + (pointsDayRange === "all" ? " sel" : "");
+    const ptDays = daysSinceStart();
+    document.getElementById("ptRangeAll").textContent = "מההתחלה" + (ptDays ? " (" + ptDays + " ימים)" : "");
   }
 
   // click on a bar in the points chart → breakdown for that day/week
