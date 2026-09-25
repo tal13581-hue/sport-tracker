@@ -35,6 +35,10 @@
   header{padding:14px 20px 6px;display:flex;align-items:center;gap:12px;}
   header h1{font-size:19px;margin:0;font-weight:700;flex:1;}
   header .date{font-size:12px;color:var(--muted);margin-top:2px;}
+  .home-streak{font-size:11px;color:var(--muted);white-space:nowrap;
+    background:var(--card);border-radius:999px;padding:6px 12px;display:flex;gap:6px;align-items:center;}
+  .home-streak b{color:var(--text);font-weight:800;}
+  .home-streak .best{color:var(--pink);}
   .back-btn{background:var(--card);border:none;color:var(--text);font-size:20px;
     width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
   .back-btn:active{background:var(--card2);}
@@ -194,8 +198,12 @@
   .chart-chips .chip{font-size:12px;padding:6px 12px;}
   .mode-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;row-gap:8px;}
   .mode-row .chip{font-size:12px;padding:6px 12px;}
-  .avg-line{margin-right:auto;font-size:13px;color:var(--muted);}
-  .avg-line b{color:var(--accent);font-size:16px;}
+  .mode-row .range-chip{font-size:11px;padding:5px 10px;background:transparent;border:1px solid rgba(148,163,184,.3);color:var(--muted);}
+  .mode-row .range-chip.sel{background:var(--card2);border-color:transparent;color:var(--text);}
+  .avg-line, .avg-line-solo{font-size:13px;color:var(--muted);}
+  .avg-line{margin-right:auto;}
+  .avg-line-solo{margin-bottom:8px;}
+  .avg-line b, .avg-line-solo b{color:var(--accent);font-size:16px;}
 
   .points-today{display:block;width:100%;text-align:center;font-size:13px;color:var(--muted);
     margin-bottom:10px;background:none;border:none;font-family:inherit;padding:4px;}
@@ -210,6 +218,12 @@
   .pb-row .pb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));min-width:2px;}
   .pb-row .pb-pct{width:74px;text-align:left;color:var(--muted);font-size:11px;white-space:nowrap;}
   .pb-row .pb-pct b{color:var(--pink);font-size:12px;}
+  .reason-row{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    background:var(--card2);border-radius:12px;padding:10px 12px;}
+  .reason-text{font-size:12px;color:var(--text);flex:1;}
+  .reason-text.reason-empty{color:var(--muted);}
+  .reason-edit{background:none;border:none;color:var(--accent2);font-size:12px;font-weight:700;
+    padding:4px 6px;white-space:nowrap;font-family:inherit;}
 
   /* history */
   #historyList{margin-top:14px;}
@@ -245,6 +259,7 @@
       <h1>💪 מעקב ספורט</h1>
       <div class="date" id="todayLabel"></div>
     </div>
+    <div class="home-streak" id="homeStreakLine" style="display:none"></div>
   </header>
 
   <div class="tiles">
@@ -381,8 +396,13 @@
         <button class="chip" id="ptModeDay">ימים</button>
         <button class="chip" id="ptModeWeek">שבועות</button>
         <button class="chip" id="ptModeMonth">חודשים</button>
-        <span class="avg-line" id="ptAvgLine"></span>
       </div>
+      <div class="mode-row" id="ptRangeRow">
+        <button class="chip range-chip" id="ptRangeWeek">שבוע אחרון</button>
+        <button class="chip range-chip" id="ptRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="ptRangeAll">מההתחלה</button>
+      </div>
+      <div class="avg-line-solo" id="ptAvgLine"></div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
       <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט</div>
     </div>
@@ -394,8 +414,13 @@
         <button class="chip" id="modeDay">ימים</button>
         <button class="chip" id="modeWeek">שבועות</button>
         <button class="chip" id="modeMonth">חודשים</button>
-        <span class="avg-line" id="avgLine"></span>
       </div>
+      <div class="mode-row" id="mainRangeRow">
+        <button class="chip range-chip" id="mainRangeWeek">שבוע אחרון</button>
+        <button class="chip range-chip" id="mainRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="mainRangeAll">מההתחלה</button>
+      </div>
+      <div class="avg-line-solo" id="avgLine"></div>
       <canvas id="mainChart" height="180" dir="ltr"></canvas>
     </div>
 
@@ -418,6 +443,14 @@
       <div id="historyList" style="display:none"></div>
     </div>
 
+    <div class="card">
+      <p class="card-title"><span class="emoji">📋</span> סטים שעשיתי היום</p>
+      <table class="mini">
+        <thead><tr><th>תרגיל</th><th>סטים</th><th>כמות</th></tr></thead>
+        <tbody id="todaySetsBody"></tbody>
+      </table>
+    </div>
+
     <button class="edit-btn" id="editBtn">✏️ ערוך נתונים</button>
 
   </main>
@@ -431,6 +464,7 @@
 
   const STORAGE_KEY = "sportapp_sets_v1";
   const LEVEL_KEY = "sportapp_level_v1";
+  const REASONS_KEY = "sportapp_rest_reasons_v1";
 
   function fmtSecs(v){
     const m = Math.floor(v/60), s = Math.round(v%60);
@@ -475,11 +509,20 @@
   }
   function saveSets(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(sets)); }
 
+  function loadReasons(){
+    try{ return JSON.parse(localStorage.getItem(REASONS_KEY)) || {}; }catch(e){ return {}; }
+  }
+  function saveReasons(){ localStorage.setItem(REASONS_KEY, JSON.stringify(restReasons)); }
+
   let sets = loadSets();
+  let restReasons = loadReasons();
   let level = parseInt(localStorage.getItem(LEVEL_KEY), 10) || 5;
   let currentEx = "pullups";
   let chartEx = "pullups";
   let chartMode = "day";
+  let chartDayRange = "week";
+  let pointsMode = "day";
+  let pointsDayRange = "week";
   let historyOpen = false;
   let editMode = false;
   const counters = {};
@@ -612,6 +655,18 @@
     const aSub = document.getElementById("aerobicSub");
     const aToday = todaysSets("aerobic");
     aSub.textContent = aToday.length ? "✔ בוצע היום" : "";
+
+    const streakLine = document.getElementById("homeStreakLine");
+    const cur = overallStreak();
+    const best = longestStreak(new Set(sets.map(s => dayKey(s.ts))));
+    if(cur > 0 || best > 0){
+      streakLine.style.display = "";
+      streakLine.innerHTML = "🔥 <b>" + cur + "</b> ימים ברצף" +
+        (best > cur ? ' <span class="best">· שיא ' + best + "</span>" : "");
+    } else {
+      streakLine.style.display = "none";
+    }
+
     requestAnimationFrame(layoutHome);
   }
 
@@ -815,6 +870,10 @@
     document.getElementById("modeDay").className = "chip" + (chartMode === "day" ? " sel" : "");
     document.getElementById("modeWeek").className = "chip" + (chartMode === "week" ? " sel" : "");
     document.getElementById("modeMonth").className = "chip" + (chartMode === "month" ? " sel" : "");
+    document.getElementById("mainRangeRow").style.display = chartMode === "day" ? "" : "none";
+    document.getElementById("mainRangeWeek").className = "chip range-chip" + (chartDayRange === "week" ? " sel" : "");
+    document.getElementById("mainRangeMonth").className = "chip range-chip" + (chartDayRange === "month" ? " sel" : "");
+    document.getElementById("mainRangeAll").className = "chip range-chip" + (chartDayRange === "all" ? " sel" : "");
   }
   document.getElementById("modeDay").addEventListener("click", ()=>{
     chartMode = "day"; buildChartControls(); renderMainChart();
@@ -824,6 +883,15 @@
   });
   document.getElementById("modeMonth").addEventListener("click", ()=>{
     chartMode = "month"; buildChartControls(); renderMainChart();
+  });
+  document.getElementById("mainRangeWeek").addEventListener("click", ()=>{
+    chartDayRange = "week"; buildChartControls(); renderMainChart();
+  });
+  document.getElementById("mainRangeMonth").addEventListener("click", ()=>{
+    chartDayRange = "month"; buildChartControls(); renderMainChart();
+  });
+  document.getElementById("mainRangeAll").addEventListener("click", ()=>{
+    chartDayRange = "all"; buildChartControls(); renderMainChart();
   });
 
   function weekStart(offsetWeeks){
@@ -848,7 +916,16 @@
     let labels = [], totals = [], highlight = -1;
 
     if(chartMode === "day"){
-      const N = 14;
+      let N;
+      if(chartDayRange === "week") N = 7;
+      else if(chartDayRange === "month") N = 30;
+      else {
+        let firstTs = Date.now();
+        sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
+        const first = new Date(firstTs); first.setHours(0,0,0,0);
+        N = Math.max(7, Math.round((startOfDay(0) - first) / 86400000) + 1);
+      }
+      N = Math.min(N, 180);
       for(let i = N-1; i >= 0; i--){
         const d = startOfDay(-i);
         totals.push(totalForKey(chartEx, dayKey(d.getTime())));
@@ -911,8 +988,9 @@
     });
 
     const n = totals.length;
-    const gap = 6;
+    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
     const bw = (w - axisL - gap*(n-1)) / n;
+    const labelEvery = Math.max(1, Math.ceil(n / 7));
 
     // rolling (trailing) average — tracks recent data instead of a flat line
     const winSize = chartMode === "day" ? 7 : chartMode === "week" ? 4 : 3;
@@ -943,7 +1021,7 @@
           ctx.fillText(val, x + bw/2, y - 4);
         }
       }
-      if(i % 2 === (n-1) % 2 || i === n-1){
+      if(i % labelEvery === 0 || i === n-1){
         ctx.fillStyle = i === highlight ? "#e2e8f0" : "#94a3b8";
         ctx.font = (i === highlight ? "800" : "600") + " 9px sans-serif";
         ctx.textAlign = "center";
@@ -977,8 +1055,6 @@
   }
 
   /* ---------- STATS: points ---------- */
-  let pointsMode = "day";
-
   function pointsForKey(key){
     return sets.filter(s => dayKey(s.ts) === key).reduce((sum,x)=> sum + setPoints(x), 0);
   }
@@ -1003,10 +1079,38 @@
       wrap.appendChild(t);
     }
     if(total <= 0){
-      const e = document.createElement("div");
-      e.className = "empty";
-      e.textContent = "אין נקודות ביום זה";
-      wrap.appendChild(e);
+      if(keySet.size === 1){
+        const k = [...keySet][0];
+        const reasonRow = document.createElement("div");
+        reasonRow.className = "reason-row";
+        const textSpan = document.createElement("span");
+        textSpan.className = "reason-text";
+        if(restReasons[k]){
+          textSpan.textContent = "💤 " + restReasons[k];
+        } else {
+          textSpan.textContent = "יום ריק — לא בוצע אימון";
+          textSpan.classList.add("reason-empty");
+        }
+        const editBtn = document.createElement("button");
+        editBtn.className = "reason-edit";
+        editBtn.textContent = restReasons[k] ? "✏️ ערוך" : "+ הוסף סיבה";
+        editBtn.addEventListener("click", ()=>{
+          const nv = prompt("סיבה ליום המנוחה:", restReasons[k] || "");
+          if(nv === null) return;
+          if(nv.trim()) restReasons[k] = nv.trim(); else delete restReasons[k];
+          saveReasons();
+          renderPointsChart();
+          renderPointsBreakdown(keys, label);
+        });
+        reasonRow.appendChild(textSpan);
+        reasonRow.appendChild(editBtn);
+        wrap.appendChild(reasonRow);
+      } else {
+        const e = document.createElement("div");
+        e.className = "empty";
+        e.textContent = "אין נקודות בתקופה זו";
+        wrap.appendChild(e);
+      }
       return;
     }
     EX_KEYS.filter(ex => perEx[ex] > 0)
@@ -1042,10 +1146,23 @@
   document.getElementById("ptModeMonth").addEventListener("click", ()=>{
     pointsMode = "month"; updatePtModeButtons(); renderPointsChart();
   });
+  document.getElementById("ptRangeWeek").addEventListener("click", ()=>{
+    pointsDayRange = "week"; updatePtModeButtons(); renderPointsChart();
+  });
+  document.getElementById("ptRangeMonth").addEventListener("click", ()=>{
+    pointsDayRange = "month"; updatePtModeButtons(); renderPointsChart();
+  });
+  document.getElementById("ptRangeAll").addEventListener("click", ()=>{
+    pointsDayRange = "all"; updatePtModeButtons(); renderPointsChart();
+  });
   function updatePtModeButtons(){
     document.getElementById("ptModeDay").className = "chip" + (pointsMode === "day" ? " sel" : "");
     document.getElementById("ptModeWeek").className = "chip" + (pointsMode === "week" ? " sel" : "");
     document.getElementById("ptModeMonth").className = "chip" + (pointsMode === "month" ? " sel" : "");
+    document.getElementById("ptRangeRow").style.display = pointsMode === "day" ? "" : "none";
+    document.getElementById("ptRangeWeek").className = "chip range-chip" + (pointsDayRange === "week" ? " sel" : "");
+    document.getElementById("ptRangeMonth").className = "chip range-chip" + (pointsDayRange === "month" ? " sel" : "");
+    document.getElementById("ptRangeAll").className = "chip range-chip" + (pointsDayRange === "all" ? " sel" : "");
   }
 
   // click on a bar in the points chart → breakdown for that day/week
@@ -1075,13 +1192,16 @@
     // build entries: oldest on the LEFT, newest on the RIGHT
     const entries = [];
     if(pointsMode === "day"){
-      let firstTs = Date.now();
-      sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
-      const first = new Date(firstTs); first.setHours(0,0,0,0);
-      const today = startOfDay(0);
-      let nDays = Math.round((today - first) / 86400000) + 1;
-      if(nDays < 7) nDays = 7;
-      if(nDays > 60) nDays = 60;
+      let nDays;
+      if(pointsDayRange === "week") nDays = 7;
+      else if(pointsDayRange === "month") nDays = 30;
+      else {
+        let firstTs = Date.now();
+        sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
+        const first = new Date(firstTs); first.setHours(0,0,0,0);
+        nDays = Math.max(7, Math.round((startOfDay(0) - first) / 86400000) + 1);
+      }
+      nDays = Math.min(nDays, 180);
       for(let i = nDays - 1; i >= 0; i--){
         const d = startOfDay(-i);
         const k = dayKey(d.getTime());
@@ -1155,8 +1275,9 @@
     });
 
     const n = totals.length;
-    const gap = n > 20 ? 3 : 6;
+    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
     const bw = (w - axisL - gap*(n-1)) / n;
+    const labelEvery = Math.max(1, Math.ceil(n / 7));
     pcState.entries = entries;
     pcState.axisL = axisL;
     pcState.bw = bw;
@@ -1190,8 +1311,14 @@
           ctx.textAlign = "center";
           ctx.fillText(Math.round(val), x + bw/2, y - 4);
         }
+      } else if(pointsMode === "day" && restReasons[entries[i].keys[0]]){
+        // small marker on an empty day that already has a saved reason
+        ctx.beginPath();
+        ctx.arc(x + bw/2, bottom - 7, 2.5, 0, Math.PI*2);
+        ctx.fillStyle = "#94a3b8";
+        ctx.fill();
       }
-      if(i % 2 === (n-1) % 2 || i === n-1){
+      if(i % labelEvery === 0 || i === n-1){
         ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
         ctx.font = (i === n-1 ? "800" : "600") + " 9px sans-serif";
         ctx.textAlign = "center";
@@ -1351,6 +1478,28 @@
     if(editMode) document.getElementById("historyToggle").scrollIntoView({behavior:"smooth"});
   });
 
+  function renderTodaySummary(){
+    const body = document.getElementById("todaySetsBody");
+    body.innerHTML = "";
+    const anyToday = EX_KEYS.some(ex => todaysSets(ex).length > 0);
+    if(!anyToday){
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);background:none;padding:10px 0">עוד לא עשית שום דבר היום</td></tr>';
+      return;
+    }
+    EX_KEYS.forEach(ex=>{
+      const today = todaysSets(ex);
+      if(today.length === 0) return;
+      const c = EXERCISES[ex];
+      const total = today.reduce((s,x)=> s + x.val, 0);
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + c.emoji + " " + c.name + "</td>" +
+        "<td><b>" + today.length + "</b></td>" +
+        "<td><b>" + c.fmt(total) + "</b></td>";
+      body.appendChild(tr);
+    });
+  }
+
   function renderStats(){
     renderTable();
     buildChartControls();
@@ -1358,6 +1507,7 @@
     updatePtModeButtons();
     renderPointsChart();
     renderHistory();
+    renderTodaySummary();
   }
 
   window.addEventListener("resize", ()=>{
