@@ -111,21 +111,51 @@
   .tile-stats .mini-bars{display:flex;align-items:flex-end;gap:3px;height:18px;}
   .tile-stats .mini-bars span{width:6px;border-radius:2px;background:#0b1220;opacity:.75;}
 
-  .tile-aerobic{
-    flex:0 0 auto;
-    height:62px;
+  .bottom-row{
+    flex:0 0 auto;display:flex;gap:10px;
     margin:0 16px;
     margin-bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
+  }
+  .tile-aerobic{
+    flex:1;min-width:0;
+    height:62px;
     background:linear-gradient(135deg,var(--orange),var(--orange2));
     box-shadow:0 8px 22px rgba(251,146,60,.3);
-    display:flex;align-items:center;justify-content:center;gap:12px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
     border:none;border-radius:20px;cursor:pointer;
-    transition:transform .1s ease;font-family:inherit;
+    transition:transform .1s ease;font-family:inherit;padding:0 8px;
+  }
+  .tile-aerobic.tile-stretch{
+    background:linear-gradient(135deg,#34d399,#10b981);
+    box-shadow:0 8px 22px rgba(52,211,153,.3);
   }
   .tile-aerobic:active{transform:scale(.97);}
-  .tile-aerobic svg{height:34px;width:auto;}
-  .tile-aerobic .tile-name{font-size:22px;font-weight:900;color:#0b1220;}
-  .tile-aerobic .tile-sub{font-size:11px;font-weight:600;color:rgba(11,18,32,.65);}
+  .tile-aerobic svg{height:32px;width:auto;flex:0 0 auto;}
+  .tile-aerobic .tile-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;}
+  .tile-aerobic .tile-name{font-size:18px;font-weight:900;color:#0b1220;white-space:nowrap;}
+  .tile-aerobic .tile-sub{font-size:10px;font-weight:600;color:rgba(11,18,32,.65);white-space:nowrap;}
+
+  /* ===== Stretch screen ===== */
+  .stretch-progress{display:flex;gap:5px;justify-content:center;margin-bottom:14px;}
+  .stretch-progress span{width:18px;height:6px;border-radius:3px;background:var(--card2);}
+  .stretch-progress span.done{background:#34d399;}
+  .stretch-progress span.cur{background:#a7f3d0;}
+  .stretch-step{font-size:12px;color:var(--muted);text-align:center;margin-bottom:6px;}
+  .stretch-art{width:100%;max-width:220px;height:auto;display:block;margin:0 auto;}
+  .stretch-art .hl{fill:rgba(52,211,153,.35);stroke:none;}
+  .stretch-name{font-size:28px;font-weight:900;text-align:center;margin:10px 0 4px;color:#a7f3d0;}
+  .stretch-breaths{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;}
+  .stretch-next{width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:700;
+    background:linear-gradient(135deg,#34d399,#10b981);color:#0b1220;font-family:inherit;
+    box-shadow:0 6px 16px rgba(52,211,153,.25);}
+  .stretch-next:active{transform:scale(.98);}
+  .stretch-home{width:100%;margin-top:10px;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:700;
+    background:var(--card2);color:var(--text);font-family:inherit;}
+  .stretch-done{text-align:center;padding:10px 0;}
+  .stretch-done .big{font-size:56px;line-height:1;margin-bottom:10px;}
+  .stretch-done h2{margin:0 0 6px;font-size:22px;color:#a7f3d0;}
+  .stretch-done .pts{font-size:15px;color:var(--muted);margin-bottom:18px;}
+  .stretch-done .pts b{color:#facc15;font-size:20px;}
 
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
@@ -335,20 +365,80 @@
 
   </div>
 
-  <button class="tile-aerobic" data-ex="aerobic">
-    <svg viewBox="0 0 170 150" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="116" cy="24" r="12" fill="#0b1220"/>
-      <line x1="110" y1="36" x2="92" y2="78"/>
-      <polyline points="106,46 126,60 146,50"/>
-      <polyline points="104,50 84,58 68,44"/>
-      <polyline points="92,78 116,98 130,126"/>
-      <polyline points="92,78 70,98 84,122"/>
-      <line x1="30" y1="136" x2="58" y2="136"/>
-      <line x1="112" y1="140" x2="146" y2="140"/>
-    </svg>
-    <span class="tile-name">אירובי</span>
-    <span class="tile-sub" id="aerobicSub"></span>
-  </button>
+  <div class="bottom-row">
+    <button class="tile-aerobic" data-ex="aerobic">
+      <svg viewBox="0 0 170 150" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="116" cy="24" r="12" fill="#0b1220"/>
+        <line x1="110" y1="36" x2="92" y2="78"/>
+        <polyline points="106,46 126,60 146,50"/>
+        <polyline points="104,50 84,58 68,44"/>
+        <polyline points="92,78 116,98 130,126"/>
+        <polyline points="92,78 70,98 84,122"/>
+        <line x1="30" y1="136" x2="58" y2="136"/>
+        <line x1="112" y1="140" x2="146" y2="140"/>
+      </svg>
+      <span class="tile-text">
+        <span class="tile-name">אירובי</span>
+        <span class="tile-sub" id="aerobicSub"></span>
+      </span>
+    </button>
+
+    <button class="tile-aerobic tile-stretch" id="tileStretch">
+      <svg viewBox="0 0 170 150" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="85" cy="30" r="12" fill="#0b1220"/>
+        <line x1="85" y1="42" x2="85" y2="96"/>
+        <polyline points="85,58 40,40 22,22"/>
+        <polyline points="85,58 130,40 148,22"/>
+        <polyline points="85,96 46,124 20,120"/>
+        <polyline points="85,96 124,124 150,120"/>
+      </svg>
+      <span class="tile-text">
+        <span class="tile-name">מתיחות</span>
+        <span class="tile-sub" id="stretchSub"></span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- ============ STRETCH SCREEN ============ -->
+<div class="screen" id="screen-stretch">
+  <header>
+    <button class="back-btn" data-back>→</button>
+    <div>
+      <h1>🧘 מתיחות</h1>
+      <div class="date" id="stretchDateLabel"></div>
+    </div>
+  </header>
+  <main>
+    <div class="card" id="stretchPick">
+      <p class="card-title"><span class="emoji">🌬️</span> כמה נשימות לכל מתיחה?</p>
+      <div class="counter-row">
+        <button class="counter-btn" id="stretchMinus">−</button>
+        <div class="counter-value" id="stretchBreathVal">2</div>
+        <button class="counter-btn" id="stretchPlus">+</button>
+      </div>
+      <div class="stretch-breaths" id="stretchPickHint"></div>
+      <button class="stretch-next" id="stretchStart">🧘 מתחילים</button>
+    </div>
+
+    <div class="card" id="stretchPart" style="display:none">
+      <div class="stretch-step" id="stretchStep"></div>
+      <div class="stretch-progress" id="stretchProgress"></div>
+      <div id="stretchArt"></div>
+      <div class="stretch-name" id="stretchName"></div>
+      <div class="stretch-breaths" id="stretchBreathsLine"></div>
+      <button class="stretch-next" id="stretchNext">✅ סיימתי — לחלק הבא</button>
+      <button class="stretch-home" data-back>חזור למסך הראשי</button>
+    </div>
+
+    <div class="card stretch-done" id="stretchDone" style="display:none">
+      <div class="big">🎉</div>
+      <h2>כל הכבוד!</h2>
+      <div id="stretchDoneText" style="color:var(--text);margin-bottom:6px"></div>
+      <div class="pts" id="stretchDonePts"></div>
+      <button class="stretch-next" data-back>חזור למסך הראשי</button>
+    </div>
+  </main>
 </div>
 
 <!-- ============ GENERIC LOG SCREEN ============ -->
@@ -389,7 +479,7 @@
 
     <div class="card">
       <p class="card-title"><span class="emoji">⭐</span> נקודות</p>
-      <div class="points-note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה</div>
+      <div class="points-note">מתח=1 · שניית תליה=0.5 · דקת בטן=8 · ע.ידיים=שניות×(רמה÷2) · קפיצה=1 · אירובי=50+רמה · מתיחות=2×נשימות×חלקים (רק כשמסיימים הכל)</div>
       <button class="points-today" id="pointsTodayBtn">היום: <b id="pointsToday">0</b> נקודות <span class="pt-hint" id="ptHint">▾ לחץ לפירוט</span></button>
       <div id="pointsBreakdown" style="display:none"></div>
       <div class="mode-row">
@@ -484,9 +574,25 @@
     jumps:     { name:"קפיצות", emoji:"🦘", unit:"קפיצות", step:1, min:0, max:5000, def:50,
                  chips:[20,50,100,150,200], fmt:v=>String(v), hasLevel:false },
     aerobic:   { name:"אירובי", emoji:"🏃", unit:"רמת קושי", step:1, min:1, max:50, def:25,
-                 chips:[10,20,30,40,50], fmt:v=>"רמה "+v, hasLevel:false }
+                 chips:[10,20,30,40,50], fmt:v=>"רמה "+v, hasLevel:false },
+    stretch:   { name:"מתיחות", emoji:"🧘", unit:"נשימות", step:1, min:1, max:20, def:2,
+                 chips:[1,2,3,4,5], fmt:v=>v+" נשימות", hasLevel:false }
   };
   const EX_KEYS = Object.keys(EXERCISES);
+
+  // body parts for the stretch routine, in order; each has a simple friendly drawing
+  const STRETCH_PARTS = [
+    { name:"צוואר", svg:'<circle cx="112" cy="52" r="16"/><line x1="100" y1="66" x2="92" y2="130"/><polyline points="94,82 70,100 60,130"/><polyline points="94,80 118,64 124,40"/><polyline points="92,130 78,170 70,190"/><polyline points="92,130 110,168 118,190"/><ellipse cx="102" cy="72" rx="14" ry="10" class="hl"/>' },
+    { name:"שכמות", svg:'<circle cx="100" cy="42" r="16"/><line x1="100" y1="58" x2="100" y2="128"/><polyline points="100,76 66,90 118,104"/><polyline points="100,76 134,90 82,104"/><polyline points="100,128 82,170 76,192"/><polyline points="100,128 118,170 124,192"/><ellipse cx="100" cy="86" rx="22" ry="12" class="hl"/>' },
+    { name:"חזה", svg:'<circle cx="100" cy="40" r="16"/><line x1="100" y1="56" x2="100" y2="126"/><polyline points="100,72 60,58 28,54"/><polyline points="100,72 140,58 172,54"/><polyline points="100,126 82,168 76,192"/><polyline points="100,126 118,168 124,192"/><ellipse cx="100" cy="80" rx="20" ry="12" class="hl"/>' },
+    { name:"כפות ידיים", svg:'<circle cx="80" cy="46" r="16"/><line x1="82" y1="62" x2="86" y2="130"/><polyline points="84,80 130,74 168,80"/><polyline points="84,84 120,110 158,100"/><polyline points="86,130 70,172 64,192"/><polyline points="86,130 104,172 110,192"/><ellipse cx="166" cy="82" rx="14" ry="12" class="hl"/>' },
+    { name:"גב", svg:'<circle cx="150" cy="82" r="14"/><path d="M138 90 Q100 40 56 88"/><line x1="56" y1="88" x2="46" y2="150"/><line x1="66" y1="90" x2="60" y2="150"/><line x1="134" y1="98" x2="128" y2="150"/><line x1="144" y1="98" x2="140" y2="150"/><ellipse cx="98" cy="60" rx="30" ry="12" class="hl"/>' },
+    { name:"ישבן", svg:'<circle cx="86" cy="46" r="16"/><line x1="90" y1="62" x2="94" y2="122"/><polyline points="94,122 60,120 50,160"/><polyline points="94,122 140,110 112,146 70,146"/><polyline points="92,80 122,100 150,92"/><ellipse cx="102" cy="124" rx="16" ry="11" class="hl"/>' },
+    { name:"מפסאות", svg:'<circle cx="96" cy="40" r="16"/><line x1="96" y1="56" x2="96" y2="118"/><polyline points="96,118 140,124 150,168"/><polyline points="96,118 66,150 40,160"/><polyline points="96,76 70,96 60,120"/><polyline points="96,76 122,94 130,116"/><ellipse cx="82" cy="126" rx="14" ry="12" class="hl"/>' },
+    { name:"ארבע ראשי", svg:'<circle cx="94" cy="36" r="16"/><line x1="94" y1="52" x2="94" y2="120"/><polyline points="94,120 92,160 90,196"/><polyline points="94,120 128,146 118,176"/><polyline points="94,74 132,110 118,176"/><polyline points="94,74 60,100 44,120"/><ellipse cx="112" cy="132" rx="14" ry="18" class="hl"/>' },
+    { name:"מיתר הברך", svg:'<line x1="100" y1="132" x2="96" y2="196"/><line x1="112" y1="132" x2="110" y2="196"/><path d="M104 132 Q112 70 70 60"/><circle cx="52" cy="66" r="14"/><polyline points="90,76 76,120 74,150"/><ellipse cx="108" cy="150" rx="12" ry="22" class="hl"/>' },
+    { name:"תאומים", svg:'<circle cx="112" cy="36" r="16"/><line x1="110" y1="52" x2="98" y2="116"/><polyline points="104,72 140,60 160,56"/><line x1="166" y1="34" x2="166" y2="196"/><polyline points="98,116 60,150 44,196"/><polyline points="98,116 118,150 124,196"/><ellipse cx="54" cy="170" rx="11" ry="16" class="hl"/>' }
+  ];
 
   function setPoints(s){
     switch(s.exercise){
@@ -496,6 +602,7 @@
       case "handstand": return s.val * (s.level || 1) / 2;
       case "jumps":     return s.val;
       case "aerobic":   return 50 + s.val;
+      case "stretch":   return 2 * s.val * (s.parts || STRETCH_PARTS.length);
     }
     return 0;
   }
@@ -566,12 +673,14 @@
   const screens = {
     home: document.getElementById("screen-home"),
     log: document.getElementById("screen-log"),
-    stats: document.getElementById("screen-stats")
+    stats: document.getElementById("screen-stats"),
+    stretch: document.getElementById("screen-stretch")
   };
   function route(){
     const h = (location.hash || "").replace("#","");
     let name = "home";
     if(h === "stats") name = "stats";
+    else if(h === "stretch" || h === "log/stretch") name = "stretch";
     else if(h.startsWith("log/")){
       const ex = h.slice(4);
       if(EXERCISES[ex]){ name = "log"; currentEx = ex; }
@@ -582,11 +691,13 @@
     if(name === "home") renderHome();
     if(name === "log") renderLog();
     if(name === "stats") renderStats();
+    if(name === "stretch") renderStretch();
   }
   window.addEventListener("hashchange", route);
   document.querySelectorAll("[data-ex]").forEach(t =>
     t.addEventListener("click", ()=> location.hash = "log/" + t.getAttribute("data-ex")));
   document.getElementById("tileStats").addEventListener("click", ()=> location.hash = "stats");
+  document.getElementById("tileStretch").addEventListener("click", ()=> location.hash = "stretch");
   document.querySelectorAll("[data-back]").forEach(b =>
     b.addEventListener("click", ()=> { location.hash = ""; }));
 
@@ -663,6 +774,11 @@
     const aToday = todaysSets("aerobic");
     aSub.textContent = aToday.length ? "✔ בוצע היום" : "";
 
+    const sSub = document.getElementById("stretchSub");
+    const st = loadStretch();
+    sSub.textContent = st.done ? "✔ הושלם היום" :
+      (st.breaths ? "חלק " + (st.idx + 1) + "/" + STRETCH_PARTS.length : "");
+
     const streakLine = document.getElementById("homeStreakLine");
     const cur = overallStreak();
     const best = longestStreak(new Set(sets.map(s => dayKey(s.ts))));
@@ -675,6 +791,84 @@
     }
 
     requestAnimationFrame(layoutHome);
+  }
+
+  /* ---------- STRETCH ROUTINE ---------- */
+  // progress lives per calendar day: breaths chosen, current part, and whether all parts are done
+  const STRETCH_KEY = "sportapp_stretch_v1";
+  function loadStretch(){
+    try{
+      const p = JSON.parse(localStorage.getItem(STRETCH_KEY));
+      if(p && p.day === dayKey(Date.now())) return p;
+    }catch(e){}
+    return { day: dayKey(Date.now()), breaths: 0, idx: 0, done: false };
+  }
+  let stretch = loadStretch();
+  let stretchPick = 2;
+  function saveStretch(){ localStorage.setItem(STRETCH_KEY, JSON.stringify(stretch)); }
+
+  function renderStretchPick(){
+    document.getElementById("stretchBreathVal").textContent = stretchPick;
+    document.getElementById("stretchPickHint").textContent =
+      stretchPick + " נשימות ≈ " + (stretchPick * 10) + " שניות לכל חלק";
+  }
+  document.getElementById("stretchMinus").addEventListener("click", ()=>{
+    stretchPick = Math.max(1, stretchPick - 1); renderStretchPick();
+  });
+  document.getElementById("stretchPlus").addEventListener("click", ()=>{
+    stretchPick = Math.min(20, stretchPick + 1); renderStretchPick();
+  });
+  document.getElementById("stretchStart").addEventListener("click", ()=>{
+    stretch = { day: dayKey(Date.now()), breaths: stretchPick, idx: 0, done: false };
+    saveStretch();
+    renderStretch();
+  });
+  document.getElementById("stretchNext").addEventListener("click", ()=>{
+    stretch.idx++;
+    if(stretch.idx >= STRETCH_PARTS.length){
+      stretch.done = true;
+      sets.push({ id: Date.now() + "_" + Math.random().toString(36).slice(2),
+                  exercise: "stretch", val: stretch.breaths, parts: STRETCH_PARTS.length, ts: Date.now() });
+      saveSets();
+    }
+    saveStretch();
+    renderStretch();
+  });
+
+  function renderStretch(){
+    stretch = loadStretch();
+    document.getElementById("stretchDateLabel").textContent = fmtDate(new Date());
+    const pick = document.getElementById("stretchPick");
+    const part = document.getElementById("stretchPart");
+    const done = document.getElementById("stretchDone");
+    pick.style.display = part.style.display = done.style.display = "none";
+
+    if(!stretch.breaths){
+      pick.style.display = "";
+      renderStretchPick();
+      return;
+    }
+    if(stretch.done){
+      done.style.display = "";
+      document.getElementById("stretchDoneText").textContent =
+        "סיימת את כל " + STRETCH_PARTS.length + " המתיחות על " + stretch.breaths + " נשימות";
+      document.getElementById("stretchDonePts").innerHTML =
+        "<b>+" + (2 * stretch.breaths * STRETCH_PARTS.length) + "</b> נקודות נוספו";
+      return;
+    }
+    part.style.display = "";
+    const p = STRETCH_PARTS[stretch.idx];
+    document.getElementById("stretchStep").textContent =
+      "חלק " + (stretch.idx + 1) + " מתוך " + STRETCH_PARTS.length;
+    document.getElementById("stretchProgress").innerHTML =
+      STRETCH_PARTS.map((_,i)=> '<span class="' + (i < stretch.idx ? "done" : i === stretch.idx ? "cur" : "") + '"></span>').join("");
+    document.getElementById("stretchArt").innerHTML =
+      '<svg class="stretch-art" viewBox="0 0 200 200" fill="none" stroke="#34d399" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">' + p.svg + '</svg>';
+    document.getElementById("stretchName").textContent = p.name;
+    document.getElementById("stretchBreathsLine").textContent =
+      stretch.breaths + " נשימות ≈ " + (stretch.breaths * 10) + " שניות";
+    document.getElementById("stretchNext").textContent =
+      stretch.idx === STRETCH_PARTS.length - 1 ? "🎉 סיימתי את האחרון!" : "✅ סיימתי — לחלק הבא";
   }
 
   /* ---------- LOG SCREEN ---------- */
