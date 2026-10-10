@@ -274,6 +274,38 @@
   .edit-btn.on{background:rgba(129,140,248,.3);color:#c7d2fe;}
   .edit-btn:active{background:rgba(129,140,248,.35);}
 
+  /* ===== Spirit mode (separate from sport, same visual language) ===== */
+  .mode-switch{margin-inline-start:auto;width:30px;height:30px;border-radius:50%;flex:0 0 auto;
+    border:1px solid rgba(148,163,184,.25);background:transparent;color:var(--muted);
+    font-size:14px;opacity:.5;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;}
+  .mode-switch:active{opacity:1;}
+  #screen-sp-home.active{
+    display:flex;flex-direction:column;
+    height:100vh;height:100dvh;
+    max-width:480px;margin:0 auto;
+    overflow:hidden;
+  }
+  .sp-tiles{
+    flex:1;min-height:0;
+    position:relative;
+    margin:2px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+  }
+  .sp-tiles .tile{position:absolute;}
+  #screen-sp-log.active{
+    display:flex;flex-direction:column;
+    height:100vh;height:100dvh;
+    max-width:480px;margin:0 auto;
+    overflow:hidden;
+  }
+  #screen-sp-log main{
+    flex:1;width:100%;
+    justify-content:center;
+    padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 24px);
+  }
+  #screen-sp-log .card{margin-bottom:0;}
+  #spCounterVal{font-size:36px;min-width:150px;}
+  #spHistoryList{margin-top:14px;}
+
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--good);color:#052e19;font-weight:700;padding:10px 20px;border-radius:999px;
     font-size:14px;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;z-index:50;}
@@ -290,6 +322,7 @@
       <div class="date" id="todayLabel"></div>
     </div>
     <div class="home-streak" id="homeStreakLine" style="display:none"></div>
+    <button class="mode-switch" id="toSpirit" title="רוחניות">🕊️</button>
   </header>
 
   <div class="tiles">
@@ -546,6 +579,151 @@
   </main>
 </div>
 
+<!-- ============ SPIRIT: HOME ============ -->
+<div class="screen" id="screen-sp-home">
+  <header>
+    <div>
+      <h1>🕊️ רוחניות</h1>
+      <div class="date" id="spTodayLabel"></div>
+    </div>
+    <div class="home-streak" id="spTodayBadge" style="display:none"></div>
+    <button class="mode-switch" id="toSport" title="חזרה לספורט">💪</button>
+  </header>
+
+  <div class="sp-tiles" id="spTiles">
+
+    <button class="tile tile-ex" data-sp="meditate">
+      <span class="tile-name">מדיטציה</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="90" cy="34" r="13" fill="#0b1220"/>
+        <line x1="90" y1="48" x2="90" y2="92"/>
+        <polyline points="90,58 58,82 74,102"/>
+        <polyline points="90,58 122,82 106,102"/>
+        <polyline points="90,94 44,120 90,126 136,120 90,94"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-sp="diy">
+      <span class="tile-name">עשה זאת בעצמך</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="52" y1="126" x2="104" y2="70"/>
+        <line x1="92" y1="46" x2="128" y2="82" stroke-width="20"/>
+        <line x1="84" y1="54" x2="104" y2="34"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-sp="volunteer">
+      <span class="tile-name">התנדבות</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M90 124 C36 86 50 34 90 60 C130 34 144 86 90 124 Z"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-sp="selfimp">
+      <span class="tile-name">שיפור עצמי</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="72" y1="108" x2="72" y2="40"/>
+        <line x1="72" y1="40" x2="124" y2="28"/>
+        <line x1="124" y1="28" x2="124" y2="96"/>
+        <ellipse cx="58" cy="110" rx="15" ry="11" fill="#0b1220"/>
+        <ellipse cx="110" cy="98" rx="15" ry="11" fill="#0b1220"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-ex" data-sp="event">
+      <span class="tile-name">אירוע / חוויה</span>
+      <svg viewBox="0 0 180 150" fill="none" stroke="#0b1220" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="46" cy="52" r="11" fill="#0b1220"/>
+        <circle cx="90" cy="38" r="11" fill="#0b1220"/>
+        <circle cx="134" cy="52" r="11" fill="#0b1220"/>
+        <path d="M26 112 Q46 72 66 112"/>
+        <path d="M70 100 Q90 58 110 100"/>
+        <path d="M114 112 Q134 72 154 112"/>
+      </svg>
+    </button>
+
+    <button class="tile tile-stats" id="spTileStats">
+      <div class="mini-bars"><span style="height:35%"></span><span style="height:60%"></span><span style="height:45%"></span><span style="height:100%"></span></div>
+      <span class="tile-name">סטטיסטיקה</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- ============ SPIRIT: LOG ============ -->
+<div class="screen" id="screen-sp-log">
+  <header>
+    <button class="back-btn" data-sp-back>→</button>
+    <div>
+      <h1 id="spLogTitle"></h1>
+      <div class="date" id="spLogDate"></div>
+    </div>
+  </header>
+  <main>
+    <div class="card">
+      <p class="card-title"><span class="emoji">✏️</span> <span id="spLogQuestion"></span></p>
+      <div class="counter-row">
+        <button class="counter-btn" id="spMinus">−</button>
+        <div class="counter-value" id="spCounterVal"></div>
+        <button class="counter-btn" id="spPlus">+</button>
+      </div>
+      <div class="quick-chips" id="spQuickChips"></div>
+      <div class="level-wrap" id="spLevelWrap" style="display:none">
+        <div class="level-label">רמת פוקוס (1–5)</div>
+        <div class="level-chips" id="spLevelChips"></div>
+      </div>
+      <button class="add-btn" id="spAddBtn">✅ הוסף</button>
+      <div class="today-line" id="spTodayLine"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ SPIRIT: STATS ============ -->
+<div class="screen" id="screen-sp-stats">
+  <header>
+    <button class="back-btn" data-sp-back>→</button>
+    <div><h1>📊 סטטיסטיקה רוחנית</h1></div>
+  </header>
+  <main>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">✨</span> נקודות רוחניות</p>
+      <div class="points-note">מדיטציה=דקות×רמת פוקוס×⅔ · עשה זאת בעצמך=25 לשעה · התנדבות=50 לשעה · שיפור עצמי=50 לשעה · אירוע/חוויה=100 · בנוסף: 20% מנקודות הספורט, 40% מהאירובי, 60% מהמתיחות</div>
+      <button class="points-today" id="spPointsBtn">היום: <b id="spPointsToday">0</b> נקודות <span class="pt-hint" id="spPtHint">▾ לחץ לפירוט</span></button>
+      <div id="spBreakdown" style="display:none"></div>
+      <div class="mode-row">
+        <button class="chip" id="spModeDay">ימים</button>
+        <button class="chip" id="spModeWeek">שבועות</button>
+        <button class="chip" id="spModeMonth">חודשים</button>
+      </div>
+      <div class="mode-row" id="spRangeRow">
+        <button class="chip range-chip" id="spRangeWeek">שבוע אחרון</button>
+        <button class="chip range-chip" id="spRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="spRangeAll">מההתחלה</button>
+      </div>
+      <div class="avg-line-solo" id="spAvgLine"></div>
+      <canvas id="spChart" height="170" dir="ltr"></canvas>
+      <div class="pt-chart-hint">💡 לחץ על עמודה לפירוט</div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📋</span> מה עשיתי היום</p>
+      <table class="mini">
+        <thead><tr><th>תרגיל</th><th>פעמים</th><th>כמות</th><th>נקודות</th></tr></thead>
+        <tbody id="spTodayBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <p class="card-title clickable" id="spHistoryToggle"><span class="emoji">📚</span> היסטוריה <span class="arrow" id="spHistoryArrow">▾ פתח</span></p>
+      <div id="spHistoryList" style="display:none"></div>
+    </div>
+
+    <button class="edit-btn" id="spEditBtn">✏️ ערוך נתונים</button>
+
+  </main>
+</div>
+
 <div class="toast" id="toast">נשמר!</div>
 
 <script>
@@ -674,12 +852,21 @@
     home: document.getElementById("screen-home"),
     log: document.getElementById("screen-log"),
     stats: document.getElementById("screen-stats"),
-    stretch: document.getElementById("screen-stretch")
+    stretch: document.getElementById("screen-stretch"),
+    spHome: document.getElementById("screen-sp-home"),
+    spLog: document.getElementById("screen-sp-log"),
+    spStats: document.getElementById("screen-sp-stats")
   };
   function route(){
     const h = (location.hash || "").replace("#","");
     let name = "home";
     if(h === "stats") name = "stats";
+    else if(h === "spirit") name = "spHome";
+    else if(h === "spirit/stats") name = "spStats";
+    else if(h.startsWith("spirit/log/")){
+      const k = h.slice("spirit/log/".length);
+      if(SP_EXERCISES[k]){ name = "spLog"; spCurrent = k; }
+    }
     else if(h === "stretch" || h === "log/stretch") name = "stretch";
     else if(h.startsWith("log/")){
       const ex = h.slice(4);
@@ -692,6 +879,9 @@
     if(name === "log") renderLog();
     if(name === "stats") renderStats();
     if(name === "stretch") renderStretch();
+    if(name === "spHome") renderSpHome();
+    if(name === "spLog") renderSpLog();
+    if(name === "spStats") renderSpStats();
   }
   window.addEventListener("hashchange", route);
   document.querySelectorAll("[data-ex]").forEach(t =>
@@ -1720,7 +1910,618 @@
     if(screens.home.classList.contains("active")) layoutHome();
   });
 
+  /* ==========================================================
+     SPIRIT (רוחניות) — separate data, same look as sport
+     ========================================================== */
+  const SP_KEY = "sportapp_spirit_v1";
+  const SP_EVENT_POINTS = 100; // points per event / deep experience
+  function fmtMins(v){
+    if(v < 60) return v + " דק׳";
+    return Math.floor(v/60) + ":" + String(v % 60).padStart(2,"0") + " שע׳";
+  }
+  const SP_EXERCISES = {
+    meditate:  { name:"מדיטציה", emoji:"🪷", kind:"time", hasLevel:true, step:5, min:5, max:600, def:30,
+                 chips:[15,30,45,60,90], fmt:fmtMins },
+    diy:       { name:"עשה זאת בעצמך", emoji:"🛠️", kind:"time", step:5, min:5, max:720, def:60,
+                 chips:[30,60,90,120,180], fmt:fmtMins },
+    volunteer: { name:"התנדבות", emoji:"🤝", kind:"time", step:5, min:5, max:720, def:60,
+                 chips:[30,60,90,120,180], fmt:fmtMins },
+    selfimp:   { name:"שיפור עצמי", emoji:"🎸", kind:"time", step:5, min:5, max:600, def:30,
+                 chips:[15,30,45,60,90], fmt:fmtMins },
+    event:     { name:"אירוע / חוויה", emoji:"🌟", kind:"count", step:1, min:1, max:20, def:1,
+                 chips:[1,2,3], fmt:v=> v + (v === 1 ? " אירוע" : " אירועים") }
+  };
+  const SP_KEYS = Object.keys(SP_EXERCISES);
+  const SP_ORDER = ["meditate","diy","volunteer","selfimp","event"];
+
+  // share of sport points that also counts as spiritual points
+  const SP_FROM_SPORT = [
+    { key:"sport",   name:"ספורט",  emoji:"💪", pct:0.2, ex:["pullups","hang","abs","handstand","jumps"] },
+    { key:"aerobic", name:"אירובי", emoji:"🏃", pct:0.4, ex:["aerobic"] },
+    { key:"stretch", name:"מתיחות", emoji:"🧘", pct:0.6, ex:["stretch"] }
+  ];
+  const SP_SRC_META = {};
+  SP_KEYS.forEach(k=>{ SP_SRC_META[k] = { name:SP_EXERCISES[k].name, emoji:SP_EXERCISES[k].emoji }; });
+  SP_FROM_SPORT.forEach(s=>{
+    SP_SRC_META[s.key] = { name:s.name + " (" + Math.round(s.pct*100) + "%)", emoji:s.emoji };
+  });
+
+  function spPoints(s){
+    switch(s.exercise){
+      case "meditate":  return s.val * (s.level || 1) * 2 / 3;   // 60min @ level 5 = 200
+      case "diy":       return s.val * 25 / 60;
+      case "volunteer": return s.val * 50 / 60;
+      case "selfimp":   return s.val * 50 / 60;
+      case "event":     return s.val * SP_EVENT_POINTS;
+    }
+    return 0;
+  }
+
+  function loadSpSets(){
+    try{ return JSON.parse(localStorage.getItem(SP_KEY)) || []; }catch(e){ return []; }
+  }
+  function saveSpSets(){ localStorage.setItem(SP_KEY, JSON.stringify(spSets)); }
+
+  let spSets = loadSpSets();
+  let spCurrent = "meditate";
+  let spLevel = parseInt(localStorage.getItem("sportapp_splevel_v1"), 10) || 3;
+  let spMode = "day";
+  let spDayRange = "all";
+  let spHistoryOpen = false;
+  let spEditMode = false;
+  const spOpenDays = new Set();
+  const spCounters = {};
+  SP_KEYS.forEach(k=>{
+    const v = parseInt(localStorage.getItem("sportapp_spcounter_" + k), 10);
+    spCounters[k] = (v >= SP_EXERCISES[k].min && v <= SP_EXERCISES[k].max) ? v : SP_EXERCISES[k].def;
+  });
+
+  function spTodaySets(ex){
+    const tk = dayKey(Date.now());
+    return spSets.filter(s => s.exercise === ex && dayKey(s.ts) === tk).sort((a,b)=> b.ts - a.ts);
+  }
+
+  // points per source (direct spirit exercises + derived share of sport) for a set of day keys
+  function spSources(keySet){
+    const out = {};
+    spSets.forEach(s=>{
+      if(keySet.has(dayKey(s.ts))) out[s.exercise] = (out[s.exercise] || 0) + spPoints(s);
+    });
+    SP_FROM_SPORT.forEach(src=>{
+      let sum = 0;
+      sets.forEach(s=>{
+        if(keySet.has(dayKey(s.ts)) && src.ex.indexOf(s.exercise) >= 0) sum += setPoints(s);
+      });
+      if(sum > 0) out[src.key] = sum * src.pct;
+    });
+    return out;
+  }
+  function spTotalForKeys(keys){
+    const o = spSources(new Set(keys));
+    return Object.keys(o).reduce((a,k)=> a + o[k], 0);
+  }
+  function spFirstTs(){
+    let f = Date.now();
+    sets.forEach(s => { if(s.ts < f) f = s.ts; });
+    spSets.forEach(s => { if(s.ts < f) f = s.ts; });
+    return f;
+  }
+  function spDaysSinceStart(){
+    if(sets.length === 0 && spSets.length === 0) return 0;
+    const first = new Date(spFirstTs()); first.setHours(0,0,0,0);
+    return Math.max(1, Math.round((startOfDay(0) - first) / 86400000) + 1);
+  }
+
+  /* ----- spirit home ----- */
+  function layoutSpirit(){
+    if(!screens.spHome.classList.contains("active")) return;
+    const cont = document.getElementById("spTiles");
+    const W = cont.clientWidth, H = cont.clientHeight;
+    if(W === 0 || H === 0) return;
+    const n = SP_ORDER.length;
+
+    const gap = 10;
+    const chord = 2 * Math.sin(Math.PI / n);
+    let D = Math.min(W * 0.30, H * 0.19, 140);
+    let R = Math.min(W/2 - D/2 - 4, H/2 - D/2 - 4);
+    for(let k=0; k<8 && chord * R < D + gap; k++){
+      D = chord * R - gap;
+      R = Math.min(W/2 - D/2 - 4, H/2 - D/2 - 4);
+    }
+    const cx = W/2, cy = H/2;
+
+    SP_ORDER.forEach((ex,i)=>{
+      const t = document.querySelector('.tile-ex[data-sp="' + ex + '"]');
+      const a = -Math.PI/2 + i*2*Math.PI/n;
+      t.style.width = D + "px";
+      t.style.height = D + "px";
+      t.style.left = (cx + R*Math.cos(a) - D/2) + "px";
+      t.style.top = (cy + R*Math.sin(a) - D/2) + "px";
+    });
+
+    const st = document.getElementById("spTileStats");
+    const ssz = Math.max(70, 2 * (R - D/2 - 8));
+    st.style.width = ssz + "px";
+    st.style.height = ssz + "px";
+    st.style.left = (cx - ssz/2) + "px";
+    st.style.top = (cy - ssz/2) + "px";
+    st.style.clipPath = polyPoints(n, 1);
+    st.style.webkitClipPath = polyPoints(n, 1);
+  }
+
+  function renderSpHome(){
+    document.getElementById("spTodayLabel").textContent = fmtDate(new Date());
+    SP_ORDER.forEach(ex=>{
+      const t = document.querySelector('.tile-ex[data-sp="' + ex + '"]');
+      t.classList.toggle("not-done", spTodaySets(ex).length === 0);
+    });
+    const badge = document.getElementById("spTodayBadge");
+    const pts = Math.round(spTotalForKeys([dayKey(Date.now())]));
+    if(pts > 0){
+      badge.style.display = "";
+      badge.innerHTML = "✨ <b>" + pts + "</b> נקודות היום";
+    } else {
+      badge.style.display = "none";
+    }
+    requestAnimationFrame(layoutSpirit);
+  }
+
+  /* ----- spirit log ----- */
+  function spCfg(){ return SP_EXERCISES[spCurrent]; }
+  function renderSpCounter(){
+    document.getElementById("spCounterVal").textContent = spCfg().fmt(spCounters[spCurrent]);
+    localStorage.setItem("sportapp_spcounter_" + spCurrent, String(spCounters[spCurrent]));
+  }
+  document.getElementById("spMinus").addEventListener("click", ()=>{
+    spCounters[spCurrent] = Math.max(spCfg().min, spCounters[spCurrent] - spCfg().step);
+    renderSpCounter();
+  });
+  document.getElementById("spPlus").addEventListener("click", ()=>{
+    spCounters[spCurrent] = Math.min(spCfg().max, spCounters[spCurrent] + spCfg().step);
+    renderSpCounter();
+  });
+  function buildSpChips(){
+    const qc = document.getElementById("spQuickChips");
+    qc.innerHTML = "";
+    spCfg().chips.forEach(v=>{
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = spCfg().fmt(v);
+      b.addEventListener("click", ()=>{ spCounters[spCurrent] = v; renderSpCounter(); });
+      qc.appendChild(b);
+    });
+  }
+  function buildSpLevels(){
+    const wrap = document.getElementById("spLevelWrap");
+    if(!spCfg().hasLevel){ wrap.style.display = "none"; return; }
+    wrap.style.display = "";
+    const lc = document.getElementById("spLevelChips");
+    lc.innerHTML = "";
+    for(let i=1; i<=5; i++){
+      const b = document.createElement("button");
+      b.className = "chip" + (i === spLevel ? " sel" : "");
+      b.textContent = i;
+      b.addEventListener("click", ()=>{
+        spLevel = i;
+        localStorage.setItem("sportapp_splevel_v1", String(spLevel));
+        buildSpLevels();
+      });
+      lc.appendChild(b);
+    }
+  }
+  function renderSpTodayLine(){
+    const c = spCfg();
+    const today = spTodaySets(spCurrent);
+    const el = document.getElementById("spTodayLine");
+    if(today.length === 0){ el.textContent = "עוד לא היום — זה הזמן! 🕊️"; return; }
+    const total = today.reduce((s,x)=> s + x.val, 0);
+    const pts = Math.round(today.reduce((s,x)=> s + spPoints(x), 0));
+    el.innerHTML = 'היום עד כה: <b>' + today.length + '</b> פעמים · <b>' + c.fmt(total) + '</b> · <b>' + pts + '</b> נק׳';
+  }
+  document.getElementById("spAddBtn").addEventListener("click", ()=>{
+    const v = spCounters[spCurrent];
+    if(v <= 0) return;
+    const entry = { id: Date.now() + "_" + Math.random().toString(36).slice(2),
+                    exercise: spCurrent, val: v, ts: Date.now() };
+    if(spCfg().hasLevel) entry.level = spLevel;
+    spSets.push(entry);
+    saveSpSets();
+    showToast("נשמר: " + spCfg().fmt(v) + " · +" + Math.round(spPoints(entry)) + " נק׳ " + spCfg().emoji);
+    renderSpTodayLine();
+  });
+  function renderSpLog(){
+    const c = spCfg();
+    document.getElementById("spLogTitle").textContent = c.emoji + " " + c.name;
+    document.getElementById("spLogDate").textContent = fmtDate(new Date());
+    document.getElementById("spLogQuestion").textContent =
+      c.kind === "count" ? "כמה אירועים היו?" : "כמה זמן עשית?";
+    buildSpChips();
+    buildSpLevels();
+    renderSpCounter();
+    renderSpTodayLine();
+  }
+
+  /* ----- spirit stats ----- */
+  function fillSpBreakdownRows(wrap, keySet){
+    const src = spSources(keySet);
+    const total = Object.keys(src).reduce((a,k)=> a + src[k], 0);
+    if(total <= 0){
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "אין נקודות בתקופה זו";
+      wrap.appendChild(e);
+      return total;
+    }
+    Object.keys(src).sort((a,b)=> src[b] - src[a]).forEach(k=>{
+      const m = SP_SRC_META[k];
+      const pct = Math.round(src[k] / total * 100);
+      const row = document.createElement("div");
+      row.className = "pb-row";
+      row.innerHTML =
+        '<span class="pb-name">' + m.emoji + ' ' + m.name + '</span>' +
+        '<span class="pb-track"><span class="pb-fill" style="width:' + pct + '%"></span></span>' +
+        '<span class="pb-pct"><b>' + pct + '%</b> · ' + Math.round(src[k]) + ' נק׳</span>';
+      wrap.appendChild(row);
+    });
+    return total;
+  }
+  function renderSpBreakdown(keys, label){
+    const wrap = document.getElementById("spBreakdown");
+    wrap.innerHTML = "";
+    const keySet = new Set(Array.isArray(keys) ? keys : [keys]);
+    const total = spTotalForKeys([...keySet]);
+    if(label){
+      const t = document.createElement("div");
+      t.className = "pb-title";
+      t.textContent = "פירוט " + label + " · " + Math.round(total) + " נק׳";
+      wrap.appendChild(t);
+    }
+    fillSpBreakdownRows(wrap, keySet);
+  }
+  document.getElementById("spPointsBtn").addEventListener("click", ()=>{
+    const bd = document.getElementById("spBreakdown");
+    const open = bd.style.display !== "none";
+    bd.style.display = open ? "none" : "";
+    document.getElementById("spPtHint").textContent = open ? "▾ לחץ לפירוט" : "▴ סגור פירוט";
+    if(!open) renderSpBreakdown(dayKey(Date.now()), "היום");
+  });
+
+  function updateSpModeButtons(){
+    document.getElementById("spModeDay").className = "chip" + (spMode === "day" ? " sel" : "");
+    document.getElementById("spModeWeek").className = "chip" + (spMode === "week" ? " sel" : "");
+    document.getElementById("spModeMonth").className = "chip" + (spMode === "month" ? " sel" : "");
+    document.getElementById("spRangeRow").style.display = spMode === "day" ? "" : "none";
+    document.getElementById("spRangeWeek").className = "chip range-chip" + (spDayRange === "week" ? " sel" : "");
+    document.getElementById("spRangeMonth").className = "chip range-chip" + (spDayRange === "month" ? " sel" : "");
+    document.getElementById("spRangeAll").className = "chip range-chip" + (spDayRange === "all" ? " sel" : "");
+    const d = spDaysSinceStart();
+    document.getElementById("spRangeAll").textContent = "מההתחלה" + (d ? (d === 1 ? " (יום אחד)" : " (" + d + " ימים)") : "");
+  }
+  [["spModeDay","day"],["spModeWeek","week"],["spModeMonth","month"]].forEach(([id,m])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      spMode = m; updateSpModeButtons(); renderSpChart();
+    });
+  });
+  [["spRangeWeek","week"],["spRangeMonth","month"],["spRangeAll","all"]].forEach(([id,r])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      spDayRange = r; updateSpModeButtons(); renderSpChart();
+    });
+  });
+
+  const spcState = { entries: [], axisL: 0, bw: 0, gap: 0 };
+  document.getElementById("spChart").addEventListener("click", (e)=>{
+    if(spcState.entries.length === 0) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    let idx = Math.floor((e.clientX - rect.left - spcState.axisL) / (spcState.bw + spcState.gap));
+    idx = Math.max(0, Math.min(spcState.entries.length - 1, idx));
+    const entry = spcState.entries[idx];
+    document.getElementById("spBreakdown").style.display = "";
+    document.getElementById("spPtHint").textContent = "▴ סגור פירוט";
+    renderSpBreakdown(entry.keys, entry.label);
+  });
+
+  function renderSpChart(){
+    document.getElementById("spPointsToday").textContent =
+      Math.round(spTotalForKeys([dayKey(Date.now())]));
+    if(document.getElementById("spBreakdown").style.display !== "none")
+      renderSpBreakdown(dayKey(Date.now()), "היום");
+
+    const canvas = document.getElementById("spChart");
+    const { ctx, w, h } = setupCanvas(canvas, 170);
+
+    // oldest on the LEFT, newest on the RIGHT
+    const entries = [];
+    if(spMode === "day"){
+      let nDays;
+      if(spDayRange === "week") nDays = 7;
+      else if(spDayRange === "month") nDays = 30;
+      else nDays = Math.max(7, spDaysSinceStart());
+      nDays = Math.min(nDays, 180);
+      for(let i = nDays - 1; i >= 0; i--){
+        const d = startOfDay(-i);
+        const k = dayKey(d.getTime());
+        entries.push({
+          val: spTotalForKeys([k]), keys: [k],
+          axisLabel: d.getDate() + "." + (d.getMonth()+1),
+          label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
+        });
+      }
+    } else if(spMode === "week"){
+      for(let i = 11; i >= 0; i--){
+        const ws = weekStart(-i);
+        const keys = [];
+        for(let j=0; j<7; j++){
+          const d = new Date(ws); d.setDate(d.getDate()+j);
+          if(d > new Date()) break;
+          keys.push(dayKey(d.getTime()));
+        }
+        entries.push({
+          val: spTotalForKeys(keys), keys,
+          axisLabel: ws.getDate() + "." + (ws.getMonth()+1),
+          label: "שבוע " + ws.getDate() + "." + (ws.getMonth()+1)
+        });
+      }
+    } else {
+      for(let i = 11; i >= 0; i--){
+        const ms = monthStart(-i);
+        const nextMs = monthStart(-i+1);
+        const keys = [];
+        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
+          if(d > new Date()) break;
+          keys.push(dayKey(d.getTime()));
+        }
+        const monthLabel = ms.toLocaleDateString("he-IL", {month:"short"});
+        entries.push({ val: spTotalForKeys(keys), keys, axisLabel: monthLabel, label: monthLabel });
+      }
+    }
+    const totals = entries.map(e => e.val);
+    const max = Math.max(1, ...totals);
+
+    const firstIdx = totals.findIndex(v => v > 0);
+    let avg = 0;
+    if(firstIdx >= 0){
+      const span = totals.slice(firstIdx);
+      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
+    }
+    document.getElementById("spAvgLine").innerHTML =
+      (spMode === "day" ? "ממוצע יומי: " : spMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
+      "<b>" + (avg || "—") + "</b>";
+
+    const axisL = 34, top = 38, bottom = h - 24;
+    ctx.clearRect(0,0,w,h);
+
+    ctx.font = "600 10px sans-serif";
+    [0, .5, 1].forEach(f=>{
+      const y = bottom - f * (bottom - top);
+      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
+      ctx.fillStyle = "#94a3b8";
+      ctx.textAlign = "right";
+      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
+    });
+
+    const n = totals.length;
+    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
+    const bw = (w - axisL - gap*(n-1)) / n;
+    const labelEvery = Math.max(1, Math.ceil(n / 7));
+    spcState.entries = entries;
+    spcState.axisL = axisL;
+    spcState.bw = bw;
+    spcState.gap = gap;
+
+    const winSize = spMode === "day" ? 7 : spMode === "week" ? 4 : 3;
+    const movingAvg = totals.map((_,i)=>{
+      const win = totals.slice(Math.max(0, i - winSize + 1), i+1);
+      return win.reduce((a,b)=>a+b, 0) / win.length;
+    });
+
+    totals.forEach((val,i)=>{
+      const x = axisL + i * (bw + gap);
+      if(val > 0){
+        const bh = Math.max(4, (val/max) * (bottom-top));
+        const y = bottom - bh;
+        const grad = ctx.createLinearGradient(0, y, 0, bottom);
+        grad.addColorStop(0, "#f472b6"); grad.addColorStop(1, "#a78bfa");
+        ctx.fillStyle = grad;
+        const r = Math.min(5, bw/2);
+        ctx.beginPath();
+        ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+        ctx.arcTo(x+bw, y, x+bw, y+r, r);
+        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
+        ctx.closePath(); ctx.fill();
+        if(bw > 18 || val === max){
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "700 10px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(Math.round(val), x + bw/2, y - 4);
+        }
+      }
+      if(i % labelEvery === 0 || i === n-1){
+        ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
+        ctx.font = (i === n-1 ? "800" : "600") + " 9px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(entries[i].axisLabel, x + bw/2, h - 8);
+      }
+    });
+
+    const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
+    ctx.beginPath();
+    avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
+    ctx.strokeStyle = "#facc15";
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(15,23,42,.6)";
+    ctx.shadowBlur = 3;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    const lastAvgPt = avgPts[avgPts.length-1];
+    ctx.beginPath();
+    ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
+    ctx.fillStyle = "#facc15";
+    ctx.fill();
+    ctx.font = "800 10px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("ממוצע נע (" + winSize + (spMode === "day" ? " ימים" : spMode === "week" ? " שבועות" : " חודשים") + "): " + Math.round(movingAvg[movingAvg.length-1]),
+      w, 12);
+  }
+
+  function renderSpTodaySummary(){
+    const body = document.getElementById("spTodayBody");
+    body.innerHTML = "";
+    const any = SP_KEYS.some(k => spTodaySets(k).length > 0);
+    if(!any){
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);background:none;padding:10px 0">עוד לא עשית שום דבר היום</td></tr>';
+      return;
+    }
+    SP_KEYS.forEach(k=>{
+      const today = spTodaySets(k);
+      if(today.length === 0) return;
+      const c = SP_EXERCISES[k];
+      const total = today.reduce((s,x)=> s + x.val, 0);
+      const pts = Math.round(today.reduce((s,x)=> s + spPoints(x), 0));
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + c.emoji + " " + c.name + "</td>" +
+        "<td><b>" + today.length + "</b></td>" +
+        "<td><b>" + c.fmt(total) + "</b></td>" +
+        "<td><b>" + pts + "</b></td>";
+      body.appendChild(tr);
+    });
+  }
+
+  function spEditSet(id){
+    const s = spSets.find(x => String(x.id) === String(id));
+    if(!s) return;
+    const c = SP_EXERCISES[s.exercise];
+    const nv = parseInt(prompt(c.emoji + " " + c.name + " — ערך חדש (" + (c.kind === "time" ? "דקות" : "כמות") + "):", s.val), 10);
+    if(!isNaN(nv) && nv >= 1 && nv <= c.max) s.val = nv;
+    if(c.hasLevel){
+      const nl = parseInt(prompt("רמת פוקוס (1–5):", s.level || 3), 10);
+      if(!isNaN(nl) && nl >= 1 && nl <= 5) s.level = nl;
+    }
+    saveSpSets();
+    renderSpStats();
+    showToast("עודכן ✔");
+  }
+
+  function renderSpHistory(){
+    const wrap = document.getElementById("spHistoryList");
+    document.getElementById("spHistoryArrow").textContent = spHistoryOpen ? "▴ סגור" : "▾ פתח";
+    wrap.style.display = spHistoryOpen ? "" : "none";
+    if(!spHistoryOpen) return;
+
+    wrap.innerHTML = "";
+    const byDay = {};
+    spSets.forEach(s=>{ (byDay[dayKey(s.ts)] = byDay[dayKey(s.ts)] || []).push(s); });
+    const keys = Object.keys(byDay).sort((a,b)=> byDay[b][0].ts - byDay[a][0].ts);
+    if(keys.length === 0){
+      wrap.innerHTML = '<div class="empty">אין עדיין נתונים — ההיסטוריה תופיע כאן</div>';
+      return;
+    }
+    keys.forEach(k=>{
+      const daySets = byDay[k].sort((a,b)=> b.ts - a.ts);
+      const d = new Date(daySets[0].ts);
+      const dayPts = Math.round(spTotalForKeys([k]));
+      const row = document.createElement("div");
+      row.className = "day-row" + (spOpenDays.has(k) ? " open" : "");
+      row.innerHTML =
+        '<div class="day-head">' +
+        '<span class="d-date">' + d.toLocaleDateString("he-IL",{weekday:"short", day:"numeric", month:"numeric"}) + '</span>' +
+        '<span class="d-info">' + daySets.length + ' פעמים</span>' +
+        '<button class="d-total">✨ ' + dayPts + '</button>' +
+        (spEditMode ? '<button class="d-trash" title="מחק יום">🗑️</button>' : '') +
+        '</div><div class="day-breakdown" style="display:none"></div><div class="day-body"></div>';
+      const body = row.querySelector(".day-body");
+      daySets.forEach(s=>{
+        const c = SP_EXERCISES[s.exercise];
+        const time = new Date(s.ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+        const sr = document.createElement("div");
+        sr.className = "set-row";
+        sr.innerHTML = '<div class="left"><span class="ex-emoji">' + c.emoji + '</span>' +
+          '<span class="badge">' + c.fmt(s.val) + '</span>' +
+          (s.level ? '<span class="lvl">פוקוס ' + s.level + '</span>' : '') +
+          '<span class="time">' + time + '</span></div>' +
+          '<div>' +
+          (spEditMode ? '<button class="edit" data-id="' + s.id + '">✏️</button>' +
+                        '<button class="del" data-id="' + s.id + '">✕</button>' : '') +
+          '</div>';
+        body.appendChild(sr);
+      });
+      row.querySelector(".d-total").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const bd = row.querySelector(".day-breakdown");
+        if(bd.style.display !== "none"){ bd.style.display = "none"; return; }
+        bd.style.display = "";
+        bd.innerHTML = "";
+        fillSpBreakdownRows(bd, new Set([k]));
+      });
+      row.querySelector(".day-head").addEventListener("click", (e)=>{
+        if(e.target.classList.contains("d-trash") || e.target.classList.contains("d-total")) return;
+        row.classList.toggle("open");
+        if(row.classList.contains("open")) spOpenDays.add(k); else spOpenDays.delete(k);
+      });
+      const trash = row.querySelector(".d-trash");
+      if(trash) trash.addEventListener("click", ()=>{
+        if(!confirm("למחוק את כל הרשומות של יום זה?")) return;
+        spSets = spSets.filter(s => dayKey(s.ts) !== k);
+        saveSpSets(); renderSpStats();
+      });
+      body.querySelectorAll(".del").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          if(!confirm("למחוק את הרשומה הזו?")) return;
+          spSets = spSets.filter(s => String(s.id) !== btn.getAttribute("data-id"));
+          saveSpSets(); renderSpStats();
+        });
+      });
+      body.querySelectorAll(".edit").forEach(btn=>{
+        btn.addEventListener("click", ()=> spEditSet(btn.getAttribute("data-id")));
+      });
+      wrap.appendChild(row);
+    });
+  }
+  document.getElementById("spHistoryToggle").addEventListener("click", ()=>{
+    spHistoryOpen = !spHistoryOpen;
+    renderSpHistory();
+  });
+  document.getElementById("spEditBtn").addEventListener("click", ()=>{
+    spEditMode = !spEditMode;
+    const b = document.getElementById("spEditBtn");
+    b.classList.toggle("on", spEditMode);
+    b.textContent = spEditMode ? "✔ סיום עריכה" : "✏️ ערוך נתונים";
+    if(spEditMode) spHistoryOpen = true;
+    renderSpHistory();
+    if(spEditMode) document.getElementById("spHistoryToggle").scrollIntoView({behavior:"smooth"});
+  });
+
+  function renderSpStats(){
+    updateSpModeButtons();
+    renderSpChart();
+    renderSpTodaySummary();
+    renderSpHistory();
+  }
+
+  /* ----- spirit navigation ----- */
+  document.getElementById("toSpirit").addEventListener("click", ()=>{ location.hash = "spirit"; });
+  document.getElementById("toSport").addEventListener("click", ()=>{ location.hash = ""; });
+  document.querySelectorAll("[data-sp]").forEach(t =>
+    t.addEventListener("click", ()=>{ location.hash = "spirit/log/" + t.getAttribute("data-sp"); }));
+  document.getElementById("spTileStats").addEventListener("click", ()=>{ location.hash = "spirit/stats"; });
+  document.querySelectorAll("[data-sp-back]").forEach(b =>
+    b.addEventListener("click", ()=>{ location.hash = "spirit"; }));
+
+  window.addEventListener("resize", ()=>{
+    if(screens.spStats.classList.contains("active")) renderSpChart();
+    if(screens.spHome.classList.contains("active")) layoutSpirit();
+  });
+
   /* ---------- init ---------- */
+  // the app always opens on sport, even if the last visit ended on a spirit page
+  if((location.hash || "").indexOf("#spirit") === 0){
+    history.replaceState(null, "", location.pathname + location.search);
+  }
   route();
 
   if("serviceWorker" in navigator){
