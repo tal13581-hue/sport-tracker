@@ -306,6 +306,19 @@
   #spCounterVal{font-size:36px;min-width:150px;}
   #spHistoryList{margin-top:14px;}
 
+  /* spirit stats: own palette (teal + amber) so it reads differently from sport */
+  #screen-sp-stats{--pink:#fbbf24;--purple:#2dd4bf;--accent:#2dd4bf;--accent2:#38bdf8;}
+  #screen-sp-stats .d-total{color:#0b1220;}
+  .sp-sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .sp-info{font-size:12px;color:var(--muted);line-height:1.9;margin-top:8px;}
+  .sp-info b{color:var(--purple);}
+  .dn-legend{margin-top:12px;}
+  .dn-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:6px;}
+  .dn-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;}
+  .dn-name{flex:1;font-weight:700;}
+  .dn-val{color:var(--muted);font-size:11px;white-space:nowrap;}
+  .dn-val b{color:var(--text);font-size:12px;}
+
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--good);color:#052e19;font-weight:700;padding:10px 20px;border-radius:999px;
     font-size:14px;opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;z-index:50;}
@@ -704,6 +717,46 @@
       <div class="avg-line-solo" id="spAvgLine"></div>
       <canvas id="spChart" height="170" dir="ltr"></canvas>
       <div class="pt-chart-hint">💡 לחץ על עמודה לפירוט</div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🌟</span> סיכום כללי</p>
+      <div class="sp-sum-grid">
+        <div class="wr-box"><b id="spSumTotal">0</b><span>סה"כ נקודות</span></div>
+        <div class="wr-box"><b id="spSumAvg">0</b><span>ממוצע ליום</span></div>
+        <div class="wr-box"><b id="spSumBest">0</b><span id="spSumBestLbl">יום שיא</span></div>
+        <div class="wr-box streak"><b id="spSumCur">0</b><span>רצף נוכחי</span></div>
+        <div class="wr-box streak"><b id="spSumLongest">0</b><span>שיא רצף</span></div>
+        <div class="wr-box"><b id="spSumDays">0</b><span>ימים רוחניים</span></div>
+      </div>
+      <div class="points-note" style="margin:10px 0 0">רצף וימים רוחניים נספרים לפי ימים שבהם נרשם תרגיל רוחני (בלי נקודות שמגיעות מהספורט)</div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🍩</span> חלוקת נקודות</p>
+      <div class="mode-row" id="spDonutChips">
+        <button class="chip" data-dn="today">היום</button>
+        <button class="chip" data-dn="week">שבוע</button>
+        <button class="chip" data-dn="month">חודש</button>
+        <button class="chip" data-dn="all">הכל</button>
+      </div>
+      <canvas id="spDonut" height="170" dir="ltr"></canvas>
+      <div class="dn-legend" id="spDonutLegend"></div>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">📆</span> באילו ימים אני הכי חזק</p>
+      <div class="points-note" id="spWeekdayNote"></div>
+      <canvas id="spWeekdayChart" height="150" dir="ltr"></canvas>
+    </div>
+
+    <div class="card">
+      <p class="card-title"><span class="emoji">🏆</span> סיכום לפי תרגיל</p>
+      <table class="mini">
+        <thead><tr><th>תרגיל</th><th>פעמים</th><th>סה"כ</th><th>נקודות</th></tr></thead>
+        <tbody id="spExBody"></tbody>
+      </table>
+      <div class="sp-info" id="spExInfo"></div>
     </div>
 
     <div class="card">
@@ -1940,6 +1993,10 @@
     { key:"aerobic", name:"אירובי", emoji:"🏃", pct:0.4, ex:["aerobic"] },
     { key:"stretch", name:"מתיחות", emoji:"🧘", pct:0.6, ex:["stretch"] }
   ];
+  const SP_COLORS = {
+    meditate:"#2dd4bf", diy:"#fbbf24", volunteer:"#fb7185", selfimp:"#818cf8", event:"#f472b6",
+    sport:"#60a5fa", aerobic:"#fb923c", stretch:"#34d399"
+  };
   const SP_SRC_META = {};
   SP_KEYS.forEach(k=>{ SP_SRC_META[k] = { name:SP_EXERCISES[k].name, emoji:SP_EXERCISES[k].emoji }; });
   SP_FROM_SPORT.forEach(s=>{
@@ -2159,8 +2216,8 @@
       row.className = "pb-row";
       row.innerHTML =
         '<span class="pb-name">' + m.emoji + ' ' + m.name + '</span>' +
-        '<span class="pb-track"><span class="pb-fill" style="width:' + pct + '%"></span></span>' +
-        '<span class="pb-pct"><b>' + pct + '%</b> · ' + Math.round(src[k]) + ' נק׳</span>';
+        '<span class="pb-track"><span class="pb-fill" style="width:' + pct + '%;background:' + SP_COLORS[k] + '"></span></span>' +
+        '<span class="pb-pct"><b style="color:' + SP_COLORS[k] + '">' + pct + '%</b> · ' + Math.round(src[k]) + ' נק׳</span>';
       wrap.appendChild(row);
     });
     return total;
@@ -2322,7 +2379,7 @@
         const bh = Math.max(4, (val/max) * (bottom-top));
         const y = bottom - bh;
         const grad = ctx.createLinearGradient(0, y, 0, bottom);
-        grad.addColorStop(0, "#f472b6"); grad.addColorStop(1, "#a78bfa");
+        grad.addColorStop(0, "#fcd34d"); grad.addColorStop(1, "#14b8a6");
         ctx.fillStyle = grad;
         const r = Math.min(5, bw/2);
         ctx.beginPath();
@@ -2348,7 +2405,7 @@
     const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
     ctx.beginPath();
     avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
-    ctx.strokeStyle = "#facc15";
+    ctx.strokeStyle = "#fb7185";
     ctx.lineWidth = 2;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
@@ -2360,7 +2417,7 @@
     const lastAvgPt = avgPts[avgPts.length-1];
     ctx.beginPath();
     ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
-    ctx.fillStyle = "#facc15";
+    ctx.fillStyle = "#fb7185";
     ctx.fill();
     ctx.font = "800 10px sans-serif";
     ctx.textAlign = "right";
@@ -2496,9 +2553,220 @@
     if(spEditMode) document.getElementById("spHistoryToggle").scrollIntoView({behavior:"smooth"});
   });
 
+  /* ----- spirit stats: extra overview cards ----- */
+  let spDonutPeriod = "all";
+
+  // points per calendar day, direct spirit entries + the derived share of sport
+  function spDailyMap(){
+    const m = {};
+    spSets.forEach(s=>{ const k = dayKey(s.ts); m[k] = (m[k] || 0) + spPoints(s); });
+    sets.forEach(s=>{
+      SP_FROM_SPORT.forEach(src=>{
+        if(src.ex.indexOf(s.exercise) >= 0){
+          const k = dayKey(s.ts);
+          m[k] = (m[k] || 0) + setPoints(s) * src.pct;
+        }
+      });
+    });
+    return m;
+  }
+  function spKeysForPeriod(p){
+    if(p === "today") return [dayKey(Date.now())];
+    const n = p === "week" ? 7 : p === "month" ? 30 : Math.max(1, spDaysSinceStart());
+    const out = [];
+    for(let i=0; i<n; i++) out.push(dayKey(startOfDay(-i).getTime()));
+    return out;
+  }
+
+  function renderSpSummary(){
+    const m = spDailyMap();
+    const keys = Object.keys(m);
+    const total = keys.reduce((a,k)=> a + m[k], 0);
+    const days = spDaysSinceStart();
+    document.getElementById("spSumTotal").textContent = Math.round(total);
+    document.getElementById("spSumAvg").textContent = days ? Math.round(total / days) : 0;
+
+    let bestKey = null;
+    keys.forEach(k=>{ if(bestKey === null || m[k] > m[bestKey]) bestKey = k; });
+    if(bestKey){
+      const [y,mo,d] = bestKey.split("-").map(Number);
+      document.getElementById("spSumBest").textContent = Math.round(m[bestKey]);
+      document.getElementById("spSumBestLbl").textContent = "יום שיא · " + d + "." + mo;
+    } else {
+      document.getElementById("spSumBest").textContent = 0;
+      document.getElementById("spSumBestLbl").textContent = "יום שיא";
+    }
+
+    const direct = new Set(spSets.map(s => dayKey(s.ts)));
+    let streak = 0;
+    const startOff = direct.has(dayKey(startOfDay(0).getTime())) ? 0 : -1;
+    while(direct.has(dayKey(startOfDay(startOff - streak).getTime()))) streak++;
+    document.getElementById("spSumCur").textContent = streak;
+    document.getElementById("spSumLongest").textContent = longestStreak(direct);
+    document.getElementById("spSumDays").textContent = direct.size;
+  }
+
+  function renderSpDonut(){
+    document.querySelectorAll("#spDonutChips [data-dn]").forEach(b=>{
+      b.className = "chip" + (b.getAttribute("data-dn") === spDonutPeriod ? " sel" : "");
+    });
+    const canvas = document.getElementById("spDonut");
+    const { ctx, w, h } = setupCanvas(canvas, 170);
+    const legend = document.getElementById("spDonutLegend");
+    legend.innerHTML = "";
+    ctx.clearRect(0,0,w,h);
+
+    const src = spSources(new Set(spKeysForPeriod(spDonutPeriod)));
+    const ks = Object.keys(src).filter(k => src[k] > 0).sort((a,b)=> src[b] - src[a]);
+    const total = ks.reduce((a,k)=> a + src[k], 0);
+    const cx = w/2, cy = h/2, R = 72, r = 46;
+
+    if(total <= 0){
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.arc(cx, cy, r, Math.PI*2, 0, true);
+      ctx.fillStyle = "#243247";
+      ctx.fill();
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "600 12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("אין נתונים", cx, cy + 4);
+      return;
+    }
+
+    let a0 = -Math.PI/2;
+    ks.forEach(k=>{
+      const a1 = a0 + src[k] / total * Math.PI * 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, a0, a1);
+      ctx.arc(cx, cy, r, a1, a0, true);
+      ctx.closePath();
+      ctx.fillStyle = SP_COLORS[k];
+      ctx.fill();
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      a0 = a1;
+    });
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "800 22px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(String(Math.round(total)), cx, cy + 6);
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "600 10px sans-serif";
+    ctx.fillText("נקודות", cx, cy + 22);
+
+    ks.forEach(k=>{
+      const m = SP_SRC_META[k];
+      const row = document.createElement("div");
+      row.className = "dn-row";
+      row.innerHTML =
+        '<span class="dn-dot" style="background:' + SP_COLORS[k] + '"></span>' +
+        '<span class="dn-name">' + m.emoji + ' ' + m.name + '</span>' +
+        '<span class="dn-val"><b>' + Math.round(src[k] / total * 100) + '%</b> · ' + Math.round(src[k]) + ' נק׳</span>';
+      legend.appendChild(row);
+    });
+  }
+  document.querySelectorAll("#spDonutChips [data-dn]").forEach(b=>{
+    b.addEventListener("click", ()=>{ spDonutPeriod = b.getAttribute("data-dn"); renderSpDonut(); });
+  });
+
+  const SP_DOW = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+  function renderSpWeekday(){
+    const canvas = document.getElementById("spWeekdayChart");
+    const { ctx, w, h } = setupCanvas(canvas, 150);
+    ctx.clearRect(0,0,w,h);
+    const note = document.getElementById("spWeekdayNote");
+
+    const m = spDailyMap();
+    const sum = [0,0,0,0,0,0,0], cnt = [0,0,0,0,0,0,0];
+    if(sets.length || spSets.length){
+      const first = new Date(spFirstTs()); first.setHours(0,0,0,0);
+      const today = startOfDay(0);
+      for(let d = new Date(first); d <= today; d.setDate(d.getDate()+1)){
+        sum[d.getDay()] += m[dayKey(d.getTime())] || 0;
+        cnt[d.getDay()]++;
+      }
+    }
+    const avgs = sum.map((s,i)=> cnt[i] ? s / cnt[i] : 0);
+    const max = Math.max(...avgs);
+    if(max <= 0){
+      note.textContent = "אין עדיין נתונים";
+      return;
+    }
+    const bestDay = avgs.indexOf(max);
+    note.textContent = "היום החזק שלך: יום " + SP_DOW[bestDay] + " (ממוצע " + Math.round(max) + " נקודות) · ממוצע נקודות לכל יום בשבוע";
+
+    const top = 22, bottom = h - 22;
+    const gap = 10;
+    const bw = (w - gap*6) / 7;
+    avgs.forEach((v,i)=>{
+      const x = i * (bw + gap);
+      const bh = v > 0 ? Math.max(4, v / max * (bottom - top)) : 0;
+      const y = bottom - bh;
+      if(bh > 0){
+        const grad = ctx.createLinearGradient(0, y, 0, bottom);
+        if(i === bestDay){ grad.addColorStop(0, "#fde68a"); grad.addColorStop(1, "#f59e0b"); }
+        else { grad.addColorStop(0, "#5eead4"); grad.addColorStop(1, "#0d9488"); }
+        ctx.fillStyle = grad;
+        const rr = Math.min(6, bw/2);
+        ctx.beginPath();
+        ctx.moveTo(x, y+rr); ctx.arcTo(x, y, x+rr, y, rr);
+        ctx.arcTo(x+bw, y, x+bw, y+rr, rr);
+        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "700 10px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(Math.round(v), x + bw/2, y - 4);
+      }
+      const isToday = i === new Date().getDay();
+      ctx.fillStyle = isToday ? "#e2e8f0" : "#94a3b8";
+      ctx.font = (isToday ? "800" : "600") + " 11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(SP_DOW[i], x + bw/2, h - 6);
+    });
+    ctx.strokeStyle = "rgba(148,163,184,.3)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, bottom); ctx.lineTo(w, bottom); ctx.stroke();
+  }
+
+  function renderSpExTable(){
+    const body = document.getElementById("spExBody");
+    body.innerHTML = "";
+    SP_KEYS.forEach(k=>{
+      const c = SP_EXERCISES[k];
+      const list = spSets.filter(s => s.exercise === k);
+      const total = list.reduce((a,s)=> a + s.val, 0);
+      const pts = Math.round(list.reduce((a,s)=> a + spPoints(s), 0));
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + c.emoji + " " + c.name + "</td>" +
+        "<td><b>" + (list.length || "—") + "</b></td>" +
+        "<td><b>" + (list.length ? c.fmt(total) : "—") + "</b></td>" +
+        "<td><b>" + (list.length ? pts : "—") + "</b></td>";
+      body.appendChild(tr);
+    });
+
+    const timeMins = spSets.filter(s => SP_EXERCISES[s.exercise].kind === "time")
+                           .reduce((a,s)=> a + s.val, 0);
+    const med = spSets.filter(s => s.exercise === "meditate");
+    const avgFocus = med.length ? (med.reduce((a,s)=> a + (s.level || 1), 0) / med.length) : 0;
+    const longest = med.length ? Math.max.apply(null, med.map(s => s.val)) : 0;
+    const info = document.getElementById("spExInfo");
+    info.innerHTML =
+      "⏱️ סה״כ זמן שהושקע: <b>" + (timeMins ? fmtMins(timeMins) : "—") + "</b><br>" +
+      "🪷 ממוצע רמת פוקוס במדיטציה: <b>" + (avgFocus ? avgFocus.toFixed(1) : "—") + "</b><br>" +
+      "🏅 מדיטציה ארוכה ביותר: <b>" + (longest ? fmtMins(longest) : "—") + "</b>";
+  }
+
   function renderSpStats(){
     updateSpModeButtons();
     renderSpChart();
+    renderSpSummary();
+    renderSpDonut();
+    renderSpWeekday();
+    renderSpExTable();
     renderSpTodaySummary();
     renderSpHistory();
   }
@@ -2513,7 +2781,7 @@
     b.addEventListener("click", ()=>{ location.hash = "spirit"; }));
 
   window.addEventListener("resize", ()=>{
-    if(screens.spStats.classList.contains("active")) renderSpChart();
+    if(screens.spStats.classList.contains("active")){ renderSpChart(); renderSpDonut(); renderSpWeekday(); }
     if(screens.spHome.classList.contains("active")) layoutSpirit();
   });
 
