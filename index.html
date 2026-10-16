@@ -682,9 +682,10 @@
       </div>
       <div class="quick-chips" id="spQuickChips"></div>
       <div class="level-wrap" id="spLevelWrap" style="display:none">
-        <div class="level-label">רמת פוקוס (1–5)</div>
+        <div class="level-label" id="spLevelLabel">רמת פוקוס (1–5)</div>
         <div class="level-chips" id="spLevelChips"></div>
       </div>
+      <div class="stretch-breaths" id="spPreview" style="margin-bottom:12px"></div>
       <button class="add-btn" id="spAddBtn">✅ הוסף</button>
       <div class="today-line" id="spTodayLine"></div>
     </div>
@@ -701,7 +702,7 @@
 
     <div class="card">
       <p class="card-title"><span class="emoji">✨</span> נקודות רוחניות</p>
-      <div class="points-note">מדיטציה=דקות×רמת פוקוס×⅔ · עשה זאת בעצמך=25 לשעה · התנדבות=50 לשעה · שיפור עצמי=50 לשעה · אירוע/חוויה=100 · בנוסף: 20% מנקודות הספורט, 40% מהאירובי, 60% מהמתיחות</div>
+      <div class="points-note">מדיטציה=דקות×רמת פוקוס×⅔ · עשה זאת בעצמך=50 לשעה · התנדבות=50 לשעה · שיפור עצמי=50 לשעה · אירוע/חוויה=נקודות לפי משך (שעה=8, שעתיים=15, 3=21 … עד 36 ב-8 שעות) × אינטנסיביות 0–10 · בנוסף: 20% מנקודות הספורט, 40% מהאירובי, 60% מהמתיחות</div>
       <button class="points-today" id="spPointsBtn">היום: <b id="spPointsToday">0</b> נקודות <span class="pt-hint" id="spPtHint">▾ לחץ לפירוט</span></button>
       <div id="spBreakdown" style="display:none"></div>
       <div class="mode-row">
@@ -1967,22 +1968,28 @@
      SPIRIT (רוחניות) — separate data, same look as sport
      ========================================================== */
   const SP_KEY = "sportapp_spirit_v1";
-  const SP_EVENT_POINTS = 100; // points per event / deep experience
+  // event duration -> base points: 1h=8, 2h=15, 3h=21 ... 8h=36 (h*(17-h)/2), flat from 8h on
+  function spEventBase(hours){
+    const x = Math.min(hours, 8);
+    return x * (17 - x) / 2;
+  }
   function fmtMins(v){
     if(v < 60) return v + " דק׳";
     return Math.floor(v/60) + ":" + String(v % 60).padStart(2,"0") + " שע׳";
   }
   const SP_EXERCISES = {
     meditate:  { name:"מדיטציה", emoji:"🪷", kind:"time", hasLevel:true, step:5, min:5, max:600, def:30,
-                 chips:[15,30,45,60,90], fmt:fmtMins },
+                 chips:[15,30,45,60,90], fmt:fmtMins,
+                 levelMin:1, levelMax:5, levelDef:3, levelLabel:"רמת פוקוס (1–5)", levelWord:"פוקוס" },
     diy:       { name:"עשה זאת בעצמך", emoji:"🛠️", kind:"time", step:5, min:5, max:720, def:60,
                  chips:[30,60,90,120,180], fmt:fmtMins },
     volunteer: { name:"התנדבות", emoji:"🤝", kind:"time", step:5, min:5, max:720, def:60,
                  chips:[30,60,90,120,180], fmt:fmtMins },
     selfimp:   { name:"שיפור עצמי", emoji:"🎸", kind:"time", step:5, min:5, max:600, def:30,
                  chips:[15,30,45,60,90], fmt:fmtMins },
-    event:     { name:"אירוע / חוויה", emoji:"🌟", kind:"count", step:1, min:1, max:20, def:1,
-                 chips:[1,2,3], fmt:v=> v + (v === 1 ? " אירוע" : " אירועים") }
+    event:     { name:"אירוע / חוויה", emoji:"🌟", kind:"time", hasLevel:true, step:15, min:15, max:720, def:120,
+                 chips:[60,120,180,240,360], fmt:fmtMins,
+                 levelMin:0, levelMax:10, levelDef:5, levelLabel:"רמת אינטנסיביות (0–10)", levelWord:"אינטנסיביות" }
   };
   const SP_KEYS = Object.keys(SP_EXERCISES);
   const SP_ORDER = ["meditate","diy","volunteer","selfimp","event"];
@@ -2006,22 +2013,41 @@
   function spPoints(s){
     switch(s.exercise){
       case "meditate":  return s.val * (s.level || 1) * 2 / 3;   // 60min @ level 5 = 200
-      case "diy":       return s.val * 25 / 60;
+      case "diy":       return s.val * 50 / 60;
       case "volunteer": return s.val * 50 / 60;
       case "selfimp":   return s.val * 50 / 60;
-      case "event":     return s.val * SP_EVENT_POINTS;
+      case "event":     return spEventBase(s.val / 60) * (s.level || 0);  // 3h @ intensity 3 = 63
     }
     return 0;
   }
 
   function loadSpSets(){
-    try{ return JSON.parse(localStorage.getItem(SP_KEY)) || []; }catch(e){ return []; }
+    let list;
+    try{ list = JSON.parse(localStorage.getItem(SP_KEY)) || []; }catch(e){ return []; }
+    // older events were a plain count with no intensity: keep them as 1 hour at intensity 10
+    let changed = false;
+    list = list.map(e=>{
+      if(e.exercise === "event" && e.level === undefined){
+        changed = true;
+        return Object.assign({}, e, { val: 60, level: 10 });
+      }
+      return e;
+    });
+    if(changed) localStorage.setItem(SP_KEY, JSON.stringify(list));
+    return list;
   }
   function saveSpSets(){ localStorage.setItem(SP_KEY, JSON.stringify(spSets)); }
 
   let spSets = loadSpSets();
   let spCurrent = "meditate";
-  let spLevel = parseInt(localStorage.getItem("sportapp_splevel_v1"), 10) || 3;
+  const spLevels = {};
+  SP_KEYS.forEach(k=>{
+    const c = SP_EXERCISES[k];
+    if(!c.hasLevel) return;
+    const legacy = k === "meditate" ? localStorage.getItem("sportapp_splevel_v1") : null;
+    const v = parseInt(localStorage.getItem("sportapp_splevel_" + k) || legacy, 10);
+    spLevels[k] = (v >= c.levelMin && v <= c.levelMax) ? v : c.levelDef;
+  });
   let spMode = "day";
   let spDayRange = "all";
   let spHistoryOpen = false;
@@ -2128,6 +2154,7 @@
   function renderSpCounter(){
     document.getElementById("spCounterVal").textContent = spCfg().fmt(spCounters[spCurrent]);
     localStorage.setItem("sportapp_spcounter_" + spCurrent, String(spCounters[spCurrent]));
+    renderSpPreview();
   }
   document.getElementById("spMinus").addEventListener("click", ()=>{
     spCounters[spCurrent] = Math.max(spCfg().min, spCounters[spCurrent] - spCfg().step);
@@ -2154,17 +2181,26 @@
     wrap.style.display = "";
     const lc = document.getElementById("spLevelChips");
     lc.innerHTML = "";
-    for(let i=1; i<=5; i++){
+    document.getElementById("spLevelLabel").textContent = spCfg().levelLabel;
+    for(let i = spCfg().levelMin; i <= spCfg().levelMax; i++){
       const b = document.createElement("button");
-      b.className = "chip" + (i === spLevel ? " sel" : "");
+      b.className = "chip" + (i === spLevels[spCurrent] ? " sel" : "");
       b.textContent = i;
       b.addEventListener("click", ()=>{
-        spLevel = i;
-        localStorage.setItem("sportapp_splevel_v1", String(spLevel));
+        spLevels[spCurrent] = i;
+        localStorage.setItem("sportapp_splevel_" + spCurrent, String(i));
         buildSpLevels();
+        renderSpPreview();
       });
       lc.appendChild(b);
     }
+  }
+  function renderSpPreview(){
+    const c = spCfg();
+    const el = document.getElementById("spPreview");
+    const probe = { exercise: spCurrent, val: spCounters[spCurrent] };
+    if(c.hasLevel) probe.level = spLevels[spCurrent];
+    el.innerHTML = "ניקוד לרשומה הזו: <b>≈ " + Math.round(spPoints(probe)) + "</b> נק׳";
   }
   function renderSpTodayLine(){
     const c = spCfg();
@@ -2180,7 +2216,7 @@
     if(v <= 0) return;
     const entry = { id: Date.now() + "_" + Math.random().toString(36).slice(2),
                     exercise: spCurrent, val: v, ts: Date.now() };
-    if(spCfg().hasLevel) entry.level = spLevel;
+    if(spCfg().hasLevel) entry.level = spLevels[spCurrent];
     spSets.push(entry);
     saveSpSets();
     showToast("נשמר: " + spCfg().fmt(v) + " · +" + Math.round(spPoints(entry)) + " נק׳ " + spCfg().emoji);
@@ -2191,7 +2227,7 @@
     document.getElementById("spLogTitle").textContent = c.emoji + " " + c.name;
     document.getElementById("spLogDate").textContent = fmtDate(new Date());
     document.getElementById("spLogQuestion").textContent =
-      c.kind === "count" ? "כמה אירועים היו?" : "כמה זמן עשית?";
+      spCurrent === "event" ? "כמה זמן נמשך האירוע / החוויה?" : "כמה זמן עשית?";
     buildSpChips();
     buildSpLevels();
     renderSpCounter();
@@ -2453,11 +2489,11 @@
     const s = spSets.find(x => String(x.id) === String(id));
     if(!s) return;
     const c = SP_EXERCISES[s.exercise];
-    const nv = parseInt(prompt(c.emoji + " " + c.name + " — ערך חדש (" + (c.kind === "time" ? "דקות" : "כמות") + "):", s.val), 10);
+    const nv = parseInt(prompt(c.emoji + " " + c.name + " — ערך חדש (דקות):", s.val), 10);
     if(!isNaN(nv) && nv >= 1 && nv <= c.max) s.val = nv;
     if(c.hasLevel){
-      const nl = parseInt(prompt("רמת פוקוס (1–5):", s.level || 3), 10);
-      if(!isNaN(nl) && nl >= 1 && nl <= 5) s.level = nl;
+      const nl = parseInt(prompt(c.levelLabel + ":", s.level !== undefined ? s.level : c.levelDef), 10);
+      if(!isNaN(nl) && nl >= c.levelMin && nl <= c.levelMax) s.level = nl;
     }
     saveSpSets();
     renderSpStats();
@@ -2499,7 +2535,7 @@
         sr.className = "set-row";
         sr.innerHTML = '<div class="left"><span class="ex-emoji">' + c.emoji + '</span>' +
           '<span class="badge">' + c.fmt(s.val) + '</span>' +
-          (s.level ? '<span class="lvl">פוקוס ' + s.level + '</span>' : '') +
+          (c.hasLevel && s.level !== undefined ? '<span class="lvl">' + c.levelWord + ' ' + s.level + '</span>' : '') +
           '<span class="time">' + time + '</span></div>' +
           '<div>' +
           (spEditMode ? '<button class="edit" data-id="' + s.id + '">✏️</button>' +
