@@ -135,27 +135,8 @@
   .tile-aerobic .tile-name{font-size:18px;font-weight:900;color:#0b1220;white-space:nowrap;}
   .tile-aerobic .tile-sub{font-size:10px;font-weight:600;color:rgba(11,18,32,.65);white-space:nowrap;}
 
-  /* ===== Stretch screen ===== */
-  .stretch-progress{display:flex;gap:5px;justify-content:center;margin-bottom:14px;}
-  .stretch-progress span{width:18px;height:6px;border-radius:3px;background:var(--card2);}
-  .stretch-progress span.done{background:#34d399;}
-  .stretch-progress span.cur{background:#a7f3d0;}
-  .stretch-step{font-size:12px;color:var(--muted);text-align:center;margin-bottom:6px;}
-  .stretch-art{width:100%;max-width:220px;height:auto;display:block;margin:0 auto;}
-  .stretch-art .hl{fill:rgba(52,211,153,.35);stroke:none;}
-  .stretch-name{font-size:28px;font-weight:900;text-align:center;margin:10px 0 4px;color:#a7f3d0;}
   .stretch-breaths{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;}
-  .stretch-next{width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:700;
-    background:linear-gradient(135deg,#34d399,#10b981);color:#0b1220;font-family:inherit;
-    box-shadow:0 6px 16px rgba(52,211,153,.25);}
-  .stretch-next:active{transform:scale(.98);}
-  .stretch-home{width:100%;margin-top:10px;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:700;
-    background:var(--card2);color:var(--text);font-family:inherit;}
-  .stretch-done{text-align:center;padding:10px 0;}
-  .stretch-done .big{font-size:56px;line-height:1;margin-bottom:10px;}
-  .stretch-done h2{margin:0 0 6px;font-size:22px;color:#a7f3d0;}
-  .stretch-done .pts{font-size:15px;color:var(--muted);margin-bottom:18px;}
-  .stretch-done .pts b{color:#facc15;font-size:20px;}
+  .stretch-breaths b{color:var(--text);}
 
   /* ===== Cards ===== */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.25);margin-bottom:16px;}
@@ -248,12 +229,45 @@
   .pb-row .pb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));min-width:2px;}
   .pb-row .pb-pct{width:74px;text-align:left;color:var(--muted);font-size:11px;white-space:nowrap;}
   .pb-row .pb-pct b{color:var(--pink);font-size:12px;}
-  .reason-row{display:flex;align-items:center;justify-content:space-between;gap:8px;
-    background:var(--card2);border-radius:12px;padding:10px 12px;}
-  .reason-text{font-size:12px;color:var(--text);flex:1;}
-  .reason-text.reason-empty{color:var(--muted);}
-  .reason-edit{background:none;border:none;color:var(--accent2);font-size:12px;font-weight:700;
-    padding:4px 6px;white-space:nowrap;font-family:inherit;}
+  .reason-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:rgba(251,146,60,.14);border:1px solid rgba(251,146,60,.5);border-right:5px solid #fb923c;
+    border-radius:14px;padding:16px 14px;}
+  .reason-text{font-size:18px;font-weight:800;color:#fff;flex:1;line-height:1.35;word-break:break-word;}
+  .reason-text.reason-empty{color:#fdba74;font-size:15px;font-weight:700;}
+  .reason-edit{background:#fb923c;border:none;color:#0b1220;font-size:13px;font-weight:800;
+    padding:9px 12px;border-radius:10px;white-space:nowrap;font-family:inherit;}
+
+  /* rest days: the most important thing to see, so it is big and loud */
+  .rest-title{font-size:16px;font-weight:900;color:#fdba74;margin:14px 0 8px;}
+  .rest-item{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:rgba(251,146,60,.14);border:1px solid rgba(251,146,60,.5);border-right:5px solid #fb923c;
+    border-radius:14px;padding:12px 14px;margin-bottom:8px;}
+  .rest-info{flex:1;min-width:0;}
+  .rest-date{font-size:12px;font-weight:700;color:#fdba74;margin-bottom:3px;}
+  .rest-reason{font-size:18px;font-weight:800;color:#fff;line-height:1.3;word-break:break-word;}
+  .rest-reason.none{font-size:14px;font-weight:700;color:#fdba74;opacity:.9;}
+
+  /* timeline scrubber under the bar charts */
+  .scrub{margin-top:12px;}
+  .scrub-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+  .scrub-label{font-size:12px;font-weight:800;color:var(--text);}
+  .scrub-step{width:32px;height:26px;border-radius:8px;border:none;background:var(--card2);color:var(--text);
+    font-size:18px;line-height:1;padding:0;font-family:inherit;}
+  .scrub-step:active{background:#2f3f59;}
+  .scrub-canvas{touch-action:pan-y;cursor:ew-resize;border-radius:8px;background:rgba(15,23,42,.35);}
+  .scrub-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;opacity:.8;}
+
+  /* tapped bar of the workout chart: every exercise in that period */
+  #mainDetail{margin-top:12px;background:var(--card2);border-radius:14px;padding:12px;}
+  .md-title{font-size:13px;font-weight:800;margin-bottom:8px;}
+  .md-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;font-size:13px;}
+  .md-row.sel{background:rgba(34,211,238,.14);}
+  .md-name{flex:1;font-weight:700;}
+  .md-n{font-size:11px;color:var(--muted);}
+  .md-row b{color:var(--accent);min-width:68px;text-align:left;}
+  .md-none{font-size:12px;color:var(--muted);text-align:center;padding:6px 0;}
+  .md-foot{font-size:12px;color:var(--muted);margin-top:8px;text-align:center;}
+  .md-foot b{color:var(--pink);font-size:14px;}
 
   /* history */
   #historyList{margin-top:14px;}
@@ -446,47 +460,6 @@
   </div>
 </div>
 
-<!-- ============ STRETCH SCREEN ============ -->
-<div class="screen" id="screen-stretch">
-  <header>
-    <button class="back-btn" data-back>→</button>
-    <div>
-      <h1>🧘 מתיחות</h1>
-      <div class="date" id="stretchDateLabel"></div>
-    </div>
-  </header>
-  <main>
-    <div class="card" id="stretchPick">
-      <p class="card-title"><span class="emoji">🌬️</span> כמה נשימות לכל מתיחה?</p>
-      <div class="counter-row">
-        <button class="counter-btn" id="stretchMinus">−</button>
-        <div class="counter-value" id="stretchBreathVal">2</div>
-        <button class="counter-btn" id="stretchPlus">+</button>
-      </div>
-      <div class="stretch-breaths" id="stretchPickHint"></div>
-      <button class="stretch-next" id="stretchStart">🧘 מתחילים</button>
-    </div>
-
-    <div class="card" id="stretchPart" style="display:none">
-      <div class="stretch-step" id="stretchStep"></div>
-      <div class="stretch-progress" id="stretchProgress"></div>
-      <div id="stretchArt"></div>
-      <div class="stretch-name" id="stretchName"></div>
-      <div class="stretch-breaths" id="stretchBreathsLine"></div>
-      <button class="stretch-next" id="stretchNext">✅ סיימתי — לחלק הבא</button>
-      <button class="stretch-home" data-back>חזור למסך הראשי</button>
-    </div>
-
-    <div class="card stretch-done" id="stretchDone" style="display:none">
-      <div class="big">🎉</div>
-      <h2>כל הכבוד!</h2>
-      <div id="stretchDoneText" style="color:var(--text);margin-bottom:6px"></div>
-      <div class="pts" id="stretchDonePts"></div>
-      <button class="stretch-next" data-back>חזור למסך הראשי</button>
-    </div>
-  </main>
-</div>
-
 <!-- ============ GENERIC LOG SCREEN ============ -->
 <div class="screen" id="screen-log">
   <header>
@@ -505,6 +478,7 @@
         <button class="counter-btn" id="plusBtn">+</button>
       </div>
       <div class="quick-chips" id="quickChips"></div>
+      <div class="stretch-breaths" id="stretchHint" style="display:none;margin-bottom:12px"></div>
       <div class="level-wrap" id="levelWrap" style="display:none">
         <div class="level-label">רמת קושי (1–10)</div>
         <div class="level-chips" id="levelChips"></div>
@@ -534,13 +508,19 @@
         <button class="chip" id="ptModeMonth">חודשים</button>
       </div>
       <div class="mode-row" id="ptRangeRow">
-        <button class="chip range-chip" id="ptRangeWeek">שבוע אחרון</button>
-        <button class="chip range-chip" id="ptRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="ptRangeWeek">שבוע</button>
+        <button class="chip range-chip" id="ptRangeMonth">חודש</button>
         <button class="chip range-chip" id="ptRangeAll">מההתחלה</button>
       </div>
       <div class="avg-line-solo" id="ptAvgLine"></div>
       <canvas id="pointsChart" height="170" dir="ltr"></canvas>
-      <div class="pt-chart-hint">💡 לחץ על נקודה בגרף לפירוט</div>
+      <div class="scrub" id="ptScrub" style="display:none">
+        <div class="scrub-head" dir="ltr"><button class="scrub-step" data-d="-1">‹</button><span class="scrub-label"></span><button class="scrub-step" data-d="1">›</button></div>
+        <canvas class="scrub-canvas" height="40" dir="ltr"></canvas>
+        <div class="scrub-hint">גרור את המסגרת על ציר הזמן כדי לעבור בין תקופות</div>
+      </div>
+      <div class="pt-chart-hint">💡 לחץ על עמודה לפירוט (ובימי מנוחה — לסיבה)</div>
+      <div id="restList" style="display:none"></div>
     </div>
 
     <div class="card">
@@ -552,12 +532,19 @@
         <button class="chip" id="modeMonth">חודשים</button>
       </div>
       <div class="mode-row" id="mainRangeRow">
-        <button class="chip range-chip" id="mainRangeWeek">שבוע אחרון</button>
-        <button class="chip range-chip" id="mainRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="mainRangeWeek">שבוע</button>
+        <button class="chip range-chip" id="mainRangeMonth">חודש</button>
         <button class="chip range-chip" id="mainRangeAll">מההתחלה</button>
       </div>
       <div class="avg-line-solo" id="avgLine"></div>
       <canvas id="mainChart" height="180" dir="ltr"></canvas>
+      <div class="scrub" id="mainScrub" style="display:none">
+        <div class="scrub-head" dir="ltr"><button class="scrub-step" data-d="-1">‹</button><span class="scrub-label"></span><button class="scrub-step" data-d="1">›</button></div>
+        <canvas class="scrub-canvas" height="40" dir="ltr"></canvas>
+        <div class="scrub-hint">גרור את המסגרת על ציר הזמן כדי לעבור בין תקופות</div>
+      </div>
+      <div class="pt-chart-hint">💡 לחץ על עמודה לפירוט כל התרגילים באותה תקופה</div>
+      <div id="mainDetail" style="display:none"></div>
     </div>
 
     <div class="card">
@@ -711,12 +698,17 @@
         <button class="chip" id="spModeMonth">חודשים</button>
       </div>
       <div class="mode-row" id="spRangeRow">
-        <button class="chip range-chip" id="spRangeWeek">שבוע אחרון</button>
-        <button class="chip range-chip" id="spRangeMonth">חודש אחרון</button>
+        <button class="chip range-chip" id="spRangeWeek">שבוע</button>
+        <button class="chip range-chip" id="spRangeMonth">חודש</button>
         <button class="chip range-chip" id="spRangeAll">מההתחלה</button>
       </div>
       <div class="avg-line-solo" id="spAvgLine"></div>
       <canvas id="spChart" height="170" dir="ltr"></canvas>
+      <div class="scrub" id="spScrub" style="display:none">
+        <div class="scrub-head" dir="ltr"><button class="scrub-step" data-d="-1">‹</button><span class="scrub-label"></span><button class="scrub-step" data-d="1">›</button></div>
+        <canvas class="scrub-canvas" height="40" dir="ltr"></canvas>
+        <div class="scrub-hint">גרור את המסגרת על ציר הזמן כדי לעבור בין תקופות</div>
+      </div>
       <div class="pt-chart-hint">💡 לחץ על עמודה לפירוט</div>
     </div>
 
@@ -812,19 +804,7 @@
   };
   const EX_KEYS = Object.keys(EXERCISES);
 
-  // body parts for the stretch routine, in order; each has a simple friendly drawing
-  const STRETCH_PARTS = [
-    { name:"צוואר", svg:'<circle cx="112" cy="52" r="16"/><line x1="100" y1="66" x2="92" y2="130"/><polyline points="94,82 70,100 60,130"/><polyline points="94,80 118,64 124,40"/><polyline points="92,130 78,170 70,190"/><polyline points="92,130 110,168 118,190"/><ellipse cx="102" cy="72" rx="14" ry="10" class="hl"/>' },
-    { name:"שכמות", svg:'<circle cx="100" cy="42" r="16"/><line x1="100" y1="58" x2="100" y2="128"/><polyline points="100,76 66,90 118,104"/><polyline points="100,76 134,90 82,104"/><polyline points="100,128 82,170 76,192"/><polyline points="100,128 118,170 124,192"/><ellipse cx="100" cy="86" rx="22" ry="12" class="hl"/>' },
-    { name:"חזה", svg:'<circle cx="100" cy="40" r="16"/><line x1="100" y1="56" x2="100" y2="126"/><polyline points="100,72 60,58 28,54"/><polyline points="100,72 140,58 172,54"/><polyline points="100,126 82,168 76,192"/><polyline points="100,126 118,168 124,192"/><ellipse cx="100" cy="80" rx="20" ry="12" class="hl"/>' },
-    { name:"כפות ידיים", svg:'<circle cx="80" cy="46" r="16"/><line x1="82" y1="62" x2="86" y2="130"/><polyline points="84,80 130,74 168,80"/><polyline points="84,84 120,110 158,100"/><polyline points="86,130 70,172 64,192"/><polyline points="86,130 104,172 110,192"/><ellipse cx="166" cy="82" rx="14" ry="12" class="hl"/>' },
-    { name:"גב", svg:'<circle cx="150" cy="82" r="14"/><path d="M138 90 Q100 40 56 88"/><line x1="56" y1="88" x2="46" y2="150"/><line x1="66" y1="90" x2="60" y2="150"/><line x1="134" y1="98" x2="128" y2="150"/><line x1="144" y1="98" x2="140" y2="150"/><ellipse cx="98" cy="60" rx="30" ry="12" class="hl"/>' },
-    { name:"ישבן", svg:'<circle cx="86" cy="46" r="16"/><line x1="90" y1="62" x2="94" y2="122"/><polyline points="94,122 60,120 50,160"/><polyline points="94,122 140,110 112,146 70,146"/><polyline points="92,80 122,100 150,92"/><ellipse cx="102" cy="124" rx="16" ry="11" class="hl"/>' },
-    { name:"מפסאות", svg:'<circle cx="96" cy="40" r="16"/><line x1="96" y1="56" x2="96" y2="118"/><polyline points="96,118 140,124 150,168"/><polyline points="96,118 66,150 40,160"/><polyline points="96,76 70,96 60,120"/><polyline points="96,76 122,94 130,116"/><ellipse cx="82" cy="126" rx="14" ry="12" class="hl"/>' },
-    { name:"ארבע ראשי", svg:'<circle cx="94" cy="36" r="16"/><line x1="94" y1="52" x2="94" y2="120"/><polyline points="94,120 92,160 90,196"/><polyline points="94,120 128,146 118,176"/><polyline points="94,74 132,110 118,176"/><polyline points="94,74 60,100 44,120"/><ellipse cx="112" cy="132" rx="14" ry="18" class="hl"/>' },
-    { name:"מיתר הברך", svg:'<line x1="100" y1="132" x2="96" y2="196"/><line x1="112" y1="132" x2="110" y2="196"/><path d="M104 132 Q112 70 70 60"/><circle cx="52" cy="66" r="14"/><polyline points="90,76 76,120 74,150"/><ellipse cx="108" cy="150" rx="12" ry="22" class="hl"/>' },
-    { name:"תאומים", svg:'<circle cx="112" cy="36" r="16"/><line x1="110" y1="52" x2="98" y2="116"/><polyline points="104,72 140,60 160,56"/><line x1="166" y1="34" x2="166" y2="196"/><polyline points="98,116 60,150 44,196"/><polyline points="98,116 118,150 124,196"/><ellipse cx="54" cy="170" rx="11" ry="16" class="hl"/>' }
-  ];
+  const STRETCH_PARTS_COUNT = 10; // body parts covered by one stretching session
 
   function setPoints(s){
     switch(s.exercise){
@@ -834,7 +814,7 @@
       case "handstand": return s.val * (s.level || 1) / 2;
       case "jumps":     return s.val;
       case "aerobic":   return 50 + s.val;
-      case "stretch":   return 2 * s.val * (s.parts || STRETCH_PARTS.length);
+      case "stretch":   return 2 * s.val * (s.parts || STRETCH_PARTS_COUNT);
     }
     return 0;
   }
@@ -906,7 +886,6 @@
     home: document.getElementById("screen-home"),
     log: document.getElementById("screen-log"),
     stats: document.getElementById("screen-stats"),
-    stretch: document.getElementById("screen-stretch"),
     spHome: document.getElementById("screen-sp-home"),
     spLog: document.getElementById("screen-sp-log"),
     spStats: document.getElementById("screen-sp-stats")
@@ -921,7 +900,7 @@
       const k = h.slice("spirit/log/".length);
       if(SP_EXERCISES[k]){ name = "spLog"; spCurrent = k; }
     }
-    else if(h === "stretch" || h === "log/stretch") name = "stretch";
+    else if(h === "stretch"){ name = "log"; currentEx = "stretch"; }
     else if(h.startsWith("log/")){
       const ex = h.slice(4);
       if(EXERCISES[ex]){ name = "log"; currentEx = ex; }
@@ -932,7 +911,6 @@
     if(name === "home") renderHome();
     if(name === "log") renderLog();
     if(name === "stats") renderStats();
-    if(name === "stretch") renderStretch();
     if(name === "spHome") renderSpHome();
     if(name === "spLog") renderSpLog();
     if(name === "spStats") renderSpStats();
@@ -941,7 +919,7 @@
   document.querySelectorAll("[data-ex]").forEach(t =>
     t.addEventListener("click", ()=> location.hash = "log/" + t.getAttribute("data-ex")));
   document.getElementById("tileStats").addEventListener("click", ()=> location.hash = "stats");
-  document.getElementById("tileStretch").addEventListener("click", ()=> location.hash = "stretch");
+  document.getElementById("tileStretch").addEventListener("click", ()=> location.hash = "log/stretch");
   document.querySelectorAll("[data-back]").forEach(b =>
     b.addEventListener("click", ()=> { location.hash = ""; }));
 
@@ -1019,9 +997,7 @@
     aSub.textContent = aToday.length ? "✔ בוצע היום" : "";
 
     const sSub = document.getElementById("stretchSub");
-    const st = loadStretch();
-    sSub.textContent = st.done ? "✔ הושלם היום" :
-      (st.breaths ? "חלק " + (st.idx + 1) + "/" + STRETCH_PARTS.length : "");
+    sSub.textContent = todaysSets("stretch").length ? "✔ בוצע היום" : "";
 
     const streakLine = document.getElementById("homeStreakLine");
     const cur = overallStreak();
@@ -1037,91 +1013,22 @@
     requestAnimationFrame(layoutHome);
   }
 
-  /* ---------- STRETCH ROUTINE ---------- */
-  // progress lives per calendar day: breaths chosen, current part, and whether all parts are done
-  const STRETCH_KEY = "sportapp_stretch_v1";
-  function loadStretch(){
-    try{
-      const p = JSON.parse(localStorage.getItem(STRETCH_KEY));
-      if(p && p.day === dayKey(Date.now())) return p;
-    }catch(e){}
-    return { day: dayKey(Date.now()), breaths: 0, idx: 0, done: false };
-  }
-  let stretch = loadStretch();
-  let stretchPick = 2;
-  function saveStretch(){ localStorage.setItem(STRETCH_KEY, JSON.stringify(stretch)); }
-
-  function renderStretchPick(){
-    document.getElementById("stretchBreathVal").textContent = stretchPick;
-    document.getElementById("stretchPickHint").textContent =
-      stretchPick + " נשימות ≈ " + (stretchPick * 10) + " שניות לכל חלק";
-  }
-  document.getElementById("stretchMinus").addEventListener("click", ()=>{
-    stretchPick = Math.max(1, stretchPick - 1); renderStretchPick();
-  });
-  document.getElementById("stretchPlus").addEventListener("click", ()=>{
-    stretchPick = Math.min(20, stretchPick + 1); renderStretchPick();
-  });
-  document.getElementById("stretchStart").addEventListener("click", ()=>{
-    stretch = { day: dayKey(Date.now()), breaths: stretchPick, idx: 0, done: false };
-    saveStretch();
-    renderStretch();
-  });
-  document.getElementById("stretchNext").addEventListener("click", ()=>{
-    stretch.idx++;
-    if(stretch.idx >= STRETCH_PARTS.length){
-      stretch.done = true;
-      sets.push({ id: Date.now() + "_" + Math.random().toString(36).slice(2),
-                  exercise: "stretch", val: stretch.breaths, parts: STRETCH_PARTS.length, ts: Date.now() });
-      saveSets();
-    }
-    saveStretch();
-    renderStretch();
-  });
-
-  function renderStretch(){
-    stretch = loadStretch();
-    document.getElementById("stretchDateLabel").textContent = fmtDate(new Date());
-    const pick = document.getElementById("stretchPick");
-    const part = document.getElementById("stretchPart");
-    const done = document.getElementById("stretchDone");
-    pick.style.display = part.style.display = done.style.display = "none";
-
-    if(!stretch.breaths){
-      pick.style.display = "";
-      renderStretchPick();
-      return;
-    }
-    if(stretch.done){
-      done.style.display = "";
-      document.getElementById("stretchDoneText").textContent =
-        "סיימת את כל " + STRETCH_PARTS.length + " המתיחות על " + stretch.breaths + " נשימות";
-      document.getElementById("stretchDonePts").innerHTML =
-        "<b>+" + (2 * stretch.breaths * STRETCH_PARTS.length) + "</b> נקודות נוספו";
-      return;
-    }
-    part.style.display = "";
-    const p = STRETCH_PARTS[stretch.idx];
-    document.getElementById("stretchStep").textContent =
-      "חלק " + (stretch.idx + 1) + " מתוך " + STRETCH_PARTS.length;
-    document.getElementById("stretchProgress").innerHTML =
-      STRETCH_PARTS.map((_,i)=> '<span class="' + (i < stretch.idx ? "done" : i === stretch.idx ? "cur" : "") + '"></span>').join("");
-    document.getElementById("stretchArt").innerHTML =
-      '<svg class="stretch-art" viewBox="0 0 200 200" fill="none" stroke="#34d399" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">' + p.svg + '</svg>';
-    document.getElementById("stretchName").textContent = p.name;
-    document.getElementById("stretchBreathsLine").textContent =
-      stretch.breaths + " נשימות ≈ " + (stretch.breaths * 10) + " שניות";
-    document.getElementById("stretchNext").textContent =
-      stretch.idx === STRETCH_PARTS.length - 1 ? "🎉 סיימתי את האחרון!" : "✅ סיימתי — לחלק הבא";
-  }
-
   /* ---------- LOG SCREEN ---------- */
   const counterVal = document.getElementById("counterVal");
   function cfg(){ return EXERCISES[currentEx]; }
 
+  function renderStretchHint(){
+    const el = document.getElementById("stretchHint");
+    if(currentEx !== "stretch"){ el.style.display = "none"; return; }
+    const n = counters.stretch;
+    el.style.display = "";
+    el.innerHTML = "נשימה ≈ 10 שניות · " + STRETCH_PARTS_COUNT + " חלקי גוף · ניקוד: 2 × " + n + " × " +
+      STRETCH_PARTS_COUNT + " = <b>" + (2 * n * STRETCH_PARTS_COUNT) + "</b> נק׳";
+  }
   function renderCounter(){
     counterVal.textContent = cfg().fmt(counters[currentEx]);
     localStorage.setItem("sportapp_counter_" + currentEx, String(counters[currentEx]));
+    renderStretchHint();
   }
   document.getElementById("minusBtn").addEventListener("click", ()=>{
     counters[currentEx] = Math.max(cfg().min, counters[currentEx] - cfg().step);
@@ -1183,7 +1090,7 @@
     if(cfg().hasLevel) entry.level = level;
     sets.push(entry);
     saveSets();
-    showToast("סט נשמר: " + cfg().fmt(v) + " " + cfg().emoji);
+    showToast("סט נשמר: " + cfg().fmt(v) + " · +" + Math.round(setPoints(entry)) + " נק׳ " + cfg().emoji);
     renderTodayLine();
   });
 
@@ -1193,6 +1100,7 @@
     document.getElementById("logDateLabel").textContent = fmtDate(new Date());
     document.getElementById("logQuestion").textContent =
       currentEx === "aerobic" ? "מה רמת הקושי של התרגיל?" :
+      currentEx === "stretch" ? "כמה נשימות לכל מתיחה?" :
       c.unit === "חזרות" ? "כמה חזרות עשית?" :
       c.unit === "קפיצות" ? "כמה קפיצות עשית?" :
       c.unit === "דקות" ? "כמה דקות עשית?" : "כמה שניות החזקת?";
@@ -1297,7 +1205,277 @@
     return { ctx, w: cssWidth, h: cssHeight };
   }
 
-  /* ---------- STATS: main chart ---------- */
+  /* ---------- CHART ENGINE (shared by the workout, points and spirit charts) ---------- */
+  const DAY_MS = 86400000;
+  function dayStartOf(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+  function weekStartOf(d){ const x = dayStartOf(d); x.setDate(x.getDate() - x.getDay()); return x; }
+  function monthStartOf(d){ const x = dayStartOf(d); x.setDate(1); return x; }
+  function daysBetween(a, b){ return Math.round((dayStartOf(b) - dayStartOf(a)) / DAY_MS); }
+  function fmtDM(d){ return d.getDate() + "." + (d.getMonth()+1); }
+  function fmtRange(a, b){
+    const sep = a.getFullYear() !== b.getFullYear();
+    const yy = d => "." + String(d.getFullYear()).slice(2);
+    return fmtDM(a) + (sep ? yy(a) : "") + " – " + fmtDM(b) + (sep ? yy(b) : "");
+  }
+  function firstSetTs(){
+    let f = null;
+    sets.forEach(s => { if(f === null || s.ts < f) f = s.ts; });
+    return f;
+  }
+
+  // every day / week / month from the first activity until today, oldest first
+  function buildSeries(mode, range, firstTs, dayVal){
+    const today = startOfDay(0);
+    const minU = mode === "day" ? (range === "week" ? 7 : range === "month" ? 30 : 7) : 12;
+    const first = firstTs ? dayStartOf(firstTs) : today;
+    const out = [];
+    if(mode === "day"){
+      let start = first;
+      const floor = new Date(today); floor.setDate(floor.getDate() - (minU - 1));
+      if(floor < start) start = floor;
+      for(let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)){
+        const k = dayKey(d.getTime());
+        out.push({
+          val: dayVal(k), keys: [k], startDate: new Date(d), endDate: new Date(d), scale: 1,
+          axisLabel: fmtDM(d),
+          label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
+        });
+      }
+    } else if(mode === "week"){
+      let start = weekStartOf(first);
+      const floor = weekStartOf(today); floor.setDate(floor.getDate() - 7 * (minU - 1));
+      if(floor < start) start = floor;
+      for(let ws = new Date(start); ws <= today; ws.setDate(ws.getDate() + 7)){
+        const keys = []; let val = 0, end = null;
+        for(let j = 0; j < 7; j++){
+          const d = new Date(ws); d.setDate(d.getDate() + j);
+          if(d > today) break;
+          const k = dayKey(d.getTime()); keys.push(k); val += dayVal(k); end = d;
+        }
+        out.push({ val, keys, startDate: new Date(ws), endDate: end, scale: 7,
+                   axisLabel: fmtDM(ws), label: "שבוע " + fmtDM(ws) });
+      }
+    } else {
+      let start = monthStartOf(first);
+      const floor = monthStartOf(today); floor.setMonth(floor.getMonth() - (minU - 1));
+      if(floor < start) start = floor;
+      for(let ms = new Date(start); ms <= today; ms.setMonth(ms.getMonth() + 1)){
+        const next = new Date(ms); next.setMonth(next.getMonth() + 1);
+        const keys = []; let val = 0, end = null;
+        for(let d = new Date(ms); d < next && d <= today; d.setDate(d.getDate() + 1)){
+          const k = dayKey(d.getTime()); keys.push(k); val += dayVal(k); end = new Date(d);
+        }
+        const nm = ms.toLocaleDateString("he-IL", { month:"short" });
+        out.push({ val, keys, startDate: new Date(ms), endDate: end, scale: daysBetween(ms, next),
+                   axisLabel: nm, label: nm + " " + ms.getFullYear() });
+      }
+    }
+    return out;
+  }
+
+  // how many units are visible at once and where the visible window sits (off = units back from the newest)
+  function windowOf(n, mode, range, off){
+    let win = mode === "day" ? (range === "week" ? 7 : range === "month" ? 30 : 180) : 12;
+    win = Math.min(win, n);
+    const o = Math.max(0, Math.min(off, n - win));
+    return { win, off: o, start: n - win - o };
+  }
+
+  // trailing 60/90-day averages per unit (scaled to the unit so they sit on the same axis as the bars),
+  // plus plain daily averages ending at a date
+  function movingAverages(entries, dayVal, spans, firstTs){
+    const base = entries[0].startDate;
+    const nDays = daysBetween(base, startOfDay(0)) + 1;
+    const P = [0];
+    for(let i = 0; i < nDays; i++){
+      const d = new Date(base); d.setDate(d.getDate() + i);
+      P.push(P[i] + dayVal(dayKey(d.getTime())));
+    }
+    const out = {};
+    spans.forEach(N=>{
+      out[N] = entries.map(e=>{
+        const endIdx = daysBetween(base, e.endDate);
+        const lo = Math.max(0, endIdx - N + 1);
+        return (P[endIdx + 1] - P[lo]) / (endIdx + 1 - lo) * e.scale;
+      });
+    });
+    const firstIdx = firstTs ? Math.max(0, daysBetween(base, firstTs)) : 0;
+    // N = 0 means "since the first activity"
+    out.dailyAvg = (endDate, N)=>{
+      const endIdx = daysBetween(base, endDate);
+      const lo = Math.min(endIdx, Math.max(0, N === 0 ? firstIdx : endIdx - N + 1));
+      return (P[endIdx + 1] - P[lo]) / (endIdx + 1 - lo);
+    };
+    return out;
+  }
+
+  // small overview strip of the whole history with a draggable window
+  function makeScrubber(rootId, onOff){
+    const root = document.getElementById(rootId);
+    const canvas = root.querySelector("canvas");
+    const label = root.querySelector(".scrub-label");
+    const st = { n: 0, win: 0, off: 0 };
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    function setOff(o){
+      o = clamp(o, 0, Math.max(0, st.n - st.win));
+      if(o !== st.off){ st.off = o; onOff(o); }
+    }
+    function offAt(clientX){
+      const r = canvas.getBoundingClientRect();
+      const idx = Math.floor((clientX - r.left) / r.width * st.n);
+      const start = clamp(idx - Math.floor(st.win / 2), 0, st.n - st.win);
+      return st.n - st.win - start;
+    }
+    let dragging = false;
+    canvas.addEventListener("pointerdown", e=>{ dragging = true; setOff(offAt(e.clientX)); });
+    window.addEventListener("pointermove", e=>{ if(dragging) setOff(offAt(e.clientX)); });
+    const stop = ()=>{ dragging = false; };
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+    root.querySelectorAll(".scrub-step").forEach(b=>{
+      b.addEventListener("click", ()=> setOff(st.off - parseInt(b.getAttribute("data-d"), 10) * st.win));
+    });
+    return {
+      update(vals, win, off, text){
+        st.n = vals.length; st.win = win; st.off = off;
+        const show = win < vals.length;
+        root.style.display = show ? "" : "none";
+        if(!show) return;
+        label.textContent = text;
+        const w = canvas.parentElement.clientWidth, h = 40, dpr = window.devicePixelRatio || 1;
+        if(w <= 0) return;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        canvas.style.width = w + "px"; canvas.style.height = h + "px";
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, w, h);
+        const n = vals.length, max = Math.max(1, Math.max.apply(null, vals)), bw = w / n;
+        ctx.fillStyle = "rgba(148,163,184,.5)";
+        vals.forEach((v, i)=>{
+          const bh = v > 0 ? Math.max(2, v / max * (h - 8)) : 0;
+          ctx.fillRect(i * bw, h - bh, Math.max(1, bw - 0.6), bh);
+        });
+        const x0 = (n - win - off) * bw, ww = win * bw;
+        ctx.fillStyle = "rgba(226,232,240,.16)";
+        ctx.fillRect(x0, 0, ww, h);
+        ctx.strokeStyle = "rgba(226,232,240,.9)";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x0 + 0.75, 0.75, Math.max(2, ww - 1.5), h - 1.5);
+      }
+    };
+  }
+
+  // bars + two soft moving-average lines; returns the geometry needed for hit-testing
+  function drawBarChart(canvas, cssHeight, cfg){
+    const { ctx, w, h } = setupCanvas(canvas, cssHeight);
+    const E = cfg.entries, n = E.length;
+    const vals = E.map(e => e.val);
+    const barMax = Math.max.apply(null, vals);
+    const max = Math.max(1, barMax, Math.max.apply(null, cfg.ma60), Math.max.apply(null, cfg.ma90));
+    const axisL = 34, top = 38, bottom = h - 24;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.font = "600 10px sans-serif";
+    [0, .5, 1].forEach(f=>{
+      const y = bottom - f * (bottom - top);
+      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
+      ctx.fillStyle = "#94a3b8";
+      ctx.textAlign = "right";
+      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
+    });
+
+    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
+    const bw = (w - axisL - gap * (n - 1)) / n;
+    const labelEvery = Math.max(1, Math.ceil(n / 7));
+
+    if(cfg.selIdx >= 0 && cfg.selIdx < n){
+      const sx = axisL + cfg.selIdx * (bw + gap);
+      ctx.fillStyle = "rgba(226,232,240,.10)";
+      ctx.fillRect(sx - gap / 2, top - 8, bw + gap, bottom - top + 8);
+    }
+
+    vals.forEach((val, i)=>{
+      const x = axisL + i * (bw + gap);
+      if(val > 0){
+        const bh = Math.max(4, (val / max) * (bottom - top));
+        const y = bottom - bh;
+        const grad = ctx.createLinearGradient(0, y, 0, bottom);
+        grad.addColorStop(0, cfg.barTop); grad.addColorStop(1, cfg.barBot);
+        ctx.fillStyle = grad;
+        const r = Math.min(5, bw / 2);
+        ctx.beginPath();
+        ctx.moveTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
+        ctx.arcTo(x + bw, y, x + bw, y + r, r);
+        ctx.lineTo(x + bw, bottom); ctx.lineTo(x, bottom);
+        ctx.closePath(); ctx.fill();
+        if(bw > 14 || val === barMax){
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "700 10px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(Math.round(val), x + bw / 2, y - 4);
+        }
+      } else if(cfg.markerFor && cfg.markerFor(i)){
+        ctx.beginPath();
+        ctx.arc(x + bw / 2, bottom - 7, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#fb923c";
+        ctx.fill();
+      }
+      if(i % labelEvery === 0 || i === n - 1){
+        ctx.fillStyle = i === n - 1 ? "#e2e8f0" : "#94a3b8";
+        ctx.font = (i === n - 1 ? "800" : "600") + " 9px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(E[i].axisLabel, x + bw / 2, h - 8);
+      }
+    });
+
+    const line = (arr, color, lw, alpha)=>{
+      ctx.beginPath();
+      arr.forEach((v, i)=>{
+        const x = axisL + i * (bw + gap) + bw / 2;
+        const y = bottom - Math.min(1, v / max) * (bottom - top);
+        if(i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      });
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lw;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    };
+    line(cfg.ma90, cfg.c90, 1.2, .7);
+    line(cfg.ma60, cfg.c60, 1.4, .85);
+
+    // quiet legend: current value of each moving average
+    ctx.font = "700 9px sans-serif";
+    ctx.textAlign = "right";
+    const t90 = "90 ימים: " + Math.round(cfg.ma90[n - 1]);
+    const t60 = "60 ימים: " + Math.round(cfg.ma60[n - 1]);
+    ctx.fillStyle = cfg.c90; ctx.globalAlpha = .9;
+    ctx.fillText(t90, w, 12);
+    const w90 = ctx.measureText(t90).width;
+    ctx.fillStyle = cfg.c60;
+    ctx.fillText(t60, w - w90 - 14, 12);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#94a3b8"; ctx.textAlign = "left";
+    ctx.fillText("ממוצע נע", axisL, 12);
+
+    return { axisL, bw, gap };
+  }
+
+  function barIndexAt(e, geo, count){
+    const rect = e.currentTarget.getBoundingClientRect();
+    const idx = Math.floor((e.clientX - rect.left - geo.axisL) / (geo.bw + geo.gap));
+    return Math.max(0, Math.min(count - 1, idx));
+  }
+
+  /* ---------- STATS: workout chart (per exercise) ---------- */
+  const mainNav = { off: 0, sel: -1 };
+  const mainState = { entries: [], axisL: 0, bw: 0, gap: 0 };
+  function resetMainNav(){ mainNav.off = 0; mainNav.sel = -1; }
+
   function buildChartControls(){
     const wrap = document.getElementById("chartChips");
     wrap.innerHTML = "";
@@ -1307,6 +1485,7 @@
       b.textContent = EXERCISES[ex].emoji + " " + EXERCISES[ex].name;
       b.addEventListener("click", ()=>{
         chartEx = ex;
+        resetMainNav();
         buildChartControls();
         renderMainChart();
       });
@@ -1322,183 +1501,78 @@
     const mainDays = daysSinceStart();
     document.getElementById("mainRangeAll").textContent = "מההתחלה" + (mainDays ? " (" + mainDays + " ימים)" : "");
   }
-  document.getElementById("modeDay").addEventListener("click", ()=>{
-    chartMode = "day"; buildChartControls(); renderMainChart();
+  [["modeDay","day"],["modeWeek","week"],["modeMonth","month"]].forEach(([id, m])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      chartMode = m; resetMainNav(); buildChartControls(); renderMainChart();
+    });
   });
-  document.getElementById("modeWeek").addEventListener("click", ()=>{
-    chartMode = "week"; buildChartControls(); renderMainChart();
-  });
-  document.getElementById("modeMonth").addEventListener("click", ()=>{
-    chartMode = "month"; buildChartControls(); renderMainChart();
-  });
-  document.getElementById("mainRangeWeek").addEventListener("click", ()=>{
-    chartDayRange = "week"; buildChartControls(); renderMainChart();
-  });
-  document.getElementById("mainRangeMonth").addEventListener("click", ()=>{
-    chartDayRange = "month"; buildChartControls(); renderMainChart();
-  });
-  document.getElementById("mainRangeAll").addEventListener("click", ()=>{
-    chartDayRange = "all"; buildChartControls(); renderMainChart();
+  [["mainRangeWeek","week"],["mainRangeMonth","month"],["mainRangeAll","all"]].forEach(([id, r])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      chartDayRange = r; resetMainNav(); buildChartControls(); renderMainChart();
+    });
   });
 
-  function weekStart(offsetWeeks){
-    const d = startOfDay(0);
-    d.setDate(d.getDate() - d.getDay() + offsetWeeks * 7);
-    return d;
-  }
-  function monthStart(offsetMonths){
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    d.setDate(1);
-    d.setMonth(d.getMonth() + offsetMonths);
-    return d;
+  const mainScrub = makeScrubber("mainScrub", o=>{ mainNav.off = o; mainNav.sel = -1; renderMainChart(); });
+  document.getElementById("mainChart").addEventListener("click", e=>{
+    if(mainState.entries.length === 0) return;
+    const idx = barIndexAt(e, mainState, mainState.entries.length);
+    mainNav.sel = mainNav.sel === idx ? -1 : idx;
+    renderMainChart();
+  });
+
+  // how much of every exercise happened in the tapped day / week / month
+  function renderMainDetail(entry){
+    const box = document.getElementById("mainDetail");
+    if(!entry){ box.style.display = "none"; box.innerHTML = ""; return; }
+    box.style.display = "";
+    const keySet = new Set(entry.keys);
+    let html = '<div class="md-title">' + entry.label + '</div>';
+    let any = false;
+    EX_KEYS.forEach(ex=>{
+      const list = sets.filter(s => s.exercise === ex && keySet.has(dayKey(s.ts)));
+      if(list.length === 0 && ex !== chartEx) return;
+      const c = EXERCISES[ex];
+      const total = list.reduce((a, s)=> a + s.val, 0);
+      if(list.length) any = true;
+      html += '<div class="md-row' + (ex === chartEx ? ' sel' : '') + '">' +
+        '<span class="md-name">' + c.emoji + ' ' + c.name + '</span>' +
+        '<span class="md-n">' + (list.length ? list.length + ' סטים' : '') + '</span>' +
+        '<b>' + (list.length ? c.fmt(total) : '—') + '</b></div>';
+    });
+    if(!any) html += '<div class="md-none">לא נרשם אימון בתקופה הזו</div>';
+    html += '<div class="md-foot">סה״כ נקודות בתקופה: <b>' + Math.round(pointsForKeys(entry.keys)) + '</b></div>';
+    box.innerHTML = html;
   }
 
   function renderMainChart(){
-    const canvas = document.getElementById("mainChart");
-    const { ctx, w, h } = setupCanvas(canvas, 180);
     const c = EXERCISES[chartEx];
+    const byDay = {};
+    sets.forEach(s=>{
+      if(s.exercise === chartEx){ const k = dayKey(s.ts); byDay[k] = (byDay[k] || 0) + s.val; }
+    });
+    const dayVal = k => byDay[k] || 0;
+    const firstTs = firstSetTs();
+    const series = buildSeries(chartMode, chartDayRange, firstTs, dayVal);
+    const W = windowOf(series.length, chartMode, chartDayRange, mainNav.off);
+    mainNav.off = W.off;
+    const ent = series.slice(W.start, W.start + W.win);
+    const ma = movingAverages(series, dayVal, [60, 90], firstTs);
+    const geo = drawBarChart(document.getElementById("mainChart"), 180, {
+      entries: ent,
+      ma60: ma[60].slice(W.start, W.start + W.win),
+      ma90: ma[90].slice(W.start, W.start + W.win),
+      barTop: "#22d3ee", barBot: "#818cf8", c60: "#facc15", c90: "#fb923c",
+      selIdx: mainNav.sel
+    });
+    mainState.entries = ent; mainState.axisL = geo.axisL; mainState.bw = geo.bw; mainState.gap = geo.gap;
 
-    // oldest on the LEFT, newest on the RIGHT (left-to-right time axis)
-    let labels = [], totals = [], highlight = -1;
-
-    if(chartMode === "day"){
-      let N;
-      if(chartDayRange === "week") N = 7;
-      else if(chartDayRange === "month") N = 30;
-      else {
-        let firstTs = Date.now();
-        sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
-        const first = new Date(firstTs); first.setHours(0,0,0,0);
-        N = Math.max(7, Math.round((startOfDay(0) - first) / 86400000) + 1);
-      }
-      N = Math.min(N, 180);
-      for(let i = N-1; i >= 0; i--){
-        const d = startOfDay(-i);
-        totals.push(totalForKey(chartEx, dayKey(d.getTime())));
-        labels.push(d.getDate() + "." + (d.getMonth()+1));
-      }
-      highlight = totals.length - 1;
-    } else if(chartMode === "week"){
-      const N = 12;
-      for(let i = N-1; i >= 0; i--){
-        const ws = weekStart(-i);
-        let sum = 0;
-        for(let j=0; j<7; j++){
-          const d = new Date(ws); d.setDate(d.getDate()+j);
-          if(d > new Date()) break;
-          sum += totalForKey(chartEx, dayKey(d.getTime()));
-        }
-        totals.push(sum);
-        labels.push(ws.getDate() + "." + (ws.getMonth()+1));
-      }
-      highlight = totals.length - 1;
-    } else {
-      const N = 12;
-      for(let i = N-1; i >= 0; i--){
-        const ms = monthStart(-i);
-        const nextMs = monthStart(-i+1);
-        let sum = 0;
-        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
-          if(d > new Date()) break;
-          sum += totalForKey(chartEx, dayKey(d.getTime()));
-        }
-        totals.push(sum);
-        labels.push(ms.toLocaleDateString("he-IL", {month:"short"}));
-      }
-      highlight = totals.length - 1;
-    }
-
-    let firstIdx = totals.findIndex(v => v > 0);
-    let avg = 0;
-    if(firstIdx >= 0){
-      const span = totals.slice(firstIdx);
-      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
-    }
+    const end = ent[ent.length - 1].endDate;
+    const f = v => c.fmt(Math.round(v));
     document.getElementById("avgLine").innerHTML =
-      (chartMode === "day" ? "ממוצע יומי: " : chartMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
-      "<b>" + (avg ? c.fmt(avg) : "—") + "</b>";
-
-    const max = Math.max(1, ...totals);
-    const axisL = 34, top = 38, bottom = h - 24;
-    ctx.clearRect(0,0,w,h);
-
-    ctx.font = "600 10px sans-serif";
-    [0, .5, 1].forEach(f=>{
-      const y = bottom - f * (bottom - top);
-      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
-      ctx.fillStyle = "#94a3b8";
-      ctx.textAlign = "right";
-      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
-    });
-
-    const n = totals.length;
-    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
-    const bw = (w - axisL - gap*(n-1)) / n;
-    const labelEvery = Math.max(1, Math.ceil(n / 7));
-
-    // rolling (trailing) average — tracks recent data instead of a flat line
-    const winSize = chartMode === "day" ? 7 : chartMode === "week" ? 4 : 3;
-    const movingAvg = totals.map((_,i)=>{
-      const start = Math.max(0, i - winSize + 1);
-      const win = totals.slice(start, i+1);
-      return win.reduce((a,b)=>a+b, 0) / win.length;
-    });
-
-    totals.forEach((val,i)=>{
-      const x = axisL + i * (bw + gap);
-      if(val > 0){
-        const bh = Math.max(4, (val/max) * (bottom-top));
-        const y = bottom - bh;
-        const grad = ctx.createLinearGradient(0, y, 0, bottom);
-        grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#818cf8");
-        ctx.fillStyle = grad;
-        const r = Math.min(5, bw/2);
-        ctx.beginPath();
-        ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
-        ctx.arcTo(x+bw, y, x+bw, y+r, r);
-        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
-        ctx.closePath(); ctx.fill();
-        if(bw > 18 || val === max){
-          ctx.fillStyle = "#e2e8f0";
-          ctx.font = "700 10px sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(val, x + bw/2, y - 4);
-        }
-      }
-      if(i % labelEvery === 0 || i === n-1){
-        ctx.fillStyle = i === highlight ? "#e2e8f0" : "#94a3b8";
-        ctx.font = (i === highlight ? "800" : "600") + " 9px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(labels[i], x + bw/2, h - 8);
-      }
-    });
-
-    // moving-average trend line — drawn on top of the bars, rises and falls with the data
-    const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
-    ctx.beginPath();
-    avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
-    ctx.strokeStyle = "#facc15";
-    ctx.lineWidth = 2;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.shadowColor = "rgba(15,23,42,.6)";
-    ctx.shadowBlur = 3;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    const lastAvgPt = avgPts[avgPts.length-1];
-    ctx.beginPath();
-    ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
-    ctx.fillStyle = "#facc15";
-    ctx.fill();
-    ctx.fillStyle = "#facc15";
-    ctx.font = "800 10px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText("ממוצע נע (" + winSize + (chartMode === "day" ? " ימים" : chartMode === "week" ? " שבועות" : " חודשים") + "): " + c.fmt(Math.round(movingAvg[movingAvg.length-1])),
-      w, 12);
+      'ממוצע יומי · 7 ימים: <b>' + f(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + f(ma.dailyAvg(end, 30)) +
+      '</b> · מההתחלה: <b>' + f(ma.dailyAvg(end, 0)) + '</b>';
+    mainScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
+    renderMainDetail(mainNav.sel >= 0 ? ent[mainNav.sel] : null);
   }
 
   /* ---------- STATS: points ---------- */
@@ -1584,23 +1658,17 @@
     if(!open) renderPointsBreakdown(dayKey(Date.now()), "היום");
   });
 
-  document.getElementById("ptModeDay").addEventListener("click", ()=>{
-    pointsMode = "day"; updatePtModeButtons(); renderPointsChart();
+  const ptNav = { off: 0, sel: -1 };
+  function resetPtNav(){ ptNav.off = 0; ptNav.sel = -1; }
+  [["ptModeDay","day"],["ptModeWeek","week"],["ptModeMonth","month"]].forEach(([id, m])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      pointsMode = m; resetPtNav(); updatePtModeButtons(); renderPointsChart();
+    });
   });
-  document.getElementById("ptModeWeek").addEventListener("click", ()=>{
-    pointsMode = "week"; updatePtModeButtons(); renderPointsChart();
-  });
-  document.getElementById("ptModeMonth").addEventListener("click", ()=>{
-    pointsMode = "month"; updatePtModeButtons(); renderPointsChart();
-  });
-  document.getElementById("ptRangeWeek").addEventListener("click", ()=>{
-    pointsDayRange = "week"; updatePtModeButtons(); renderPointsChart();
-  });
-  document.getElementById("ptRangeMonth").addEventListener("click", ()=>{
-    pointsDayRange = "month"; updatePtModeButtons(); renderPointsChart();
-  });
-  document.getElementById("ptRangeAll").addEventListener("click", ()=>{
-    pointsDayRange = "all"; updatePtModeButtons(); renderPointsChart();
+  [["ptRangeWeek","week"],["ptRangeMonth","month"],["ptRangeAll","all"]].forEach(([id, r])=>{
+    document.getElementById(id).addEventListener("click", ()=>{
+      pointsDayRange = r; resetPtNav(); updatePtModeButtons(); renderPointsChart();
+    });
   });
   function updatePtModeButtons(){
     document.getElementById("ptModeDay").className = "chip" + (pointsMode === "day" ? " sel" : "");
@@ -1614,20 +1682,59 @@
     document.getElementById("ptRangeAll").textContent = "מההתחלה" + (ptDays ? " (" + ptDays + " ימים)" : "");
   }
 
-  // click on a bar in the points chart → breakdown for that day/week
+  // click on a bar in the points chart → breakdown (or the rest-day reason) for that day/week/month
   const pcState = { entries: [], axisL: 0, bw: 0, gap: 0 };
+  const ptScrub = makeScrubber("ptScrub", o=>{ ptNav.off = o; ptNav.sel = -1; renderPointsChart(); });
   document.getElementById("pointsChart").addEventListener("click", (e)=>{
     if(pcState.entries.length === 0) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    let idx = Math.floor((x - pcState.axisL) / (pcState.bw + pcState.gap));
-    idx = Math.max(0, Math.min(pcState.entries.length - 1, idx));
+    const idx = barIndexAt(e, pcState, pcState.entries.length);
     const entry = pcState.entries[idx];
-    const bd = document.getElementById("pointsBreakdown");
-    bd.style.display = "";
+    ptNav.sel = idx;
+    renderPointsChart();
+    document.getElementById("pointsBreakdown").style.display = "";
     document.getElementById("ptHint").textContent = "▴ סגור פירוט";
     renderPointsBreakdown(entry.keys, entry.label);
   });
+
+  // every empty day in the visible range, with its reason shown big (or an easy way to add one)
+  function renderRestList(ent){
+    const box = document.getElementById("restList");
+    const todayK = dayKey(Date.now());
+    const rest = ent.filter(e => e.val === 0 && e.keys[0] !== todayK);
+    box.innerHTML = "";
+    if(pointsMode !== "day" || ent.length > 31 || rest.length === 0){ box.style.display = "none"; return; }
+    box.style.display = "";
+    const title = document.createElement("div");
+    title.className = "rest-title";
+    title.textContent = "💤 ימי מנוחה בטווח (" + rest.length + ")";
+    box.appendChild(title);
+    rest.slice().reverse().forEach(e=>{
+      const k = e.keys[0];
+      const item = document.createElement("div");
+      item.className = "rest-item";
+      const info = document.createElement("div");
+      info.className = "rest-info";
+      const date = document.createElement("div");
+      date.className = "rest-date";
+      date.textContent = e.label;
+      const why = document.createElement("div");
+      why.className = "rest-reason" + (restReasons[k] ? "" : " none");
+      why.textContent = restReasons[k] || "לא נרשמה סיבה";
+      info.appendChild(date); info.appendChild(why);
+      const btn = document.createElement("button");
+      btn.className = "reason-edit";
+      btn.textContent = restReasons[k] ? "✏️ ערוך" : "+ הוסף סיבה";
+      btn.addEventListener("click", ()=>{
+        const nv = prompt("סיבה ליום המנוחה (" + e.label + "):", restReasons[k] || "");
+        if(nv === null) return;
+        if(nv.trim()) restReasons[k] = nv.trim(); else delete restReasons[k];
+        saveReasons();
+        renderPointsChart();
+      });
+      item.appendChild(info); item.appendChild(btn);
+      box.appendChild(item);
+    });
+  }
 
   function renderPointsChart(){
     document.getElementById("pointsToday").textContent =
@@ -1635,169 +1742,31 @@
     if(document.getElementById("pointsBreakdown").style.display !== "none")
       renderPointsBreakdown(dayKey(Date.now()), "היום");
 
-    const canvas = document.getElementById("pointsChart");
-    const { ctx, w, h } = setupCanvas(canvas, 170);
+    const byDay = {};
+    sets.forEach(s=>{ const k = dayKey(s.ts); byDay[k] = (byDay[k] || 0) + setPoints(s); });
+    const dayVal = k => byDay[k] || 0;
+    const firstTs = firstSetTs();
+    const series = buildSeries(pointsMode, pointsDayRange, firstTs, dayVal);
+    const W = windowOf(series.length, pointsMode, pointsDayRange, ptNav.off);
+    ptNav.off = W.off;
+    const ent = series.slice(W.start, W.start + W.win);
+    const ma = movingAverages(series, dayVal, [60, 90], firstTs);
+    const geo = drawBarChart(document.getElementById("pointsChart"), 170, {
+      entries: ent,
+      ma60: ma[60].slice(W.start, W.start + W.win),
+      ma90: ma[90].slice(W.start, W.start + W.win),
+      barTop: "#f472b6", barBot: "#a78bfa", c60: "#facc15", c90: "#fb923c",
+      selIdx: ptNav.sel,
+      markerFor: i => pointsMode === "day" && !!restReasons[ent[i].keys[0]]
+    });
+    pcState.entries = ent; pcState.axisL = geo.axisL; pcState.bw = geo.bw; pcState.gap = geo.gap;
 
-    // build entries: oldest on the LEFT, newest on the RIGHT
-    const entries = [];
-    if(pointsMode === "day"){
-      let nDays;
-      if(pointsDayRange === "week") nDays = 7;
-      else if(pointsDayRange === "month") nDays = 30;
-      else {
-        let firstTs = Date.now();
-        sets.forEach(s => { if(s.ts < firstTs) firstTs = s.ts; });
-        const first = new Date(firstTs); first.setHours(0,0,0,0);
-        nDays = Math.max(7, Math.round((startOfDay(0) - first) / 86400000) + 1);
-      }
-      nDays = Math.min(nDays, 180);
-      for(let i = nDays - 1; i >= 0; i--){
-        const d = startOfDay(-i);
-        const k = dayKey(d.getTime());
-        entries.push({
-          val: pointsForKeys([k]), keys: [k],
-          axisLabel: d.getDate() + "." + (d.getMonth()+1),
-          label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
-        });
-      }
-    } else if(pointsMode === "week"){
-      const N = 12;
-      for(let i = N-1; i >= 0; i--){
-        const ws = weekStart(-i);
-        const keys = [];
-        for(let j=0; j<7; j++){
-          const d = new Date(ws); d.setDate(d.getDate()+j);
-          if(d > new Date()) break;
-          keys.push(dayKey(d.getTime()));
-        }
-        entries.push({
-          val: pointsForKeys(keys), keys,
-          axisLabel: ws.getDate() + "." + (ws.getMonth()+1),
-          label: "שבוע " + ws.getDate() + "." + (ws.getMonth()+1)
-        });
-      }
-    } else {
-      const N = 12;
-      for(let i = N-1; i >= 0; i--){
-        const ms = monthStart(-i);
-        const nextMs = monthStart(-i+1);
-        const keys = [];
-        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
-          if(d > new Date()) break;
-          keys.push(dayKey(d.getTime()));
-        }
-        const monthLabel = ms.toLocaleDateString("he-IL", {month:"short"});
-        entries.push({
-          val: pointsForKeys(keys), keys,
-          axisLabel: monthLabel,
-          label: monthLabel
-        });
-      }
-    }
-    const totals = entries.map(e => e.val);
-    const max = Math.max(1, ...totals);
-
-    // average since first non-zero entry
-    const firstIdx = totals.findIndex(v => v > 0);
-    let avg = 0;
-    if(firstIdx >= 0){
-      const span = totals.slice(firstIdx);
-      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
-    }
+    const end = ent[ent.length - 1].endDate;
     document.getElementById("ptAvgLine").innerHTML =
-      (pointsMode === "day" ? "ממוצע יומי: " : pointsMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
-      "<b>" + (avg || "—") + "</b>";
-
-    const axisL = 34, top = 38, bottom = h - 24;
-    ctx.clearRect(0,0,w,h);
-
-    // y-axis gridlines: 0, mid, max
-    ctx.font = "600 10px sans-serif";
-    [0, .5, 1].forEach(f=>{
-      const y = bottom - f * (bottom - top);
-      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
-      ctx.fillStyle = "#94a3b8";
-      ctx.textAlign = "right";
-      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
-    });
-
-    const n = totals.length;
-    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
-    const bw = (w - axisL - gap*(n-1)) / n;
-    const labelEvery = Math.max(1, Math.ceil(n / 7));
-    pcState.entries = entries;
-    pcState.axisL = axisL;
-    pcState.bw = bw;
-    pcState.gap = gap;
-
-    // rolling (trailing) average — tracks recent data instead of a flat line
-    const winSize = pointsMode === "day" ? 7 : pointsMode === "week" ? 4 : 3;
-    const movingAvg = totals.map((_,i)=>{
-      const start = Math.max(0, i - winSize + 1);
-      const win = totals.slice(start, i+1);
-      return win.reduce((a,b)=>a+b, 0) / win.length;
-    });
-
-    totals.forEach((val,i)=>{
-      const x = axisL + i * (bw + gap);
-      if(val > 0){
-        const bh = Math.max(4, (val/max) * (bottom-top));
-        const y = bottom - bh;
-        const grad = ctx.createLinearGradient(0, y, 0, bottom);
-        grad.addColorStop(0, "#f472b6"); grad.addColorStop(1, "#a78bfa");
-        ctx.fillStyle = grad;
-        const r = Math.min(5, bw/2);
-        ctx.beginPath();
-        ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
-        ctx.arcTo(x+bw, y, x+bw, y+r, r);
-        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
-        ctx.closePath(); ctx.fill();
-        if(bw > 18 || val === max){
-          ctx.fillStyle = "#e2e8f0";
-          ctx.font = "700 10px sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(Math.round(val), x + bw/2, y - 4);
-        }
-      } else if(pointsMode === "day" && restReasons[entries[i].keys[0]]){
-        // small marker on an empty day that already has a saved reason
-        ctx.beginPath();
-        ctx.arc(x + bw/2, bottom - 7, 2.5, 0, Math.PI*2);
-        ctx.fillStyle = "#94a3b8";
-        ctx.fill();
-      }
-      if(i % labelEvery === 0 || i === n-1){
-        ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
-        ctx.font = (i === n-1 ? "800" : "600") + " 9px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(entries[i].axisLabel, x + bw/2, h - 8);
-      }
-    });
-
-    // moving-average trend line — drawn on top of the bars, rises and falls with the data
-    const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
-    ctx.beginPath();
-    avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
-    ctx.strokeStyle = "#facc15";
-    ctx.lineWidth = 2;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.shadowColor = "rgba(15,23,42,.6)";
-    ctx.shadowBlur = 3;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    const lastAvgPt = avgPts[avgPts.length-1];
-    ctx.beginPath();
-    ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
-    ctx.fillStyle = "#facc15";
-    ctx.fill();
-    ctx.fillStyle = "#facc15";
-    ctx.font = "800 10px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText("ממוצע נע (" + winSize + (pointsMode === "day" ? " ימים" : pointsMode === "week" ? " שבועות" : " חודשים") + "): " + Math.round(movingAvg[movingAvg.length-1]),
-      w, 12);
+      'ממוצע יומי · 7 ימים: <b>' + Math.round(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + Math.round(ma.dailyAvg(end, 30)) +
+      '</b> · מההתחלה: <b>' + Math.round(ma.dailyAvg(end, 0)) + '</b>';
+    ptScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
+    renderRestList(ent);
   }
 
   /* ---------- STATS: history + edit ---------- */
@@ -2279,6 +2248,8 @@
     if(!open) renderSpBreakdown(dayKey(Date.now()), "היום");
   });
 
+  const spNav = { off: 0, sel: -1 };
+  function resetSpNav(){ spNav.off = 0; spNav.sel = -1; }
   function updateSpModeButtons(){
     document.getElementById("spModeDay").className = "chip" + (spMode === "day" ? " sel" : "");
     document.getElementById("spModeWeek").className = "chip" + (spMode === "week" ? " sel" : "");
@@ -2292,22 +2263,23 @@
   }
   [["spModeDay","day"],["spModeWeek","week"],["spModeMonth","month"]].forEach(([id,m])=>{
     document.getElementById(id).addEventListener("click", ()=>{
-      spMode = m; updateSpModeButtons(); renderSpChart();
+      spMode = m; resetSpNav(); updateSpModeButtons(); renderSpChart();
     });
   });
   [["spRangeWeek","week"],["spRangeMonth","month"],["spRangeAll","all"]].forEach(([id,r])=>{
     document.getElementById(id).addEventListener("click", ()=>{
-      spDayRange = r; updateSpModeButtons(); renderSpChart();
+      spDayRange = r; resetSpNav(); updateSpModeButtons(); renderSpChart();
     });
   });
 
   const spcState = { entries: [], axisL: 0, bw: 0, gap: 0 };
+  const spScrub = makeScrubber("spScrub", o=>{ spNav.off = o; spNav.sel = -1; renderSpChart(); });
   document.getElementById("spChart").addEventListener("click", (e)=>{
     if(spcState.entries.length === 0) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    let idx = Math.floor((e.clientX - rect.left - spcState.axisL) / (spcState.bw + spcState.gap));
-    idx = Math.max(0, Math.min(spcState.entries.length - 1, idx));
+    const idx = barIndexAt(e, spcState, spcState.entries.length);
     const entry = spcState.entries[idx];
+    spNav.sel = idx;
+    renderSpChart();
     document.getElementById("spBreakdown").style.display = "";
     document.getElementById("spPtHint").textContent = "▴ סגור פירוט";
     renderSpBreakdown(entry.keys, entry.label);
@@ -2319,146 +2291,28 @@
     if(document.getElementById("spBreakdown").style.display !== "none")
       renderSpBreakdown(dayKey(Date.now()), "היום");
 
-    const canvas = document.getElementById("spChart");
-    const { ctx, w, h } = setupCanvas(canvas, 170);
+    const m = spDailyMap();
+    const dayVal = k => m[k] || 0;
+    const firstTs = (sets.length || spSets.length) ? spFirstTs() : null;
+    const series = buildSeries(spMode, spDayRange, firstTs, dayVal);
+    const W = windowOf(series.length, spMode, spDayRange, spNav.off);
+    spNav.off = W.off;
+    const ent = series.slice(W.start, W.start + W.win);
+    const ma = movingAverages(series, dayVal, [60, 90], firstTs);
+    const geo = drawBarChart(document.getElementById("spChart"), 170, {
+      entries: ent,
+      ma60: ma[60].slice(W.start, W.start + W.win),
+      ma90: ma[90].slice(W.start, W.start + W.win),
+      barTop: "#fcd34d", barBot: "#14b8a6", c60: "#fb7185", c90: "#a5b4fc",
+      selIdx: spNav.sel
+    });
+    spcState.entries = ent; spcState.axisL = geo.axisL; spcState.bw = geo.bw; spcState.gap = geo.gap;
 
-    // oldest on the LEFT, newest on the RIGHT
-    const entries = [];
-    if(spMode === "day"){
-      let nDays;
-      if(spDayRange === "week") nDays = 7;
-      else if(spDayRange === "month") nDays = 30;
-      else nDays = Math.max(7, spDaysSinceStart());
-      nDays = Math.min(nDays, 180);
-      for(let i = nDays - 1; i >= 0; i--){
-        const d = startOfDay(-i);
-        const k = dayKey(d.getTime());
-        entries.push({
-          val: spTotalForKeys([k]), keys: [k],
-          axisLabel: d.getDate() + "." + (d.getMonth()+1),
-          label: d.toLocaleDateString("he-IL", { weekday:"short", day:"numeric", month:"numeric" })
-        });
-      }
-    } else if(spMode === "week"){
-      for(let i = 11; i >= 0; i--){
-        const ws = weekStart(-i);
-        const keys = [];
-        for(let j=0; j<7; j++){
-          const d = new Date(ws); d.setDate(d.getDate()+j);
-          if(d > new Date()) break;
-          keys.push(dayKey(d.getTime()));
-        }
-        entries.push({
-          val: spTotalForKeys(keys), keys,
-          axisLabel: ws.getDate() + "." + (ws.getMonth()+1),
-          label: "שבוע " + ws.getDate() + "." + (ws.getMonth()+1)
-        });
-      }
-    } else {
-      for(let i = 11; i >= 0; i--){
-        const ms = monthStart(-i);
-        const nextMs = monthStart(-i+1);
-        const keys = [];
-        for(let d = new Date(ms); d < nextMs; d.setDate(d.getDate()+1)){
-          if(d > new Date()) break;
-          keys.push(dayKey(d.getTime()));
-        }
-        const monthLabel = ms.toLocaleDateString("he-IL", {month:"short"});
-        entries.push({ val: spTotalForKeys(keys), keys, axisLabel: monthLabel, label: monthLabel });
-      }
-    }
-    const totals = entries.map(e => e.val);
-    const max = Math.max(1, ...totals);
-
-    const firstIdx = totals.findIndex(v => v > 0);
-    let avg = 0;
-    if(firstIdx >= 0){
-      const span = totals.slice(firstIdx);
-      avg = Math.round(span.reduce((a,b)=>a+b,0) / span.length);
-    }
+    const end = ent[ent.length - 1].endDate;
     document.getElementById("spAvgLine").innerHTML =
-      (spMode === "day" ? "ממוצע יומי: " : spMode === "week" ? "ממוצע שבועי: " : "ממוצע חודשי: ") +
-      "<b>" + (avg || "—") + "</b>";
-
-    const axisL = 34, top = 38, bottom = h - 24;
-    ctx.clearRect(0,0,w,h);
-
-    ctx.font = "600 10px sans-serif";
-    [0, .5, 1].forEach(f=>{
-      const y = bottom - f * (bottom - top);
-      ctx.strokeStyle = "rgba(148,163,184," + (f === 0 ? ".35" : ".15") + ")";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(axisL, y); ctx.lineTo(w, y); ctx.stroke();
-      ctx.fillStyle = "#94a3b8";
-      ctx.textAlign = "right";
-      ctx.fillText(String(Math.round(max * f)), axisL - 6, y + 3);
-    });
-
-    const n = totals.length;
-    const gap = n > 40 ? 2 : n > 20 ? 3 : 6;
-    const bw = (w - axisL - gap*(n-1)) / n;
-    const labelEvery = Math.max(1, Math.ceil(n / 7));
-    spcState.entries = entries;
-    spcState.axisL = axisL;
-    spcState.bw = bw;
-    spcState.gap = gap;
-
-    const winSize = spMode === "day" ? 7 : spMode === "week" ? 4 : 3;
-    const movingAvg = totals.map((_,i)=>{
-      const win = totals.slice(Math.max(0, i - winSize + 1), i+1);
-      return win.reduce((a,b)=>a+b, 0) / win.length;
-    });
-
-    totals.forEach((val,i)=>{
-      const x = axisL + i * (bw + gap);
-      if(val > 0){
-        const bh = Math.max(4, (val/max) * (bottom-top));
-        const y = bottom - bh;
-        const grad = ctx.createLinearGradient(0, y, 0, bottom);
-        grad.addColorStop(0, "#fcd34d"); grad.addColorStop(1, "#14b8a6");
-        ctx.fillStyle = grad;
-        const r = Math.min(5, bw/2);
-        ctx.beginPath();
-        ctx.moveTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
-        ctx.arcTo(x+bw, y, x+bw, y+r, r);
-        ctx.lineTo(x+bw, bottom); ctx.lineTo(x, bottom);
-        ctx.closePath(); ctx.fill();
-        if(bw > 18 || val === max){
-          ctx.fillStyle = "#e2e8f0";
-          ctx.font = "700 10px sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(Math.round(val), x + bw/2, y - 4);
-        }
-      }
-      if(i % labelEvery === 0 || i === n-1){
-        ctx.fillStyle = i === n-1 ? "#e2e8f0" : "#94a3b8";
-        ctx.font = (i === n-1 ? "800" : "600") + " 9px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(entries[i].axisLabel, x + bw/2, h - 8);
-      }
-    });
-
-    const avgPts = movingAvg.map((v,i)=> [axisL + i*(bw+gap) + bw/2, bottom - Math.min(1, v/max) * (bottom-top)]);
-    ctx.beginPath();
-    avgPts.forEach((p,i)=> i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
-    ctx.strokeStyle = "#fb7185";
-    ctx.lineWidth = 2;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.shadowColor = "rgba(15,23,42,.6)";
-    ctx.shadowBlur = 3;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    const lastAvgPt = avgPts[avgPts.length-1];
-    ctx.beginPath();
-    ctx.arc(lastAvgPt[0], lastAvgPt[1], 3, 0, Math.PI*2);
-    ctx.fillStyle = "#fb7185";
-    ctx.fill();
-    ctx.font = "800 10px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText("ממוצע נע (" + winSize + (spMode === "day" ? " ימים" : spMode === "week" ? " שבועות" : " חודשים") + "): " + Math.round(movingAvg[movingAvg.length-1]),
-      w, 12);
+      'ממוצע יומי · 7 ימים: <b>' + Math.round(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + Math.round(ma.dailyAvg(end, 30)) +
+      '</b> · מההתחלה: <b>' + Math.round(ma.dailyAvg(end, 0)) + '</b>';
+    spScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
   }
 
   function renderSpTodaySummary(){
