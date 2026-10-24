@@ -1449,25 +1449,34 @@
     });
 
     // thin lines with a faint dark halo so they stay readable on top of the bars
-    const line = (arr, color, lw, dash)=>{
-      const trace = ()=>{
-        ctx.beginPath();
-        arr.forEach((v, i)=>{
-          const x = axisL + i * (bw + gap) + bw / 2;
-          const y = bottom - Math.min(1, v / max) * (bottom - top);
-          if(i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-        });
-        ctx.lineJoin = "round";
-        ctx.lineCap = "butt";
-        ctx.setLineDash(dash || []);
-      };
-      trace(); ctx.strokeStyle = "rgba(15,23,42,.45)"; ctx.lineWidth = lw + 2.4; ctx.stroke();
-      trace(); ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke();
-      ctx.setLineDash([]);
+    // soft, continuous curves: each point is smoothed through the midpoints of its neighbours
+    const pointsOf = arr => arr.map((v, i)=> [
+      axisL + i * (bw + gap) + bw / 2,
+      bottom - Math.min(1, v / max) * (bottom - top)
+    ]);
+    const trace = pts=>{
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      if(pts.length === 2){ ctx.lineTo(pts[1][0], pts[1][1]); }
+      for(let i = 1; i < pts.length - 1; i++){
+        const mx = (pts[i][0] + pts[i+1][0]) / 2, my = (pts[i][1] + pts[i+1][1]) / 2;
+        ctx.quadraticCurveTo(pts[i][0], pts[i][1], mx, my);
+      }
+      if(pts.length > 2) ctx.lineTo(pts[pts.length-1][0], pts[pts.length-1][1]);
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
     };
-    // the 90-day line is dashed and drawn last, so it stays visible even when it runs along the 60-day one
-    line(cfg.ma60, cfg.c60, 1.5);
-    line(cfg.ma90, cfg.c90, 1.9, [7, 4]);
+    const line = (arr, color, lw)=>{
+      const pts = pointsOf(arr);
+      trace(pts); ctx.strokeStyle = "rgba(15,23,42,.30)"; ctx.lineWidth = lw + 1.6; ctx.stroke();
+      trace(pts); ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke();
+      const last = pts[pts.length - 1];
+      ctx.beginPath(); ctx.arc(last[0], last[1], lw + 0.9, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill();
+    };
+    // the wider 90-day line sits underneath, so it shows as a fine edge when it runs along the 60-day one
+    line(cfg.ma90, cfg.c90, 2.0);
+    line(cfg.ma60, cfg.c60, 1.1);
 
     // legend written right-to-left so it reads "ממוצע 60 ימים - 12" and the number stays attached
     ctx.font = "700 10px sans-serif";
