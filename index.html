@@ -1396,13 +1396,17 @@
       ctx.fillRect(sx - gap / 2, top - 8, bw + gap, bottom - top + 8);
     }
 
+    // the record bar (most recent one if tied) is painted gold with a small badge
+    const peakIdx = barMax > 0 ? vals.lastIndexOf(barMax) : -1;
     vals.forEach((val, i)=>{
       const x = axisL + i * (bw + gap);
       if(val > 0){
+        const isPeak = i === peakIdx;
         const bh = Math.max(4, (val / max) * (bottom - top));
         const y = bottom - bh;
         const grad = ctx.createLinearGradient(0, y, 0, bottom);
-        grad.addColorStop(0, cfg.barTop); grad.addColorStop(1, cfg.barBot);
+        grad.addColorStop(0, isPeak ? "#fde047" : cfg.barTop);
+        grad.addColorStop(1, isPeak ? "#f59e0b" : cfg.barBot);
         ctx.fillStyle = grad;
         const r = Math.min(5, bw / 2);
         ctx.beginPath();
@@ -1410,7 +1414,21 @@
         ctx.arcTo(x + bw, y, x + bw, y + r, r);
         ctx.lineTo(x + bw, bottom); ctx.lineTo(x, bottom);
         ctx.closePath(); ctx.fill();
-        if(bw > 14 || val === barMax){
+        if(isPeak){
+          const txt = "★ " + Math.round(val);
+          ctx.font = "800 10px sans-serif";
+          ctx.textAlign = "center";
+          const pw = ctx.measureText(txt).width + 14, ph = 16, pr = 8;
+          const px = Math.max(0, Math.min(w - pw, x + bw / 2 - pw / 2)), py = y - 6 - ph;
+          ctx.beginPath();
+          ctx.moveTo(px + pr, py); ctx.arcTo(px + pw, py, px + pw, py + ph, pr);
+          ctx.arcTo(px + pw, py + ph, px, py + ph, pr); ctx.arcTo(px, py + ph, px, py, pr);
+          ctx.arcTo(px, py, px + pw, py, pr); ctx.closePath();
+          ctx.fillStyle = "rgba(250,204,21,.18)"; ctx.fill();
+          ctx.strokeStyle = "rgba(250,204,21,.7)"; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillStyle = "#fde047";
+          ctx.fillText(txt, px + pw / 2, py + ph - 4.5);
+        } else if(bw > 14){
           ctx.fillStyle = "#e2e8f0";
           ctx.font = "700 10px sans-serif";
           ctx.textAlign = "center";
@@ -1430,39 +1448,55 @@
       }
     });
 
-    const line = (arr, color, lw, alpha)=>{
-      ctx.beginPath();
-      arr.forEach((v, i)=>{
-        const x = axisL + i * (bw + gap) + bw / 2;
-        const y = bottom - Math.min(1, v / max) * (bottom - top);
-        if(i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-      });
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = lw;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.stroke();
-      ctx.globalAlpha = 1;
+    // thin lines with a faint dark halo so they stay readable on top of the bars
+    const line = (arr, color, lw, dash)=>{
+      const trace = ()=>{
+        ctx.beginPath();
+        arr.forEach((v, i)=>{
+          const x = axisL + i * (bw + gap) + bw / 2;
+          const y = bottom - Math.min(1, v / max) * (bottom - top);
+          if(i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+        });
+        ctx.lineJoin = "round";
+        ctx.lineCap = "butt";
+        ctx.setLineDash(dash || []);
+      };
+      trace(); ctx.strokeStyle = "rgba(15,23,42,.45)"; ctx.lineWidth = lw + 2.4; ctx.stroke();
+      trace(); ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke();
+      ctx.setLineDash([]);
     };
-    line(cfg.ma90, cfg.c90, 1.2, .7);
-    line(cfg.ma60, cfg.c60, 1.4, .85);
+    // the 90-day line is dashed and drawn last, so it stays visible even when it runs along the 60-day one
+    line(cfg.ma60, cfg.c60, 1.5);
+    line(cfg.ma90, cfg.c90, 1.9, [7, 4]);
 
-    // quiet legend: current value of each moving average
-    ctx.font = "700 9px sans-serif";
+    // legend written right-to-left so it reads "ממוצע 60 ימים - 12" and the number stays attached
+    ctx.font = "700 10px sans-serif";
+    ctx.direction = "rtl";
     ctx.textAlign = "right";
-    const t90 = "90 ימים: " + Math.round(cfg.ma90[n - 1]);
-    const t60 = "60 ימים: " + Math.round(cfg.ma60[n - 1]);
-    ctx.fillStyle = cfg.c90; ctx.globalAlpha = .9;
-    ctx.fillText(t90, w, 12);
-    const w90 = ctx.measureText(t90).width;
+    const t60 = "ממוצע 60 ימים - " + Math.round(cfg.ma60[n - 1]);
+    const t90 = "ממוצע 90 ימים - " + Math.round(cfg.ma90[n - 1]);
     ctx.fillStyle = cfg.c60;
-    ctx.fillText(t60, w - w90 - 14, 12);
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = "#94a3b8"; ctx.textAlign = "left";
-    ctx.fillText("ממוצע נע", axisL, 12);
+    ctx.fillText(t60, w, 12);
+    const w60 = ctx.measureText(t60).width;
+    ctx.fillStyle = cfg.c90;
+    ctx.fillText(t90, w - w60 - 16, 12);
+    ctx.direction = "ltr";
 
     return { axisL, bw, gap };
+  }
+
+  // one average that follows the selected view: week / month / since-start (days), or per week / per month (buckets)
+  function avgLineHtml(mode, range, ent, ma, firstTs, f){
+    const end = ent[ent.length - 1].endDate;
+    if(mode === "day"){
+      const N = range === "week" ? 7 : range === "month" ? 30 : 0;
+      const lbl = range === "week" ? "ממוצע יומי בשבוע" : range === "month" ? "ממוצע יומי בחודש" : "ממוצע יומי מההתחלה";
+      return lbl + ': <b>' + f(ma.dailyAvg(end, N)) + '</b>';
+    }
+    const first = firstTs ? dayStartOf(firstTs) : null;
+    const act = ent.filter(e => !first || e.endDate >= first);
+    const avg = act.reduce((a, e)=> a + e.val, 0) / Math.max(1, act.length);
+    return (mode === "week" ? "ממוצע שבועי" : "ממוצע חודשי") + ': <b>' + f(avg) + '</b>';
   }
 
   function barIndexAt(e, geo, count){
@@ -1561,16 +1595,14 @@
       entries: ent,
       ma60: ma[60].slice(W.start, W.start + W.win),
       ma90: ma[90].slice(W.start, W.start + W.win),
-      barTop: "#22d3ee", barBot: "#818cf8", c60: "#facc15", c90: "#fb923c",
+      barTop: "#22d3ee", barBot: "#818cf8", c60: "#facc15", c90: "#ea580c",
       selIdx: mainNav.sel
     });
     mainState.entries = ent; mainState.axisL = geo.axisL; mainState.bw = geo.bw; mainState.gap = geo.gap;
 
     const end = ent[ent.length - 1].endDate;
-    const f = v => c.fmt(Math.round(v));
     document.getElementById("avgLine").innerHTML =
-      'ממוצע יומי · 7 ימים: <b>' + f(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + f(ma.dailyAvg(end, 30)) +
-      '</b> · מההתחלה: <b>' + f(ma.dailyAvg(end, 0)) + '</b>';
+      avgLineHtml(chartMode, chartDayRange, ent, ma, firstTs, v => c.fmt(Math.round(v)));
     mainScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
     renderMainDetail(mainNav.sel >= 0 ? ent[mainNav.sel] : null);
   }
@@ -1755,7 +1787,7 @@
       entries: ent,
       ma60: ma[60].slice(W.start, W.start + W.win),
       ma90: ma[90].slice(W.start, W.start + W.win),
-      barTop: "#f472b6", barBot: "#a78bfa", c60: "#facc15", c90: "#fb923c",
+      barTop: "#f472b6", barBot: "#a78bfa", c60: "#facc15", c90: "#ea580c",
       selIdx: ptNav.sel,
       markerFor: i => pointsMode === "day" && !!restReasons[ent[i].keys[0]]
     });
@@ -1763,8 +1795,7 @@
 
     const end = ent[ent.length - 1].endDate;
     document.getElementById("ptAvgLine").innerHTML =
-      'ממוצע יומי · 7 ימים: <b>' + Math.round(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + Math.round(ma.dailyAvg(end, 30)) +
-      '</b> · מההתחלה: <b>' + Math.round(ma.dailyAvg(end, 0)) + '</b>';
+      avgLineHtml(pointsMode, pointsDayRange, ent, ma, firstTs, v => String(Math.round(v)));
     ptScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
     renderRestList(ent);
   }
@@ -2303,15 +2334,14 @@
       entries: ent,
       ma60: ma[60].slice(W.start, W.start + W.win),
       ma90: ma[90].slice(W.start, W.start + W.win),
-      barTop: "#fcd34d", barBot: "#14b8a6", c60: "#fb7185", c90: "#a5b4fc",
+      barTop: "#fcd34d", barBot: "#14b8a6", c60: "#fb7185", c90: "#818cf8",
       selIdx: spNav.sel
     });
     spcState.entries = ent; spcState.axisL = geo.axisL; spcState.bw = geo.bw; spcState.gap = geo.gap;
 
     const end = ent[ent.length - 1].endDate;
     document.getElementById("spAvgLine").innerHTML =
-      'ממוצע יומי · 7 ימים: <b>' + Math.round(ma.dailyAvg(end, 7)) + '</b> · חודש: <b>' + Math.round(ma.dailyAvg(end, 30)) +
-      '</b> · מההתחלה: <b>' + Math.round(ma.dailyAvg(end, 0)) + '</b>';
+      avgLineHtml(spMode, spDayRange, ent, ma, firstTs, v => String(Math.round(v)));
     spScrub.update(series.map(e => e.val), W.win, W.off, fmtRange(ent[0].startDate, end));
   }
 

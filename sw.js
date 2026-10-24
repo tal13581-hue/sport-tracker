@@ -1,4 +1,4 @@
-const CACHE = "sportapp-v25";
+const CACHE = "sportapp-v27";
 const FILES = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
